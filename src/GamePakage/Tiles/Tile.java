@@ -1,4 +1,4 @@
-package Tiles;
+package GamePakage.Tiles;
 
 
 import java.awt.*;

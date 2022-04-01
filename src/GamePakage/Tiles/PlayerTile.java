@@ -1,6 +1,5 @@
-package Tiles;
+package GamePakage.Tiles;
 import GamePakage.Graphics.Assets;
-import GamePakage.Player;
 
 /*! \class public class WaterTile extends Tile
     \brief Abstractizeaza notiunea de dala de tip apa.
