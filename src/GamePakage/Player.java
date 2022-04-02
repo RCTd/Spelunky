@@ -5,17 +5,11 @@ import GamePakage.Tiles.PlayerTile;
 
 import java.awt.*;
 
+import static GamePakage.Game.*;
 import static java.lang.Math.*;
 
 public class Player {
-    private static final int MaxJumpHeight =36;//100
-    private static final float TimeToMaxH = 0.2F;//0.4
-    private static final float YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
 
-    private static final float AccelTimeX=0.2F;
-    //private static final float DccelTimeX=0.2F;
-    private static float MaxXSpeed;//0.05  /0.05
-    private static float XAccel=MaxXSpeed/AccelTimeX;
     //private static float XDccel=-MaxXSpeed/AccelTimeX;
     public Tile PlayerTile = new PlayerTile(0);
     public boolean IsOnGround=true;
@@ -25,7 +19,7 @@ public class Player {
     private float y,p0;
     private float x;
     private long JumpStart,Time=0;
-    private int result;
+
     public int getX() {
         return (int)x;
     }
@@ -35,18 +29,13 @@ public class Player {
 
     public Player()
     {
-        x=100;
-        y=64;
+        x=32;
+        y=67;
     }
-    private boolean IsOnGround()
+   /* private boolean IsOnGround()
     {
-        IsOnGround=false;
-        if(y>=Game.HEIGHT()-48)
-            IsOnGround=true;
-        if(y>Game.HEIGHT()-48-30&&y<Game.HEIGHT()-48-29&&x<50)
-            IsOnGround=true;
         return IsOnGround;
-    }
+    }*/
     public void Update(boolean[] flag)
     {
         float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
@@ -69,8 +58,8 @@ public class Player {
             x=(Game.WIDTH()- PlayerTile.TILE_WIDTH);
         Time=System.nanoTime();
         System.out.println("y= "+y);
-        if(y>Game.HEIGHT()-48)
-            y=Game.HEIGHT()-48;
+        if(y>BottomLine)
+            y=BottomLine;
     }
 
     public void Draw(Graphics g)
@@ -96,24 +85,24 @@ public class Player {
             y=Math.round(y);
             yVel=0;
         }
-        IsOnGround();
+        /*IsOnGround();*/
     }
 
     private void MoveLogic(boolean[] flag,float deltaTime)
     {
-        result=0;
+        int result = 0;
         if(flag[1])
-            result+=1;
+            result +=1;
         if(flag[3])
-            result-=1;
+            result -=1;
 
-        if(result==0) {
+        if(result ==0) {
             if (vx != 0)
                 vx -= signum(vx) * XAccel * deltaTime;
         }else
-            vx+=result*XAccel*deltaTime;
+            vx+= result *XAccel*deltaTime;
         if(vx>MaxXSpeed||vx<-MaxXSpeed)
-            vx=result*MaxXSpeed;
+            vx= result *MaxXSpeed;
         if(flag[4]) {//Slow down on shift
             MaxXSpeed=100F;
         }else {
