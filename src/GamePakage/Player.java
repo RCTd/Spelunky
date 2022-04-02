@@ -8,9 +8,10 @@ import java.awt.*;
 import static java.lang.Math.*;
 
 public class Player {
+    private final int BottomLine=Game.HEIGHT()-32;
     private static final int MaxJumpHeight =36;//100
     private static final float TimeToMaxH = 0.2F;//0.4
-    private static final float YAccel =-MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
+    private static final float YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
 
     private static final float AccelTimeX=0.2F;
     //private static final float DccelTimeX=0.2F;
@@ -22,7 +23,7 @@ public class Player {
     private boolean LongJump;
     private float vx=0;
     private float yVel;
-    private float y;
+    private float y,p0;
     private float x;
     private long JumpStart,Time=0;
     private int result;
@@ -30,18 +31,20 @@ public class Player {
         return (int)x;
     }
     public int getY() {
-        return (int) (Game.HEIGHT()-48-y);
+        return (int) (y);
     }
 
     public Player()
     {
         x=100;
-        y=64;
+        y=32;
     }
     private boolean IsOnGround()
     {
         /*IsOnGround=false;
-        if(y<=0)
+        if(y>=BottomLine)
+            IsOnGround=true;
+        if(y>BottomLine-30&&y<BottomLine-29&&x<50)
             IsOnGround=true;*/
         return IsOnGround;
     }
@@ -50,13 +53,14 @@ public class Player {
         float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
         MoveLogic(flag,deltaTime);
         if (flag[0]&&IsOnGround) {
-            yVel = MaxJumpHeight *2/ TimeToMaxH;
+            p0=y;
+            yVel = -MaxJumpHeight *2/ TimeToMaxH;
             LongJump =true;
             IsOnGround=false;
             JumpStart =System.nanoTime();
         }
         if (flag[2]) {
-            y-=0.3;
+            y+=0.3;
         }
 
         JumpLogic(flag,deltaTime);
@@ -65,9 +69,9 @@ public class Player {
         if(x>(Game.WIDTH() - PlayerTile.TILE_WIDTH))
             x=(Game.WIDTH()- PlayerTile.TILE_WIDTH);
         Time=System.nanoTime();
-        System.out.println("\tx= "+x+" y= "+y);
-        if(y<0)
-            y=0;
+        System.out.println("y= "+y);
+        if(y>BottomLine)
+            y=BottomLine;
     }
 
     public void Draw(Graphics g)
@@ -78,24 +82,22 @@ public class Player {
     private void JumpLogic(boolean[] flag,float deltaTime)
     {
         if (!IsOnGround) {
-            if(y>(Game.HEIGHT()-48))
-                y=(Game.HEIGHT()-48);
+            if(y<0)
+                y=0;
             //float deltaTime = (float) (System.nanoTime() - Time) / 1_000_000_000;
             if(!flag[0]&& LongJump)
             {
-                yVel =2*y/(TimeToMaxH);
+                yVel =-2*(p0-y)/(TimeToMaxH);
                 yVel += YAccel *(((float)System.nanoTime()- JumpStart)/1_000_000_000);
                 LongJump =false;
             }
             y+= (YAccel * deltaTime * deltaTime + yVel * deltaTime);
             yVel += YAccel * deltaTime;
         } else {
-            IsOnGround=true;
-            y =(int) ceil(y);
-            if(y<0)
-                y=16;
+            y=Math.round(y);
+            yVel=0;
         }
-        //IsOnGround();
+        IsOnGround();
     }
 
     private void MoveLogic(boolean[] flag,float deltaTime)

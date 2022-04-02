@@ -241,9 +241,10 @@ public class Game extends JPanel implements Runnable {
     public void Collide()
     {
         int x= player.getX()/16;
-        int y= player.getY()/16;
-        System.out.println("x= "+x*16+" y= "+y*16);
-        player.IsOnGround= y > 1 && map.matrix[y - 1][x] != 0;
+        int y= (player.getY()-3)/16+1;
+        System.out.print("y= "+y+"\t");
+        //if(y>1)
+            player.IsOnGround= map.matrix[y][x] == 184;
     }
 }
 
