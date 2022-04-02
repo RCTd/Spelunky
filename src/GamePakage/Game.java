@@ -5,16 +5,28 @@ import GamePakage.Graphics.Assets;
 import GamePakage.Tiles.Map;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
 public class Game extends JPanel implements Runnable {
-    private boolean[] flag;
+    public static final int BottomLine=Game.HEIGHT()-32;
+    public static final int MaxJumpHeight =36;//100
+    public static final float TimeToMaxH = 0.2F;//0.4
+    public static final float YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
+
+    public static final float AccelTimeX=0.2F;
+    public static float MaxXSpeed;//0.05  /0.05
+    public static float XAccel=MaxXSpeed/AccelTimeX;
+    //public static final float DccelTimeX=0.2F;
+
+
+    private final boolean[] flag;
     private BufferedImage result;
-    private int t,width,height;
+    private int t;
+    private final int width;
+    private final int height;
     private GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
     private boolean runState;   /*!< Flag ce starea firului de executie.*/
     private Thread gameThread; /*!< Referinta catre thread-ul de update si draw al ferestrei*/
@@ -71,8 +83,11 @@ public class Game extends JPanel implements Runnable {
                     flag[0] = true;
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT)
                     flag[1] = true;
-                if(e.getKeyCode()==KeyEvent.VK_SHIFT)
-                    flag[4]=true;
+                if (e.getKeyCode() == KeyEvent.VK_SHIFT)
+                    flag[4] = true;
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    StopGame();
+                }
             }
             @Override
             public void keyReleased(KeyEvent e) {
@@ -127,7 +142,7 @@ public class Game extends JPanel implements Runnable {
         final double timeFrame = 10000000 / framesPerSecond; /*!< Durata unui frame in nanosecunde.*/
 
         /// Atat timp timp cat threadul este pornit Update() & Draw()
-        while (runState == true) {
+        while (runState) {
             /// Se obtine timpul curent
             curentTime = System.nanoTime();
             /// Daca diferenta de timp dintre curentTime si oldTime mai mare decat 16.6 ms
@@ -148,7 +163,7 @@ public class Game extends JPanel implements Runnable {
         Metoda trebuie sa fie declarata synchronized pentru ca apelul acesteia sa fie semaforizat.
      */
     public synchronized void StartGame() {
-        if (runState == false) {
+        if (!runState) {
             /// Se actualizeaza flagul de stare a threadului
             runState = true;
             /// Se construieste threadul avand ca parametru obiectul Game. De retinut faptul ca Game class
@@ -156,9 +171,6 @@ public class Game extends JPanel implements Runnable {
             gameThread = new Thread(this);
             /// Threadul creat este lansat in executie (va executa metoda run())
             gameThread.start();
-        } else {
-            /// Thread-ul este creat si pornit deja
-            return;
         }
     }
 
@@ -168,7 +180,7 @@ public class Game extends JPanel implements Runnable {
         Metoda trebuie sa fie declarata synchronized pentru ca apelul acesteia sa fie semaforizat.
      */
     public synchronized void StopGame() {
-        if (runState == true) {
+        if (runState) {
             /// Actualizare stare thread
             runState = false;
             /// Metoda join() arunca exceptii motiv pentru care trebuie incadrata intr-un block try - catch.
@@ -180,9 +192,6 @@ public class Game extends JPanel implements Runnable {
                 /// In situatia in care apare o exceptie pe ecran vor fi afisate informatii utile pentru depanare.
                 ex.printStackTrace();
             }
-        } else {
-            /// Thread-ul este oprit deja.
-            return;
         }
     }
 
@@ -240,10 +249,9 @@ public class Game extends JPanel implements Runnable {
 
     public void Collide()
     {
-        int x= player.getX()/16;
-        int y= (player.getY()-3)/16+1;
+        int x= (player.getX()+8)/16;
+        int y= (player.getY())/16+1;
         System.out.print("y= "+y+"\t");
-        //if(y>1)
             player.IsOnGround= map.matrix[y][x] == 184;
     }
 }
