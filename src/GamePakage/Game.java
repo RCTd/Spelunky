@@ -2,7 +2,7 @@ package GamePakage;
 
 import GamePakage.GameWindow.GameWindow;
 import GamePakage.Graphics.Assets;
-
+import GamePakage.Tiles.Map;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -10,9 +10,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Random;
 
 public class Game extends JPanel implements Runnable {
     private boolean[] flag;
@@ -24,16 +21,16 @@ public class Game extends JPanel implements Runnable {
     private BufferStrategy bs;
     private Graphics g;
     private Player player;
+    private Map map;
 
-    public static int HEIGHT() {
-        return 480;
-    }
+    public static int HEIGHT() {return 20*16;}
 
     public static int WIDTH() {
-        return 640;
+        return 42*16;
     }
 
     public Game(String title, int width, int height) {
+        this.width=width ;this.height=height;
         /// Obiectul GameWindow este creat insa fereastra nu este construita
         /// Acest lucru va fi realizat in metoda init() prin apelul
         /// functiei BuildGameWindow();
@@ -41,7 +38,8 @@ public class Game extends JPanel implements Runnable {
         /// Resetarea flagului runState ce indica starea firului de executie (started/stoped)
         runState = false;
         t = 0;
-        flag = new boolean[4];
+        flag = new boolean[5];
+        map=new Map(42,20);
     }
 
     /*! \fn private void init()
@@ -52,8 +50,7 @@ public class Game extends JPanel implements Runnable {
 
      */
     private void InitGame() {
-        wnd = new GameWindow("Schelet Proiect PAOO", 640 ,480);
-        width=680 ;height=480;
+        wnd = new GameWindow("Schelet Proiect PAOO", width ,height);
         /// Este construita fereastra grafica.
         wnd.BuildGameWindow();
         /// Se incarca toate elementele grafice (dale)
@@ -74,6 +71,8 @@ public class Game extends JPanel implements Runnable {
                     flag[0] = true;
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT)
                     flag[1] = true;
+                if(e.getKeyCode()==KeyEvent.VK_SHIFT)
+                    flag[4]=true;
             }
             @Override
             public void keyReleased(KeyEvent e) {
@@ -85,6 +84,8 @@ public class Game extends JPanel implements Runnable {
                     flag[2] = false;
                 if (e.getKeyCode() == KeyEvent.VK_LEFT)
                     flag[3] = false;
+                if(e.getKeyCode()==KeyEvent.VK_SHIFT)
+                    flag[4]=false;
             }
         });
 
@@ -104,6 +105,8 @@ public class Game extends JPanel implements Runnable {
         for (int i = 0; i < 6; i++) {
             g.drawImage(Assets.BgWallHoll,(int)(Math.random()*width),(int)(Math.random()*height),50,50,null );
         }
+
+        map.LoadTutorial();
     }
 
     /*! \fn public void run()
@@ -190,6 +193,7 @@ public class Game extends JPanel implements Runnable {
      */
     private void Update() {
         t += 1;
+        Collide();
         player.Update(flag);
     }
 
@@ -219,10 +223,11 @@ public class Game extends JPanel implements Runnable {
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
 
         g.drawImage(result,0,0,null);
+        map.Draw(g);
         player.Draw(g);
 
         //g.drawRect(1 * Tile.TILE_WIDTH, 1 * Tile.TILE_HEIGHT, Tile.TILE_WIDTH, Tile.TILE_HEIGHT);
-
+        //g.drawRect(200,Game.HEIGHT()-60-36,300,36);
 
         // end operatie de desenare
         /// Se afiseaza pe ecran
@@ -231,6 +236,14 @@ public class Game extends JPanel implements Runnable {
         /// Elibereaza resursele de memorie aferente contextului grafic curent (zonele de memorie ocupate de
         /// elementele grafice ce au fost desenate pe canvas).
         g.dispose();
+    }
+
+    public void Collide()
+    {
+        int x= player.getX()/16;
+        int y= player.getY()/16;
+        System.out.println("x= "+x*16+" y= "+y*16);
+        player.IsOnGround= y > 1 && map.matrix[y - 1][x] != 0;
     }
 }
 

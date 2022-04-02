@@ -15,6 +15,9 @@ public class Assets {
     public static BufferedImage soil;
     public static BufferedImage grass;
     public static BufferedImage mountain;
+    public static BufferedImage Wall;
+    public static BufferedImage upWall;
+
     public static BufferedImage bgWall;
     public static BufferedImage BgWallRock;
     public static BufferedImage BgWallHoll;
@@ -33,6 +36,8 @@ public class Assets {
 
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
         playerLeft = sheet.crop(2, 42, 16, 16);
+        Wall=sheet.crop(798,74,16,16);
+        upWall=sheet.crop(58,198,16,16);
         soil = sheet.crop(718, 74, 16, 16);
         bgWall=sheet.crop(2,198,32,32);
         BgWallRock=sheet.crop(1162,163,32,32);
