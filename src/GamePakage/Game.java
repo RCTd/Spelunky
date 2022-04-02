@@ -2,7 +2,7 @@ package GamePakage;
 
 import GamePakage.GameWindow.GameWindow;
 import GamePakage.Graphics.Assets;
-import GamePakage.Tiles.Map;
+/*import GamePakage.Tiles.Map;*/
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -21,7 +21,7 @@ public class Game extends JPanel implements Runnable {
     private BufferStrategy bs;
     private Graphics g;
     private Player player;
-    private Map map;
+    //private Map map;
 
     public static int HEIGHT() {return 20*16;}
 
@@ -39,7 +39,7 @@ public class Game extends JPanel implements Runnable {
         runState = false;
         t = 0;
         flag = new boolean[5];
-        map=new Map(42,20);
+        //map=new Map(42,20);
     }
 
     /*! \fn private void init()
@@ -106,7 +106,7 @@ public class Game extends JPanel implements Runnable {
             g.drawImage(Assets.BgWallHoll,(int)(Math.random()*width),(int)(Math.random()*height),50,50,null );
         }
 
-        map.LoadTutorial();
+        //map.LoadTutorial();
     }
 
     /*! \fn public void run()
@@ -223,11 +223,11 @@ public class Game extends JPanel implements Runnable {
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
 
         g.drawImage(result,0,0,null);
-        map.Draw(g);
+        //map.Draw(g);
         player.Draw(g);
 
         //g.drawRect(1 * Tile.TILE_WIDTH, 1 * Tile.TILE_HEIGHT, Tile.TILE_WIDTH, Tile.TILE_HEIGHT);
-        //g.drawRect(200,Game.HEIGHT()-60-36,300,36);
+        g.drawRect(0,Game.HEIGHT()-48-29+16,50,1);
 
         // end operatie de desenare
         /// Se afiseaza pe ecran
@@ -241,10 +241,9 @@ public class Game extends JPanel implements Runnable {
     public void Collide()
     {
         int x= player.getX()/16;
-        int y= (player.getY()-3)/16+1;
-        System.out.print("y= "+y+"\t");
-        //if(y>1)
-            player.IsOnGround= map.matrix[y][x] == 184;
+        int y= player.getY()/16;
+        //System.out.println("x= "+x*16+" y= "+y*16);
+        //player.IsOnGround= y > 1 && map.matrix[y - 1][x] != 0;
     }
 }
 

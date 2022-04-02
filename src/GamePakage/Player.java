@@ -8,7 +8,6 @@ import java.awt.*;
 import static java.lang.Math.*;
 
 public class Player {
-    private final int BottomLine=Game.HEIGHT()-32;
     private static final int MaxJumpHeight =36;//100
     private static final float TimeToMaxH = 0.2F;//0.4
     private static final float YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
@@ -37,15 +36,15 @@ public class Player {
     public Player()
     {
         x=100;
-        y=32;
+        y=64;
     }
     private boolean IsOnGround()
     {
-        /*IsOnGround=false;
-        if(y>=BottomLine)
+        IsOnGround=false;
+        if(y>=Game.HEIGHT()-48)
             IsOnGround=true;
-        if(y>BottomLine-30&&y<BottomLine-29&&x<50)
-            IsOnGround=true;*/
+        if(y>Game.HEIGHT()-48-30&&y<Game.HEIGHT()-48-29&&x<50)
+            IsOnGround=true;
         return IsOnGround;
     }
     public void Update(boolean[] flag)
@@ -70,8 +69,8 @@ public class Player {
             x=(Game.WIDTH()- PlayerTile.TILE_WIDTH);
         Time=System.nanoTime();
         System.out.println("y= "+y);
-        if(y>BottomLine)
-            y=BottomLine;
+        if(y>Game.HEIGHT()-48)
+            y=Game.HEIGHT()-48;
     }
 
     public void Draw(Graphics g)
