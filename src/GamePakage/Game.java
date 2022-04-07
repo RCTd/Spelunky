@@ -20,6 +20,7 @@ public class Game extends JPanel implements Runnable {
     public static final float AccelTimeX=0.1F;
     public static float MaxXSpeed;//0.05  /0.05
     public static float XAccel=MaxXSpeed/AccelTimeX;
+    public static int[] numberOfFramesForState=new int[]{1,1,5,1,1,5};
 
     public static long timer;
     public static int size=2;

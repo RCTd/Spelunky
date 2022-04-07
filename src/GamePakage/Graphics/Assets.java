@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 public class Assets {
     /// Referinte catre elementele grafice (dale) utilizate in joc.
     public static BufferedImage playerLeft;
+    public static BufferedImage playerSprite;
 
     public static BufferedImage soil;
     public static BufferedImage soilRock;
@@ -33,6 +34,7 @@ public class Assets {
         //SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/textures/PaooGameSpriteSheet.png")); res/textures/spritesheet.png
         SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/spritesheet.png"));
 
+        playerSprite=ImageLoader.LoadImage("/PlayerSprite.png");
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
         playerLeft = sheet.crop(2, 42, 16, 16);
         upWall=sheet.crop(58,198,16,16);

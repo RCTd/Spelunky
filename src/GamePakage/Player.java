@@ -1,6 +1,5 @@
 package GamePakage;
 
-import GamePakage.Tiles.Tile;
 import GamePakage.Tiles.PlayerTile;
 
 import java.awt.*;
@@ -10,11 +9,11 @@ import static java.lang.Math.*;
 
 public class Player {
     //private static float XDccel=-MaxXSpeed/AccelTimeX;
-    public Tile PlayerTile = new PlayerTile(0);
+    public PlayerTile PlayerTile = new PlayerTile(0);
     public boolean IsOnGround=true, HeadHit =false,wallRight=false,wallLeft=false;
     public boolean Relesed=true;
     private boolean LongJump;
-    private int direction=-1;
+    private int direction =-1,frame=0;
     private float vx=0;
     private float yVel;
     private float y,p0;
@@ -48,6 +47,13 @@ public class Player {
     public void Update(boolean[] flag)
     {
         float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
+
+        /*if(deltaTime)
+            frame++;
+        if(numberOfFramesForState[PlayerTile.state]<=frame)
+            frame=0;*/
+
+        PlayerTile.state=0;//stand
         MoveLogic(flag,deltaTime);
         if (flag[0]) {
             if(Relesed)
@@ -63,7 +69,7 @@ public class Player {
             Relesed=true;
 
         if (flag[2]) {
-            y+=0.3;
+            PlayerTile.state=3;//Duck
         }
 
         JumpLogic(flag,deltaTime);
@@ -76,11 +82,16 @@ public class Player {
             y=BottomLine;
     }
 
-    public void Draw(Graphics g) {PlayerTile.Draw(g,getX(), getY());}
+    public void Draw(Graphics g) {
+        PlayerTile.frame=frame;
+        PlayerTile.direction= direction;
+        PlayerTile.Draw(g,getX(), getY());
+    }
 
     private void JumpLogic(boolean[] flag,float deltaTime)
     {
         if (!IsOnGround) {
+            PlayerTile.state=1;//Jump
             if(yVel==0) {p0=y;}
             if((HeadHit ||!flag[0])&& LongJump)
             {
@@ -108,26 +119,27 @@ public class Player {
         if(flag[1]) {
             if (!wallRight)
                 result += 1;
-            else
+            else{
                 vx = 0;
+            }
         }
         if(flag[3]) {
             if (!wallLeft)
                 result -= 1;
-            else
+            else{
                 vx = 0;
+            }
         }
-        if((vx>0&&wallRight)||(vx<0&&wallLeft))
-            vx=0;
-
+        if((vx>0&&wallRight)||(vx<0&&wallLeft)) {
+            vx = 0;
+        }
         if(result ==0) {
             //stop
             if (vx != 0)
                 vx -= signum(vx) * XAccel * deltaTime;
         }else {    //move
-            if(direction!=result)
-                PlayerTile.flip();
-            direction=result;
+            PlayerTile.state=2;//run
+            direction =result;
             vx += result * XAccel * deltaTime;
         }
         //speed cap
