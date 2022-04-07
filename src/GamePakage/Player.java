@@ -43,7 +43,7 @@ public class Player {
         MoveLogic(flag,deltaTime);
         if (flag[0]) {
             if(Relesed)
-            if(IsOnGround ||(float) (System.nanoTime() - timer) / 1_000_000_000<0.2F){
+            if(IsOnGround ||(float) (System.nanoTime() - timer) / 1_000_000_000<0.1F){
                 p0 = y;
                 yVel = -MaxJumpHeight * 2 / TimeToMaxH;
                 LongJump = true;
@@ -92,7 +92,7 @@ public class Player {
             y=(float)(((int) y)/16 )*16;
             yVel = 0;
         }
-        System.out.println(y);
+        //System.out.println(y);
     }
 
     private void MoveLogic(boolean[] flag,float deltaTime)
