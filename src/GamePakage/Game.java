@@ -303,9 +303,13 @@ public class Game extends JPanel implements Runnable {
                                                     //left up || right up
         player.HeadHit =(map.matrix[(y-2)/16][(x+3)/16] == 184)||(map.matrix[(y-2)/16][(x+w-3)/16] == 184);
                                                     //left down || right down
-        player.IsOnGround= (map.matrix[(y+h)/16][(x+3)/16] == 184)||(map.matrix[(y+h)/16][(x+w-3)/16] == 184);
+        boolean temp=(map.matrix[(y+h)/16][(x+3)/16] == 184)||(map.matrix[(y+h)/16][(x+w-3)/16] == 184);
+
+        if(player.IsOnGround!=temp)
+            timer=System.nanoTime();
+        player.IsOnGround= temp;
         //if(player.IsOnGround=false)
-        timer=System.nanoTime();
+
     }
 }
 
