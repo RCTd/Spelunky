@@ -31,26 +31,34 @@ public class Player {
     public Player()
     {
         x=32;
-        y=67;
+        y=64;
     }
    /* private boolean IsOnGround()
     {
         return IsOnGround;
     }*/
+
+    public void setX(float x) {
+        this.x = x;
+    }
+    public void setY(float y) {
+        this.y=y;
+    }
+
     public void Update(boolean[] flag)
     {
         float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
         MoveLogic(flag,deltaTime);
         if (flag[0]) {
             if(Relesed)
-            if(IsOnGround ||(float) (System.nanoTime() - timer) / 1_000_000_000<0.1F){
-                p0 = y;
-                yVel = -MaxJumpHeight * 2 / TimeToMaxH;
-                LongJump = true;
-                Relesed=false;
-                IsOnGround = false;
-                JumpStart = System.nanoTime();
-            }
+                if(IsOnGround ||(float) (System.nanoTime() - timer) / 1_000_000_000<0.1F){
+                    p0 = y;
+                    yVel = -MaxJumpHeight * 2 / TimeToMaxH;
+                    LongJump = true;
+                    Relesed=false;
+                    IsOnGround = false;
+                    JumpStart = System.nanoTime();
+                }
         }else
             Relesed=true;
 
@@ -88,11 +96,10 @@ public class Player {
                 p0=y;
                 System.out.println("mult");
             }*/
-
+            LongJump=false;
             y=(float)(((int) y)/16 )*16;
             yVel = 0;
         }
-        //System.out.println(y);
     }
 
     private void MoveLogic(boolean[] flag,float deltaTime)

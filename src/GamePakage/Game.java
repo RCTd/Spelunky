@@ -99,7 +99,9 @@ public class Game extends JPanel implements Runnable {
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT)
                     flag[4] = true;
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    StopGame();
+                        //StopGame();
+                    player.setX(32);
+                    player.setY(64);
                 }
             }
             @Override
@@ -305,8 +307,10 @@ public class Game extends JPanel implements Runnable {
                                                     //left down || right down
         boolean temp=(map.matrix[(y+h)/16][(x+3)/16] == 184)||(map.matrix[(y+h)/16][(x+w-3)/16] == 184);
 
-        if(player.IsOnGround!=temp)
-            timer=System.nanoTime();
+        if(player.IsOnGround!=temp) {
+            //System.out.println(temp);
+            timer = System.nanoTime();
+        }
         player.IsOnGround= temp;
         //if(player.IsOnGround=false)
 

@@ -1,6 +1,8 @@
 package GamePakage.Tiles;
 import GamePakage.Graphics.Assets;
 
+import java.awt.*;
+
 /*! \class public class WaterTile extends Tile
     \brief Abstractizeaza notiunea de dala de tip apa.
  */public class PlayerTile extends Tile {
@@ -11,6 +13,11 @@ import GamePakage.Graphics.Assets;
     */
     public PlayerTile(int id) {
         super(Assets.playerLeft, id,16,16);
+    }
+
+    @Override
+    public void Draw(Graphics g, int x, int y) {
+        super.Draw(g, x, y);
     }
 
     /*! \fn public boolean IsSolid()
