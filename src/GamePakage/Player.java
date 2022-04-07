@@ -5,58 +5,57 @@ import GamePakage.Tiles.PlayerTile;
 
 import java.awt.*;
 
+import static GamePakage.Game.*;
 import static java.lang.Math.*;
 
 public class Player {
-    private static final int MaxJumpHeight =36;//100
-    private static final float TimeToMaxH = 0.2F;//0.4
-    private static final float YAccel =-MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
-
-    private static final float AccelTimeX=0.2F;
-    //private static final float DccelTimeX=0.2F;
-    private static float MaxXSpeed;//0.05  /0.05
-    private static float XAccel=MaxXSpeed/AccelTimeX;
     //private static float XDccel=-MaxXSpeed/AccelTimeX;
     public Tile PlayerTile = new PlayerTile(0);
-    public boolean IsOnGround=true;
+    public boolean IsOnGround=true, HeadHit =false,wallRight=false,wallLeft=false;
+    public boolean Relesed=true;
     private boolean LongJump;
+    private int direction=-1;
     private float vx=0;
     private float yVel;
-    private float y;
+    private float y,p0;
     private float x;
     private long JumpStart,Time=0;
-    private int result;
+
     public int getX() {
         return (int)x;
     }
     public int getY() {
-        return (int) (Game.HEIGHT()-48-y);
+        return (int)y;
     }
 
     public Player()
     {
-        x=100;
-        y=64;
+        x=32;
+        y=67;
     }
-    private boolean IsOnGround()
+   /* private boolean IsOnGround()
     {
-        /*IsOnGround=false;
-        if(y<=0)
-            IsOnGround=true;*/
         return IsOnGround;
-    }
+    }*/
     public void Update(boolean[] flag)
     {
         float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
         MoveLogic(flag,deltaTime);
-        if (flag[0]&&IsOnGround) {
-            yVel = MaxJumpHeight *2/ TimeToMaxH;
-            LongJump =true;
-            IsOnGround=false;
-            JumpStart =System.nanoTime();
-        }
+        if (flag[0]) {
+            if(Relesed)
+            if(IsOnGround ||(float) (System.nanoTime() - timer) / 1_000_000_000<0.1F){
+                p0 = y;
+                yVel = -MaxJumpHeight * 2 / TimeToMaxH;
+                LongJump = true;
+                Relesed=false;
+                IsOnGround = false;
+                JumpStart = System.nanoTime();
+            }
+        }else
+            Relesed=true;
+
         if (flag[2]) {
-            y-=0.3;
+            y+=0.3;
         }
 
         JumpLogic(flag,deltaTime);
@@ -65,54 +64,69 @@ public class Player {
         if(x>(Game.WIDTH() - PlayerTile.TILE_WIDTH))
             x=(Game.WIDTH()- PlayerTile.TILE_WIDTH);
         Time=System.nanoTime();
-        System.out.println("\tx= "+x+" y= "+y);
-        if(y<0)
-            y=0;
+        if(y>BottomLine)
+            y=BottomLine;
     }
 
-    public void Draw(Graphics g)
-    {
-        PlayerTile.Draw(g,getX(), getY());
-    }
+    public void Draw(Graphics g) {PlayerTile.Draw(g,getX(), getY());}
 
     private void JumpLogic(boolean[] flag,float deltaTime)
     {
         if (!IsOnGround) {
-            if(y>(Game.HEIGHT()-48))
-                y=(Game.HEIGHT()-48);
-            //float deltaTime = (float) (System.nanoTime() - Time) / 1_000_000_000;
-            if(!flag[0]&& LongJump)
+            if(yVel==0) {p0=y;}
+            if((HeadHit ||!flag[0])&& LongJump)
             {
-                yVel =2*y/(TimeToMaxH);
+                yVel =-2*(p0-y)/(TimeToMaxH);
                 yVel += YAccel *(((float)System.nanoTime()- JumpStart)/1_000_000_000);
                 LongJump =false;
+                HeadHit =false;
             }
             y+= (YAccel * deltaTime * deltaTime + yVel * deltaTime);
-            yVel += YAccel * deltaTime;
+            yVel+=YAccel*deltaTime;
         } else {
-            IsOnGround=true;
-            y =(int) ceil(y);
-            if(y<0)
-                y=16;
+            /*if(abs(y-p0)>9*16) {
+                p0=y;
+                System.out.println("mult");
+            }*/
+
+            y=(float)(((int) y)/16 )*16;
+            yVel = 0;
         }
-        //IsOnGround();
+        //System.out.println(y);
     }
 
     private void MoveLogic(boolean[] flag,float deltaTime)
     {
-        result=0;
-        if(flag[1])
-            result+=1;
-        if(flag[3])
-            result-=1;
+        int result = 0;
+        if(flag[1]) {
+            if (!wallRight)
+                result += 1;
+            else
+                vx = 0;
+        }
+        if(flag[3]) {
+            if (!wallLeft)
+                result -= 1;
+            else
+                vx = 0;
+        }
+        if((vx>0&&wallRight)||(vx<0&&wallLeft))
+            vx=0;
 
-        if(result==0) {
+        if(result ==0) {
+            //stop
             if (vx != 0)
                 vx -= signum(vx) * XAccel * deltaTime;
-        }else
-            vx+=result*XAccel*deltaTime;
+        }else {    //move
+            if(direction!=result)
+                PlayerTile.flip();
+            direction=result;
+            vx += result * XAccel * deltaTime;
+        }
+        //speed cap
         if(vx>MaxXSpeed||vx<-MaxXSpeed)
-            vx=result*MaxXSpeed;
+            vx= result *MaxXSpeed;
+        //max speed variation
         if(flag[4]) {//Slow down on shift
             MaxXSpeed=100F;
         }else {

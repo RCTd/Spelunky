@@ -4,6 +4,8 @@ package GamePakage.Tiles;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import static GamePakage.Game.size;
+
 /*! \class public class Tile
     \brief Retine toate dalele intr-un vector si ofera posibilitatea regasirii dupa un id.
  */
@@ -39,7 +41,17 @@ public class Tile {
      */
     public void Draw(Graphics g, int x, int y) {
         /// Desenare dala
-        g.drawImage(img, x, y, TILE_WIDTH, TILE_HEIGHT, null);
+        g.drawImage(img, x*size, y*size, TILE_WIDTH*size, TILE_HEIGHT*size, null);
+    }
+    public void flip()
+    {
+        for (int i=0;i<img.getWidth()/2;i++)
+            for (int j=0;j<img.getHeight();j++)
+            {
+                int tmp = img.getRGB(i, j);
+                img.setRGB(i, j, img.getRGB(img.getWidth()-i-1, j));
+                img.setRGB(img.getWidth()-i-1, j, tmp);
+            }
     }
 
     /*! \fn public boolean IsSolid()

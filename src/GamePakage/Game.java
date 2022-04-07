@@ -5,16 +5,36 @@ import GamePakage.Graphics.Assets;
 import GamePakage.Tiles.Map;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
 public class Game extends JPanel implements Runnable {
-    private boolean[] flag;
+    public static final int BottomLine=Game.HEIGHT()-32;
+    public static final int MaxJumpHeight =36;//100
+    public static final float TimeToMaxH = 0.2F;//0.2
+    public static final float YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
+    public static final float MaxYVel=500;
+
+    public static final float AccelTimeX=0.1F;
+    public static float MaxXSpeed;//0.05  /0.05
+    public static float XAccel=MaxXSpeed/AccelTimeX;
+
+    public static long timer;
+    public static int size=2;
+    //public static final float DccelTimeX=0.2F;
+
+    private int camX,camY;
+    private int offsetMaxX,offsetMaxY;
+    private int offsetMinX,offsetMinY;
+
+
+    private final boolean[] flag;
     private BufferedImage result;
-    private int t,width,height;
+    private int t;
+    private final int width;
+    private final int height;
     private GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
     private boolean runState;   /*!< Flag ce starea firului de executie.*/
     private Thread gameThread; /*!< Referinta catre thread-ul de update si draw al ferestrei*/
@@ -51,11 +71,16 @@ public class Game extends JPanel implements Runnable {
      */
     private void InitGame() {
         wnd = new GameWindow("Schelet Proiect PAOO", width ,height);
+        offsetMaxX=width*(size-1);
+        offsetMaxY=height*(size-1);
+        offsetMinX=offsetMinY=0;
         /// Este construita fereastra grafica.
         wnd.BuildGameWindow();
         /// Se incarca toate elementele grafice (dale)
         Assets.Init();
         player=new Player();
+        camX= player.getX()*size-width/2;
+        camY= player.getY()*size-height/2;
         //player=new PlayerTile(1);
         wnd.GetCanvas().addKeyListener(new KeyListener() {
             @Override
@@ -71,8 +96,11 @@ public class Game extends JPanel implements Runnable {
                     flag[0] = true;
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT)
                     flag[1] = true;
-                if(e.getKeyCode()==KeyEvent.VK_SHIFT)
-                    flag[4]=true;
+                if (e.getKeyCode() == KeyEvent.VK_SHIFT)
+                    flag[4] = true;
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    StopGame();
+                }
             }
             @Override
             public void keyReleased(KeyEvent e) {
@@ -90,21 +118,23 @@ public class Game extends JPanel implements Runnable {
         });
 
         result = new BufferedImage(
-                width, height, //work these out
+                width*size, height*size, //work these out
                 BufferedImage.TYPE_INT_RGB);
 
         Graphics g = result.getGraphics();
         for (int i = 0; i <= width/64; i++) {
             for (int j = 0; j <= height/64; j++) {
-                g.drawImage(Assets.bgWall,i*64,j*64,64,64,null);
+                g.drawImage(Assets.bgWall,i*64*size,j*64*size,64*size,64*size,null);
             }
         }
         for (int i = 0; i < 6; i++) {
-            g.drawImage(Assets.BgWallRock,(int)(Math.random()*width),(int)(Math.random()*height),50,50,null );
+            g.drawImage(Assets.BgWallRock,(int)(Math.random()*width*size),(int)(Math.random()*height*size),50*size ,50*size,null );
         }
         for (int i = 0; i < 6; i++) {
-            g.drawImage(Assets.BgWallHoll,(int)(Math.random()*width),(int)(Math.random()*height),50,50,null );
+            g.drawImage(Assets.BgWallHoll,(int)(Math.random()*width*size),(int)(Math.random()*height*size),50*size ,50*size,null );
         }
+        /*File outputfile = new File("image.jpg");
+        ImageIO.write(bufferedImage, "jpg", outputfile);*/
 
         map.LoadTutorial();
     }
@@ -127,7 +157,7 @@ public class Game extends JPanel implements Runnable {
         final double timeFrame = 10000000 / framesPerSecond; /*!< Durata unui frame in nanosecunde.*/
 
         /// Atat timp timp cat threadul este pornit Update() & Draw()
-        while (runState == true) {
+        while (runState) {
             /// Se obtine timpul curent
             curentTime = System.nanoTime();
             /// Daca diferenta de timp dintre curentTime si oldTime mai mare decat 16.6 ms
@@ -148,7 +178,7 @@ public class Game extends JPanel implements Runnable {
         Metoda trebuie sa fie declarata synchronized pentru ca apelul acesteia sa fie semaforizat.
      */
     public synchronized void StartGame() {
-        if (runState == false) {
+        if (!runState) {
             /// Se actualizeaza flagul de stare a threadului
             runState = true;
             /// Se construieste threadul avand ca parametru obiectul Game. De retinut faptul ca Game class
@@ -156,9 +186,6 @@ public class Game extends JPanel implements Runnable {
             gameThread = new Thread(this);
             /// Threadul creat este lansat in executie (va executa metoda run())
             gameThread.start();
-        } else {
-            /// Thread-ul este creat si pornit deja
-            return;
         }
     }
 
@@ -168,7 +195,7 @@ public class Game extends JPanel implements Runnable {
         Metoda trebuie sa fie declarata synchronized pentru ca apelul acesteia sa fie semaforizat.
      */
     public synchronized void StopGame() {
-        if (runState == true) {
+        if (runState) {
             /// Actualizare stare thread
             runState = false;
             /// Metoda join() arunca exceptii motiv pentru care trebuie incadrata intr-un block try - catch.
@@ -180,9 +207,6 @@ public class Game extends JPanel implements Runnable {
                 /// In situatia in care apare o exceptie pe ecran vor fi afisate informatii utile pentru depanare.
                 ex.printStackTrace();
             }
-        } else {
-            /// Thread-ul este oprit deja.
-            return;
         }
     }
 
@@ -195,6 +219,31 @@ public class Game extends JPanel implements Runnable {
         t += 1;
         Collide();
         player.Update(flag);
+        camX= player.getX()*size-width/2;
+        camY= player.getY()*size-height/2;
+        /*int difX=player.getX()*size-width-camX;
+
+        if(difX!=0)
+            camX+=difX*0.2;
+        //System.out.println(dif+" "+dif*0.2);
+        System.out.println(camX);
+        int difY=player.getY()*size-width-camY;
+        if(difY!=0)
+            camY+=difY*0.2;*/
+
+       /* camX= player.getX()*size-width;
+        camY= player.getY()*size-height/2;*/
+
+        if(camX>offsetMaxX)
+            camX= offsetMaxX;
+        else
+            if (camX<offsetMinX)
+                camX=offsetMinX;
+        if (camY>offsetMaxY)
+            camY=offsetMaxY;
+        else
+            if (camY<offsetMinY)
+                camY=offsetMinY;
     }
 
     /*! \fn private void Draw()
@@ -221,13 +270,14 @@ public class Game extends JPanel implements Runnable {
         g = bs.getDrawGraphics();
         /// Se sterge ce era
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
-
+        g.translate(-camX,-camY);
         g.drawImage(result,0,0,null);
         map.Draw(g);
         player.Draw(g);
-
+        int x= player.getX();
+        int y= (player.getY());
         //g.drawRect(1 * Tile.TILE_WIDTH, 1 * Tile.TILE_HEIGHT, Tile.TILE_WIDTH, Tile.TILE_HEIGHT);
-        //g.drawRect(200,Game.HEIGHT()-60-36,300,36);
+        //g.drawRect(x, y, 300,36);
 
         // end operatie de desenare
         /// Se afiseaza pe ecran
@@ -240,10 +290,26 @@ public class Game extends JPanel implements Runnable {
 
     public void Collide()
     {
-        int x= player.getX()/16;
-        int y= player.getY()/16;
-        System.out.println("x= "+x*16+" y= "+y*16);
-        player.IsOnGround= y > 1 && map.matrix[y - 1][x] != 0;
+        int x= player.getX();
+        int y= player.getY();
+        int h=player.PlayerTile.TILE_HEIGHT;
+        int w=player.PlayerTile.TILE_WIDTH;
+        int wall=184;
+                                                    //left up || left down
+        player.wallLeft=(map.matrix[(y+6)/16][(x-1)/16] == 184)||(map.matrix[(y+h-2)/16][(x-1)/16] == 184);
+                                                    //right up || right down
+        player.wallRight=(map.matrix[(y+6)/16][(x+w+1)/16] == 184)||(map.matrix[(y+h-2)/16][(x+w+1)/16] == 184);
+
+                                                    //left up || right up
+        player.HeadHit =(map.matrix[(y-2)/16][(x+3)/16] == 184)||(map.matrix[(y-2)/16][(x+w-3)/16] == 184);
+                                                    //left down || right down
+        boolean temp=(map.matrix[(y+h)/16][(x+3)/16] == 184)||(map.matrix[(y+h)/16][(x+w-3)/16] == 184);
+
+        if(player.IsOnGround!=temp)
+            timer=System.nanoTime();
+        player.IsOnGround= temp;
+        //if(player.IsOnGround=false)
+
     }
 }
 
