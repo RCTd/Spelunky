@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 public class Game extends JPanel implements Runnable {
     public static final int BottomLine=Game.HEIGHT()-32;
     public static final int MaxJumpHeight =36;//100
-    public static final float TimeToMaxH = 0.2F;//0.4
+    public static final float TimeToMaxH = 0.2F;//0.2
     public static final float YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
     public static final float MaxYVel=500;
 
@@ -21,6 +21,7 @@ public class Game extends JPanel implements Runnable {
     public static float MaxXSpeed;//0.05  /0.05
     public static float XAccel=MaxXSpeed/AccelTimeX;
 
+    public static long timer;
     public static int size=2;
     //public static final float DccelTimeX=0.2F;
 
@@ -302,7 +303,9 @@ public class Game extends JPanel implements Runnable {
                                                     //left up || right up
         player.HeadHit =(map.matrix[(y-2)/16][(x+3)/16] == 184)||(map.matrix[(y-2)/16][(x+w-3)/16] == 184);
                                                     //left down || right down
-        player.IsOnGround= (map.matrix[(y+h+1)/16][(x+3)/16] == 184)||(map.matrix[(y+h+1)/16][(x+w-3)/16] == 184);
+        player.IsOnGround= (map.matrix[(y+h)/16][(x+3)/16] == 184)||(map.matrix[(y+h)/16][(x+w-3)/16] == 184);
+        //if(player.IsOnGround=false)
+        timer=System.nanoTime();
     }
 }
 

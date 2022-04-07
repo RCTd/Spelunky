@@ -12,6 +12,7 @@ public class Player {
     //private static float XDccel=-MaxXSpeed/AccelTimeX;
     public Tile PlayerTile = new PlayerTile(0);
     public boolean IsOnGround=true, HeadHit =false,wallRight=false,wallLeft=false;
+    public boolean Relesed=true;
     private boolean LongJump;
     private int direction=-1;
     private float vx=0;
@@ -41,17 +42,18 @@ public class Player {
         float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
         MoveLogic(flag,deltaTime);
         if (flag[0]) {
-            if(IsOnGround ){
+            if(Relesed)
+            if(IsOnGround ||(float) (System.nanoTime() - timer) / 1_000_000_000<0.2F){
                 p0 = y;
                 yVel = -MaxJumpHeight * 2 / TimeToMaxH;
                 LongJump = true;
+                Relesed=false;
                 IsOnGround = false;
                 JumpStart = System.nanoTime();
-            }else
-            {
-
             }
-        }
+        }else
+            Relesed=true;
+
         if (flag[2]) {
             y+=0.3;
         }
@@ -86,9 +88,11 @@ public class Player {
                 p0=y;
                 System.out.println("mult");
             }*/
-            y = Math.round(y);
+
+            y=(float)(((int) y)/16 )*16;
             yVel = 0;
         }
+        System.out.println(y);
     }
 
     private void MoveLogic(boolean[] flag,float deltaTime)
