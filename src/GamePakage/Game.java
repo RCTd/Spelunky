@@ -20,7 +20,7 @@ public class Game extends JPanel implements Runnable {
     public static final float AccelTimeX=0.1F;
     public static float MaxXSpeed;//0.05  /0.05
     public static float XAccel=MaxXSpeed/AccelTimeX;
-    public static int[] numberOfFramesForState=new int[]{1,1,5,1,1,5};
+    public static int[] numberOfFramesForState=new int[]{1,1,6,1,1,6,11,10};
 
     public static long coyotetimer;
     public static int size=2;
@@ -55,7 +55,7 @@ public class Game extends JPanel implements Runnable {
         wnd = new GameWindow(title, width, height);
         /// Resetarea flagului runState ce indica starea firului de executie (started/stoped)
         runState = false;
-        flag = new boolean[5];
+        flag = new boolean[7];
         map=new Map(42,20);
     }
 
@@ -85,16 +85,20 @@ public class Game extends JPanel implements Runnable {
             }
             @Override
             public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_Z)
+                    flag[0] = true;
+                if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+                    flag[1] = true;
                 if (e.getKeyCode() == KeyEvent.VK_DOWN)
                     flag[2] = true;
                 if (e.getKeyCode() == KeyEvent.VK_LEFT)
                     flag[3] = true;
-                if (e.getKeyCode() == KeyEvent.VK_UP)
-                    flag[0] = true;
-                if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-                    flag[1] = true;
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT)
                     flag[4] = true;
+                if (e.getKeyCode() == KeyEvent.VK_UP)
+                    flag[5] = true;
+                if (e.getKeyCode() == KeyEvent.VK_X)
+                    flag[6] = true;
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                         //StopGame();
                     player.setX(32);
@@ -103,7 +107,7 @@ public class Game extends JPanel implements Runnable {
             }
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_UP)
+                if (e.getKeyCode()==KeyEvent.VK_Z)
                     flag[0] = false;
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT)
                     flag[1] = false;
@@ -113,6 +117,10 @@ public class Game extends JPanel implements Runnable {
                     flag[3] = false;
                 if(e.getKeyCode()==KeyEvent.VK_SHIFT)
                     flag[4]=false;
+                if (e.getKeyCode() == KeyEvent.VK_UP)
+                    flag[5] = false;
+                if (e.getKeyCode() == KeyEvent.VK_X)
+                    flag[6] = false;
             }
         });
 
@@ -163,7 +171,7 @@ public class Game extends JPanel implements Runnable {
             //curentTime = System.nanoTime();
             /// Daca diferenta de timp dintre curentTime si oldTime mai mare decat 16.6 ms
             //if ((curentTime - oldTime) > timeFrame) {
-            System.out.println(timer.getDeltaTime());
+            //System.out.println(timer.getDeltaTime());
             if(timer.getDeltaTime()>timeFrame){
                 /// Actualizeaza pozitiile elementelor
                 Update();

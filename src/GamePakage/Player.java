@@ -11,15 +11,16 @@ public class Player {
     //private static float XDccel=-MaxXSpeed/AccelTimeX;
     public PlayerTile PlayerTile = new PlayerTile(0);
     public boolean IsOnGround=true, HeadHit =false,wallRight=false,wallLeft=false;
+    public boolean Duck=false, LookUp=false,Moves=false;
     public boolean Relesed=true;
     private boolean LongJump;
-    private int direction =-1,frame=0;
+    private int direction =-1;
+    private float frame=0;
     private float vx=0;
     private float yVel;
     private float y,p0;
     private float x;
     private long JumpStart,Time=0;
-    private GameTimer timer=GameTimer.getInstance();
 
     public int getX() {
         return (int)x;
@@ -47,14 +48,13 @@ public class Player {
 
     public void Update(boolean[] flag)
     {
-        //float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
+        float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
 
-       /* frame++;
+        frame= frame + 16 * timer.getDeltaTime();
         if(numberOfFramesForState[PlayerTile.state]<=frame)
-            frame=0;*/
-
-        PlayerTile.state=0;//stand
-        MoveLogic(flag,timer.getDeltaTime());
+            frame=0;
+        Moves=false;
+        MoveLogic(flag,deltaTime);
         if (flag[0]) {
             if(Relesed)
                 if(IsOnGround ||(float) (System.nanoTime() - coyotetimer) / 1_000_000_000<0.1F){
@@ -67,12 +67,32 @@ public class Player {
                 }
         }else
             Relesed=true;
-
+        PlayerTile.state=0;//Stand
         if (flag[2]) {
-            PlayerTile.state=3;//Duck
+            Duck=true;
+        }else
+            Duck=false;
+        if(flag[5])
+            LookUp=true;
+        else
+            LookUp=false;
+
+        if(Moves) {
+            PlayerTile.state=2;//run
+            if (Duck)
+                PlayerTile.state = 7;//Crawl
+            else
+            if(LookUp)
+                PlayerTile.state=5;//RunLook
+        }else {
+
+            if (Duck)
+                PlayerTile.state=3;//Duck
+            if (LookUp)
+                PlayerTile.state=4;//Lookup
         }
 
-        JumpLogic(flag,timer.getDeltaTime());
+        JumpLogic(flag,deltaTime);
         if(x<0)
             x=0;
         if(x>(Game.WIDTH() - PlayerTile.TILE_WIDTH))
@@ -83,7 +103,7 @@ public class Player {
     }
 
     public void Draw(Graphics g) {
-        PlayerTile.frame=frame;
+        PlayerTile.frame=(int) frame;
         PlayerTile.direction= direction;
         PlayerTile.Draw(g,getX(), getY());
     }
@@ -138,7 +158,8 @@ public class Player {
             if (vx != 0)
                 vx -= signum(vx) * XAccel * deltaTime;
         }else {    //move
-            PlayerTile.state=2;//run
+            //PlayerTile.state=2;//run
+            Moves=true;
             direction =result;
             vx += result * XAccel * deltaTime;
         }
