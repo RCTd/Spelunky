@@ -19,6 +19,7 @@ public class Player {
     private float y,p0;
     private float x;
     private long JumpStart,Time=0;
+    private GameTimer timer=GameTimer.getInstance();
 
     public int getX() {
         return (int)x;
@@ -46,18 +47,17 @@ public class Player {
 
     public void Update(boolean[] flag)
     {
-        float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
+        //float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
 
-        /*if(deltaTime)
-            frame++;
+       /* frame++;
         if(numberOfFramesForState[PlayerTile.state]<=frame)
             frame=0;*/
 
         PlayerTile.state=0;//stand
-        MoveLogic(flag,deltaTime);
+        MoveLogic(flag,timer.getDeltaTime());
         if (flag[0]) {
             if(Relesed)
-                if(IsOnGround ||(float) (System.nanoTime() - timer) / 1_000_000_000<0.1F){
+                if(IsOnGround ||(float) (System.nanoTime() - coyotetimer) / 1_000_000_000<0.1F){
                     p0 = y;
                     yVel = -MaxJumpHeight * 2 / TimeToMaxH;
                     LongJump = true;
@@ -72,7 +72,7 @@ public class Player {
             PlayerTile.state=3;//Duck
         }
 
-        JumpLogic(flag,deltaTime);
+        JumpLogic(flag,timer.getDeltaTime());
         if(x<0)
             x=0;
         if(x>(Game.WIDTH() - PlayerTile.TILE_WIDTH))

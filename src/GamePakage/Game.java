@@ -15,34 +15,31 @@ public class Game extends JPanel implements Runnable {
     public static final int MaxJumpHeight =36;//100
     public static final float TimeToMaxH = 0.2F;//0.2
     public static final float YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
-    public static final float MaxYVel=500;
+    //public static final float MaxYVel=500;
 
     public static final float AccelTimeX=0.1F;
     public static float MaxXSpeed;//0.05  /0.05
     public static float XAccel=MaxXSpeed/AccelTimeX;
     public static int[] numberOfFramesForState=new int[]{1,1,5,1,1,5};
 
-    public static long timer;
+    public static long coyotetimer;
     public static int size=2;
     //public static final float DccelTimeX=0.2F;
 
     private int camX,camY;
     private int offsetMaxX,offsetMaxY;
     private int offsetMinX,offsetMinY;
-
+    //public long timer,deltatime;
+    public static GameTimer timer = GameTimer.getInstance();
 
     private final boolean[] flag;
     private BufferedImage result;
-    private int t;
     private final int width;
     private final int height;
     private GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
     private boolean runState;   /*!< Flag ce starea firului de executie.*/
-    private Thread gameThread; /*!< Referinta catre thread-ul de update si draw al ferestrei*/
-    private BufferStrategy bs;
-    private Graphics g;
     private Player player;
-    private Map map;
+    private final Map map;
 
     public static int HEIGHT() {return 20*16;}
 
@@ -58,7 +55,6 @@ public class Game extends JPanel implements Runnable {
         wnd = new GameWindow(title, width, height);
         /// Resetarea flagului runState ce indica starea firului de executie (started/stoped)
         runState = false;
-        t = 0;
         flag = new boolean[5];
         map=new Map(42,20);
     }
@@ -150,29 +146,33 @@ public class Game extends JPanel implements Runnable {
     public void run() {
         /// Initializeaza obiectul game
         InitGame();
-        long oldTime = System.nanoTime();   /*!< Retine timpul in nanosecunde aferent frame-ului anterior.*/
-        long curentTime;                    /*!< Retine timpul curent de executie.*/
+        timer.StartTimer();
+        //long oldTime = System.nanoTime();   /*!< Retine timpul in nanosecunde aferent frame-ului anterior.*/
+        //long curentTime;                    /*!< Retine timpul curent de executie.*/
 
         /// Apelul functiilor Update() & Draw() trebuie realizat la fiecare 16.7 ms
         /// sau mai bine spus de 60 ori pe secunda.
 
         final int framesPerSecond = 60; /*!< Constanta intreaga initializata cu numarul de frame-uri pe secunda.*/
-        final double timeFrame = 10000000 / framesPerSecond; /*!< Durata unui frame in nanosecunde.*/
+        final double timeFrame =(double) 0.1F / framesPerSecond; /*!< Durata unui frame in nanosecunde.*/
 
         /// Atat timp timp cat threadul este pornit Update() & Draw()
         while (runState) {
             /// Se obtine timpul curent
-            curentTime = System.nanoTime();
+            timer.update();
+            //curentTime = System.nanoTime();
             /// Daca diferenta de timp dintre curentTime si oldTime mai mare decat 16.6 ms
-            if ((curentTime - oldTime) > timeFrame) {
+            //if ((curentTime - oldTime) > timeFrame) {
+            System.out.println(timer.getDeltaTime());
+            if(timer.getDeltaTime()>timeFrame){
                 /// Actualizeaza pozitiile elementelor
                 Update();
                 /// Deseneaza elementele grafica in fereastra.
                 Draw();
-                oldTime = curentTime;
+                timer.StartTimer();
+                //oldTime = curentTime;
             }
         }
-
     }
 
     /*! \fn public synchronized void start()
@@ -186,7 +186,8 @@ public class Game extends JPanel implements Runnable {
             runState = true;
             /// Se construieste threadul avand ca parametru obiectul Game. De retinut faptul ca Game class
             /// implementeaza interfata Runnable. Threadul creat va executa functia run() suprascrisa in clasa Game.
-            gameThread = new Thread(this);
+            /*!< Referinta catre thread-ul de update si draw al ferestrei*/
+            Thread gameThread = new Thread(this);
             /// Threadul creat este lansat in executie (va executa metoda run())
             gameThread.start();
         }
@@ -197,7 +198,7 @@ public class Game extends JPanel implements Runnable {
 
         Metoda trebuie sa fie declarata synchronized pentru ca apelul acesteia sa fie semaforizat.
      */
-    public synchronized void StopGame() {
+    /*public synchronized void StopGame() {
         if (runState) {
             /// Actualizare stare thread
             runState = false;
@@ -211,7 +212,7 @@ public class Game extends JPanel implements Runnable {
                 ex.printStackTrace();
             }
         }
-    }
+    }*/
 
     /*! \fn private void Update()
         \brief Actualizeaza starea elementelor din joc.
@@ -219,7 +220,6 @@ public class Game extends JPanel implements Runnable {
         Metoda este declarata privat deoarece trebuie apelata doar in metoda run()
      */
     private void Update() {
-        t += 1;
         Collide();
         player.Update(flag);
         camX= player.getX()*size-width/2;
@@ -256,7 +256,7 @@ public class Game extends JPanel implements Runnable {
      */
     private void Draw() {
         /// Returnez bufferStrategy pentru canvasul existent
-        bs = wnd.GetCanvas().getBufferStrategy();
+        BufferStrategy bs = wnd.GetCanvas().getBufferStrategy();
         /// Verific daca buffer strategy a fost construit sau nu
         if (bs == null) {
             /// Se executa doar la primul apel al metodei Draw()
@@ -270,15 +270,14 @@ public class Game extends JPanel implements Runnable {
             }
         }
         /// Se obtine contextul grafic curent in care se poate desena.
-        g = bs.getDrawGraphics();
+        assert bs != null;
+        Graphics g = bs.getDrawGraphics();
         /// Se sterge ce era
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
         g.translate(-camX,-camY);
         g.drawImage(result,0,0,null);
         map.Draw(g);
         player.Draw(g);
-        int x= player.getX();
-        int y= (player.getY());
         //g.drawRect(1 * Tile.TILE_WIDTH, 1 * Tile.TILE_HEIGHT, Tile.TILE_WIDTH, Tile.TILE_HEIGHT);
         //g.drawRect(x, y, 300,36);
 
@@ -297,7 +296,7 @@ public class Game extends JPanel implements Runnable {
         int y= player.getY();
         int h=player.PlayerTile.TILE_HEIGHT;
         int w=player.PlayerTile.TILE_WIDTH;
-        int wall=184;
+        //int wall=184;
                                                     //left up || left down
         player.wallLeft=(map.matrix[(y+6)/16][(x-1)/16] == 184)||(map.matrix[(y+h-2)/16][(x-1)/16] == 184);
                                                     //right up || right down
@@ -310,7 +309,7 @@ public class Game extends JPanel implements Runnable {
 
         if(player.IsOnGround!=temp) {
             //System.out.println(temp);
-            timer = System.nanoTime();
+            coyotetimer = System.nanoTime();
         }
         player.IsOnGround= temp;
         //if(player.IsOnGround=false)
