@@ -217,7 +217,7 @@ public class Game extends JPanel implements Runnable {
         Collide();
         player.Update(flag);
         camX= player.getX()*size-width/2;
-        camY= player.getY()*size-height/2;
+        camY= player.getY()*size-height/2-player.PlayerTile.TILE_HEIGHT*size;
         float dif= camX-camXf;
         if(dif!=0)
         {

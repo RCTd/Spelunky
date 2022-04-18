@@ -1,34 +1,33 @@
 package GamePakage.Tiles;
 import GamePakage.Graphics.Assets;
+import GamePakage.Tiles.PlayerState.StandState;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static GamePakage.Game.size;
 
-/*! \class public class WaterTile extends Tile
-    \brief Abstractizeaza notiunea de dala de tip apa.
- */public class PlayerTile extends Tile {
-    public int state=0,frame=0,direction=-1;
-    private BufferedImage crntimg;
-    /*! \fn public WaterTile(int id)
-       \brief Constructorul de initializare al clasei
+public class PlayerTile extends Tile {
+    public State AnimationState=new StandState();
+    public int direction=-1;
 
-       \param id Id-ul dalei util in desenarea hartii.
-    */
+
     public PlayerTile(int id) {
         super(Assets.playerSprite, id,16,16);
     }
 
     @Override
     public void Draw(Graphics g, int x, int y) {
-        crntimg=img.getSubimage(frame*16,state*16,TILE_WIDTH,TILE_WIDTH);
-                                                                                                        //0,0,16,16
+        //BufferedImage crntimg = img.getSubimage(frame * 16, state * 16, TILE_WIDTH, TILE_WIDTH);
+        AnimationState.Update();                                                                                                //0,0,16,16
                                                                                                         //16,0,0,16
-        g.drawImage(crntimg,x*size,y*size,(x+TILE_WIDTH)*size,(y+TILE_HEIGHT)*size,(1+direction)*8,0,(1-direction)*8,16, null);
+        g.drawImage(AnimationState.Image,
+                        x*size,y*size,(x+TILE_WIDTH)*size,(y+TILE_HEIGHT)*size,
+                        (1+direction)*TILE_WIDTH/2,0,(1-direction)*TILE_HEIGHT/2,TILE_HEIGHT, null);
     }
 
-    /*! \fn public boolean IsSolid()
-       \brief Suprascrie metoda IsSolid() din clasa de baza in sensul ca va fi luat in calcul in caz de coliziune.
-    */
+    @Override
+    public boolean IsSolid() {
+        return true;
+    }
 }
