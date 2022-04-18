@@ -1,12 +1,15 @@
 package GamePakage.Tiles;
 
+import GamePakage.Game;
 import GamePakage.Graphics.Assets;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 import static GamePakage.Game.size;
 
 public class Map {
+    public BufferedImage BackGround;
     public Tile[][] tileMap;
     public int width,height;
     public int[][] matrix;
@@ -21,6 +24,27 @@ public class Map {
         this.height=height;
         tileMap=new Tile[height][width];
     }
+
+    public void CreateBgImage()
+    {
+        BackGround = new BufferedImage(
+                Game.WIDTH()*size, Game.HEIGHT()*size, //work these out
+                BufferedImage.TYPE_INT_RGB);
+
+        Graphics g = BackGround.getGraphics();
+        for (int i = 0; i <= Game.WIDTH()/64; i++) {
+            for (int j = 0; j <= Game.HEIGHT()/64; j++) {
+                g.drawImage(Assets.bgWall,i*64*size,j*64*size,64*size,64*size,null);
+            }
+        }
+        for (int i = 0; i < 6; i++) {
+            g.drawImage(Assets.BgWallRock,(int)(Math.random()*Game.WIDTH()*size),(int)(Math.random()*Game.HEIGHT()*size),50*size ,50*size,null );
+        }
+        for (int i = 0; i < 6; i++) {
+            g.drawImage(Assets.BgWallHoll,(int)(Math.random()*Game.WIDTH()*size),(int)(Math.random()*Game.HEIGHT()*size),50*size ,50*size,null );
+        }
+    }
+
     public void LoadTutorial()
     {
          matrix=new int[][] {{184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184},
@@ -67,6 +91,7 @@ public class Map {
 
     public void Draw(Graphics g)
     {
+        g.drawImage(BackGround,0,0,null);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 if(matrix[i][j]==184) {

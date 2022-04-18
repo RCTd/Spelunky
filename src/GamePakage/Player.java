@@ -12,14 +12,10 @@ public class Player {
     public PlayerTile PlayerTile = new PlayerTile(0);
     public boolean IsOnGround=true, HeadHit =false,wallRight=false,wallLeft=false;
     public boolean Duck=false, LookUp=false,Moves=false;
-    public boolean Relesed=true;
-    private boolean LongJump;
+    public boolean Relesed=true,LongJump;
+    //private boolean LongJump;
     private int direction =-1;
-    private float frame=0;
-    private float vx=0;
-    private float yVel;
-    private float y,p0;
-    private float x;
+    private float frame=0, xVel =0,yVel,y,p0,x;
     private long JumpStart,Time=0;
 
     public int getX() {
@@ -67,6 +63,7 @@ public class Player {
                 }
         }else
             Relesed=true;
+
         PlayerTile.state=0;//Stand
         if (flag[2]) {
             Duck=true;
@@ -91,6 +88,10 @@ public class Player {
             if (LookUp)
                 PlayerTile.state=4;//Lookup
         }
+       /* if(flag[6])
+        {
+            PlayerTile.state=6; //Attack
+        }*/
 
         JumpLogic(flag,deltaTime);
         if(x<0)
@@ -140,32 +141,32 @@ public class Player {
             if (!wallRight)
                 result += 1;
             else{
-                vx = 0;
+                xVel = 0;
             }
         }
         if(flag[3]) {
             if (!wallLeft)
                 result -= 1;
             else{
-                vx = 0;
+                xVel = 0;
             }
         }
-        if((vx>0&&wallRight)||(vx<0&&wallLeft)) {
-            vx = 0;
+        if((xVel >0&&wallRight)||(xVel <0&&wallLeft)) {
+            xVel = 0;
         }
         if(result ==0) {
             //stop
-            if (vx != 0)
-                vx -= signum(vx) * XAccel * deltaTime;
+            if (xVel != 0)
+                xVel -= signum(xVel) * XAccel * deltaTime;
         }else {    //move
             //PlayerTile.state=2;//run
             Moves=true;
             direction =result;
-            vx += result * XAccel * deltaTime;
+            xVel += result * XAccel * deltaTime;
         }
         //speed cap
-        if(vx>MaxXSpeed||vx<-MaxXSpeed)
-            vx= result *MaxXSpeed;
+        if(xVel >MaxXSpeed|| xVel <-MaxXSpeed)
+            xVel = result *MaxXSpeed;
         //max speed variation
         if(flag[4]) {//Slow down on shift
             MaxXSpeed=100F;
@@ -174,6 +175,6 @@ public class Player {
         }
         XAccel=MaxXSpeed/AccelTimeX;
         //XDccel=-MaxXSpeed/AccelTimeX;
-        x += vx*deltaTime;
+        x += xVel *deltaTime;
     }
 }

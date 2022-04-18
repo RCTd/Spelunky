@@ -26,14 +26,15 @@ public class Game extends JPanel implements Runnable {
     public static int size=2;
     //public static final float DccelTimeX=0.2F;
 
+    private  float cameraSpeed=0.05F;
     private int camX,camY;
+    private float camXf=1,camYf=1;
     private int offsetMaxX,offsetMaxY;
     private int offsetMinX,offsetMinY;
     //public long timer,deltatime;
     public static GameTimer timer = GameTimer.getInstance();
 
     private final boolean[] flag;
-    private BufferedImage result;
     private final int width;
     private final int height;
     private GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
@@ -124,22 +125,7 @@ public class Game extends JPanel implements Runnable {
             }
         });
 
-        result = new BufferedImage(
-                width*size, height*size, //work these out
-                BufferedImage.TYPE_INT_RGB);
-
-        Graphics g = result.getGraphics();
-        for (int i = 0; i <= width/64; i++) {
-            for (int j = 0; j <= height/64; j++) {
-                g.drawImage(Assets.bgWall,i*64*size,j*64*size,64*size,64*size,null);
-            }
-        }
-        for (int i = 0; i < 6; i++) {
-            g.drawImage(Assets.BgWallRock,(int)(Math.random()*width*size),(int)(Math.random()*height*size),50*size ,50*size,null );
-        }
-        for (int i = 0; i < 6; i++) {
-            g.drawImage(Assets.BgWallHoll,(int)(Math.random()*width*size),(int)(Math.random()*height*size),50*size ,50*size,null );
-        }
+        map.CreateBgImage();
         /*File outputfile = new File("image.jpg");
         ImageIO.write(bufferedImage, "jpg", outputfile);*/
 
@@ -232,19 +218,18 @@ public class Game extends JPanel implements Runnable {
         player.Update(flag);
         camX= player.getX()*size-width/2;
         camY= player.getY()*size-height/2;
-        /*int difX=player.getX()*size-width-camX;
-
-        if(difX!=0)
-            camX+=difX*0.2;
-        //System.out.println(dif+" "+dif*0.2);
-        System.out.println(camX);
-        int difY=player.getY()*size-width-camY;
-        if(difY!=0)
-            camY+=difY*0.2;*/
-
-       /* camX= player.getX()*size-width;
-        camY= player.getY()*size-height/2;*/
-
+        float dif= camX-camXf;
+        if(dif!=0)
+        {
+            camXf+=dif*cameraSpeed;
+        }
+        dif=camY-camYf;
+        if(dif!=0)
+        {
+            camYf+=dif*cameraSpeed;
+        }
+        camX=(int)camXf;
+        camY=(int)camYf;
         if(camX>offsetMaxX)
             camX= offsetMaxX;
         else
@@ -283,7 +268,6 @@ public class Game extends JPanel implements Runnable {
         /// Se sterge ce era
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
         g.translate(-camX,-camY);
-        g.drawImage(result,0,0,null);
         map.Draw(g);
         player.Draw(g);
         //g.drawRect(1 * Tile.TILE_WIDTH, 1 * Tile.TILE_HEIGHT, Tile.TILE_WIDTH, Tile.TILE_HEIGHT);
@@ -316,12 +300,9 @@ public class Game extends JPanel implements Runnable {
         boolean temp=(map.matrix[(y+h)/16][(x+3)/16] == 184)||(map.matrix[(y+h)/16][(x+w-3)/16] == 184);
 
         if(player.IsOnGround!=temp) {
-            //System.out.println(temp);
             coyotetimer = System.nanoTime();
         }
         player.IsOnGround= temp;
-        //if(player.IsOnGround=false)
-
     }
 }
 
