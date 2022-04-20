@@ -17,13 +17,12 @@ public class Game extends JPanel implements Runnable {
     public static final float AccelTimeX=0.1F;
     public static float MaxXSpeed;//0.05  /0.05
     public static float XAccel=MaxXSpeed/AccelTimeX;
-    public static int[] numberOfFramesForState=new int[]{1,1,6,1,1,6,11,10};
 
     public static long coyotetimer;
     public static int size=2;
     //public static final float DccelTimeX=0.2F;
 
-    private  float cameraSpeed=0.05F;
+    private final float cameraSpeed=0.05F;
     private int camX,camY;
     private float camXf=1,camYf=1;
     private int offsetMaxX,offsetMaxY;
@@ -240,20 +239,28 @@ public class Game extends JPanel implements Runnable {
         int h=player.PlayerTile.TILE_HEIGHT;
         int w=player.PlayerTile.TILE_WIDTH;
         //int wall=184;
+        player.CantHangLeft =map.matrix[(y+6)/16][(x-1)/16] == 184;
                                                     //left up || left down
-        player.wallLeft=(map.matrix[(y+6)/16][(x-1)/16] == 184)||(map.matrix[(y+h-2)/16][(x-1)/16] == 184);
-                                                    //right up || right down
-        player.wallRight=(map.matrix[(y+6)/16][(x+w+1)/16] == 184)||(map.matrix[(y+h-2)/16][(x+w+1)/16] == 184);
+        player.wallLeft=(player.CantHangLeft)||(map.matrix[(y+h-2)/16][(x-1)/16] == 184);
 
-                                                    //left up || right up
+        player.CantHangRight =map.matrix[(y+6)/16][(x+w+1)/16] == 184;
+                                                    //right up || right down
+        player.wallRight=(player.CantHangRight)||(map.matrix[(y+h-2)/16][(x+w+1)/16] == 184);
+
+                                                    //up left || up right
         player.HeadHit =(map.matrix[(y-2)/16][(x+3)/16] == 184)||(map.matrix[(y-2)/16][(x+w-3)/16] == 184);
-                                                    //left down || right down
-        boolean temp=(map.matrix[(y+h)/16][(x+3)/16] == 184)||(map.matrix[(y+h)/16][(x+w-3)/16] == 184);
+                                                    //down left
+        player.OnEdgeLeft=map.matrix[(y+h)/16][(x+3)/16] == 184;
+                                                    //down right
+        player.OnEdgeRight=map.matrix[(y+h)/16][(x+w-3)/16] == 184;
+
+        boolean temp=(player.OnEdgeLeft)||(player.OnEdgeRight);
 
         if(player.IsOnGround!=temp) {
             coyotetimer = System.nanoTime();
         }
-        player.IsOnGround= temp;
+        if(!player.Hang)
+            player.IsOnGround= temp;
     }
 }
 

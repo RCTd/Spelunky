@@ -5,12 +5,12 @@ import GamePakage.Tiles.State;
 public class LookUpState extends State {
     public LookUpState()
     {
-        state=4;
+        state=3;
         TotalFrames=0;
         frame=0;
     }
     @Override
-    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack) {
+    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean CanHangLeft, boolean CanHangRight) {
         if(OnAttack)
             return new AttackState();
         if(!IsOnGround)

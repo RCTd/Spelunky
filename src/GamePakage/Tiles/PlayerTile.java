@@ -19,11 +19,13 @@ public class PlayerTile extends Tile {
     @Override
     public void Draw(Graphics g, int x, int y) {
         //BufferedImage crntimg = img.getSubimage(frame * 16, state * 16, TILE_WIDTH, TILE_WIDTH);
-        AnimationState.Update();                                                                                                //0,0,16,16
-                                                                                                        //16,0,0,16
+        AnimationState.SetDirection(direction);
+        AnimationState.Update();
+        //System.out.println(AnimationState.with);
+        g.drawRect(x*size,y*size,AnimationState.with*size,AnimationState.height*size);
         g.drawImage(AnimationState.Image,
-                        x*size,y*size,(x+TILE_WIDTH)*size,(y+TILE_HEIGHT)*size,
-                        (1+direction)*TILE_WIDTH/2,0,(1-direction)*TILE_HEIGHT/2,TILE_HEIGHT, null);
+                        x*size,y*size,(x+AnimationState.with)*size,(y+AnimationState.height)*size,
+                        (1+direction)*AnimationState.with/2,0,(1-direction)*AnimationState.height/2,AnimationState.height, null);
     }
 
     @Override

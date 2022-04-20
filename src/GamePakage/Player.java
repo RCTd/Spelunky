@@ -13,6 +13,8 @@ public class Player {
     public PlayerTile PlayerTile = new PlayerTile(0);
     public boolean IsOnGround=true, HeadHit =false,wallRight=false,wallLeft=false;
     public boolean Duck=false, LookUp=false,Moves=false;
+    public boolean OnEdgeLeft=false,OnEdgeRight=false,Hang=false;
+    public boolean CantHangLeft =false, CantHangRight =false;
     public boolean Relesed=true,LongJump;
     //private boolean LongJump;
     private int direction =-1;
@@ -53,12 +55,38 @@ public class Player {
                     Relesed=false;
                     IsOnGround = false;
                     JumpStart = System.nanoTime();
+                    if(flag[2]&&Hang) {
+                        yVel=0;
+                    }
                 }
         }else
             Relesed=true;
+        if(flag[6])
+        {
+            //attack
+        }
         Duck= flag[2];
         LookUp= flag[5];
-        PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(Moves,  Duck,IsOnGround, LookUp, false );
+        int oldState= PlayerTile.AnimationState.state;
+        PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(Moves,  Duck,IsOnGround, LookUp, false, OnEdgeLeft,OnEdgeRight, !CantHangLeft, !CantHangRight);
+        int newState=PlayerTile.AnimationState.state;
+        Hang= newState== 8 || newState == 9;
+
+        if(newState==9&&newState!=oldState&&direction<0) {
+            x=(int)(x/16)*16;
+        }
+        if(oldState==9 && newState==8) {
+            x=direction>0?x+direction*16:x;
+            x=(int)(x/16)*16;
+            y+=16;
+            direction*=-1;
+        }
+
+        if((Hang)&&(!CantHangRight &&direction>0|| !CantHangLeft &&direction<0))
+        {
+            IsOnGround=true;
+            y=(int)( y/16 )*16;
+        }
         JumpLogic(flag,deltaTime);
         if(x<0)
             x=0;
@@ -77,7 +105,7 @@ public class Player {
     private void JumpLogic(boolean[] flag,float deltaTime)
     {
         if (!IsOnGround) {
-            if(yVel==0) {p0=y;}
+            if((int) yVel==0) {p0=y;}
             if((HeadHit ||!flag[0])&& LongJump)
             {
                 yVel =-2*(p0-y)/(TimeToMaxH);
@@ -88,12 +116,12 @@ public class Player {
             y+= (YAccel * deltaTime * deltaTime + yVel * deltaTime);
             yVel+=YAccel*deltaTime;
         } else {
-            /*if(abs(y-p0)>9*16) {
+            if(abs(y-p0)>9*16) {
                 p0=y;
-                System.out.println("mult");
-            }*/
+                System.out.println("too High");
+            }
             LongJump=false;
-            y=(float)(((int) y)/16 )*16;
+            y=(int)( y/16 )*16;
             yVel = 0;
         }
     }
@@ -102,14 +130,14 @@ public class Player {
     {
         int result = 0;
         if(flag[1]) {
-            if (!wallRight)
+            if (!wallRight&&!Hang)
                 result += 1;
             else{
                 xVel = 0;
             }
         }
         if(flag[3]) {
-            if (!wallLeft)
+            if (!wallLeft&&!Hang)
                 result -= 1;
             else{
                 xVel = 0;
@@ -123,7 +151,6 @@ public class Player {
             if (xVel != 0)
                 xVel -= signum(xVel) * XAccel * deltaTime;
         }else {    //move
-            //PlayerTile.state=2;//run
             Moves=true;
             direction =result;
             xVel += result * XAccel * deltaTime;

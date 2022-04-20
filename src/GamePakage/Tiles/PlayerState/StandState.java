@@ -1,6 +1,5 @@
 package GamePakage.Tiles.PlayerState;
 
-import GamePakage.Graphics.Assets;
 import GamePakage.Tiles.State;
 
 public class StandState extends State {
@@ -12,7 +11,7 @@ public class StandState extends State {
     }
 
     @Override
-    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack) {
+    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean CanHangLeft, boolean CanHangRight) {
 
         if(OnAttack)
             return new AttackState();
