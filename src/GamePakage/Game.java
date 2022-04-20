@@ -5,10 +5,7 @@ import GamePakage.Graphics.Assets;
 import GamePakage.Tiles.Map;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
 
 public class Game extends JPanel implements Runnable {
     public static final int BottomLine=Game.HEIGHT()-32;
@@ -34,13 +31,16 @@ public class Game extends JPanel implements Runnable {
     //public long timer,deltatime;
     public static GameTimer timer = GameTimer.getInstance();
 
-    private final boolean[] flag;
+
+    private PlayerKeyListener keys;
+    //private final boolean[] flag;
     private final int width;
     private final int height;
     private GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
     private boolean runState;   /*!< Flag ce starea firului de executie.*/
     private Player player;
     private final Map map;
+    private Thread gameThread;
 
     public static int HEIGHT() {return 20*16;}
 
@@ -56,7 +56,6 @@ public class Game extends JPanel implements Runnable {
         wnd = new GameWindow(title, width, height);
         /// Resetarea flagului runState ce indica starea firului de executie (started/stoped)
         runState = false;
-        flag = new boolean[7];
         map=new Map(42,20);
     }
 
@@ -79,55 +78,9 @@ public class Game extends JPanel implements Runnable {
         player=new Player();
         camX= player.getX()*size-width/2;
         camY= player.getY()*size-height/2;
-        //player=new PlayerTile(1);
-        wnd.GetCanvas().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_Z)
-                    flag[0] = true;
-                if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-                    flag[1] = true;
-                if (e.getKeyCode() == KeyEvent.VK_DOWN)
-                    flag[2] = true;
-                if (e.getKeyCode() == KeyEvent.VK_LEFT)
-                    flag[3] = true;
-                if (e.getKeyCode() == KeyEvent.VK_SHIFT)
-                    flag[4] = true;
-                if (e.getKeyCode() == KeyEvent.VK_UP)
-                    flag[5] = true;
-                if (e.getKeyCode() == KeyEvent.VK_X)
-                    flag[6] = true;
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                        //StopGame();
-                    player.setX(32);
-                    player.setY(64);
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode()==KeyEvent.VK_Z)
-                    flag[0] = false;
-                if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-                    flag[1] = false;
-                if (e.getKeyCode() == KeyEvent.VK_DOWN)
-                    flag[2] = false;
-                if (e.getKeyCode() == KeyEvent.VK_LEFT)
-                    flag[3] = false;
-                if(e.getKeyCode()==KeyEvent.VK_SHIFT)
-                    flag[4]=false;
-                if (e.getKeyCode() == KeyEvent.VK_UP)
-                    flag[5] = false;
-                if (e.getKeyCode() == KeyEvent.VK_X)
-                    flag[6] = false;
-            }
-        });
-
+        keys=new PlayerKeyListener();
+        wnd.GetCanvas().addKeyListener(keys);
         map.CreateBgImage();
-        /*File outputfile = new File("image.jpg");
-        ImageIO.write(bufferedImage, "jpg", outputfile);*/
 
         map.LoadTutorial();
     }
@@ -181,7 +134,7 @@ public class Game extends JPanel implements Runnable {
             /// Se construieste threadul avand ca parametru obiectul Game. De retinut faptul ca Game class
             /// implementeaza interfata Runnable. Threadul creat va executa functia run() suprascrisa in clasa Game.
             /*!< Referinta catre thread-ul de update si draw al ferestrei*/
-            Thread gameThread = new Thread(this);
+            gameThread = new Thread(this);
             /// Threadul creat este lansat in executie (va executa metoda run())
             gameThread.start();
         }
@@ -192,7 +145,7 @@ public class Game extends JPanel implements Runnable {
 
         Metoda trebuie sa fie declarata synchronized pentru ca apelul acesteia sa fie semaforizat.
      */
-    /*public synchronized void StopGame() {
+    public synchronized void StopGame() {
         if (runState) {
             /// Actualizare stare thread
             runState = false;
@@ -206,7 +159,7 @@ public class Game extends JPanel implements Runnable {
                 ex.printStackTrace();
             }
         }
-    }*/
+    }
 
     /*! \fn private void Update()
         \brief Actualizeaza starea elementelor din joc.
@@ -215,7 +168,7 @@ public class Game extends JPanel implements Runnable {
      */
     private void Update() {
         Collide();
-        player.Update(flag);
+        player.Update(keys.flag);
         camX= player.getX()*size-width/2;
         camY= player.getY()*size-height/2-player.PlayerTile.TILE_HEIGHT*size;
         float dif= camX-camXf;
@@ -265,13 +218,11 @@ public class Game extends JPanel implements Runnable {
         /// Se obtine contextul grafic curent in care se poate desena.
         assert bs != null;
         Graphics g = bs.getDrawGraphics();
-        /// Se sterge ce era
+
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
         g.translate(-camX,-camY);
         map.Draw(g);
         player.Draw(g);
-        //g.drawRect(1 * Tile.TILE_WIDTH, 1 * Tile.TILE_HEIGHT, Tile.TILE_WIDTH, Tile.TILE_HEIGHT);
-        //g.drawRect(x, y, 300,36);
 
         // end operatie de desenare
         /// Se afiseaza pe ecran
