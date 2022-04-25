@@ -13,7 +13,7 @@ public class HangMoveState extends State {
     }
 
     @Override
-    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean CanHangLeft, boolean CanHangRight) {
+    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean Hang) {
         if(!IsOnGround)
             return new FallState();
         if((int)frame==TotalFrames)

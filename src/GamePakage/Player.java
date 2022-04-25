@@ -1,6 +1,7 @@
 package GamePakage;
 
 import GamePakage.Tiles.PlayerTile;
+import GamePakage.Tiles.WhipTile;
 
 import java.awt.*;
 
@@ -11,13 +12,15 @@ public class Player {
     //private static float XDccel=-MaxXSpeed/AccelTimeX;
 
     public PlayerTile PlayerTile = new PlayerTile(0);
+    public WhipTile WhipTile=new WhipTile(0);
     public boolean IsOnGround=true, HeadHit =false,wallRight=false,wallLeft=false;
     public boolean Duck=false, LookUp=false,Moves=false;
     public boolean OnEdgeLeft=false,OnEdgeRight=false,Hang=false;
-    public boolean CantHangLeft =false, CantHangRight =false;
-    public boolean Relesed=true,LongJump;
+    public boolean CanHangLeft =false, CanHangRight =false;
+    public boolean Relesed=true,LongJump,Attack;
     //private boolean LongJump;
     private int direction =-1;
+    private int newState;
     private float xVel =0,yVel,y,p0,x;
     private long JumpStart,Time=0;
 
@@ -61,15 +64,16 @@ public class Player {
                 }
         }else
             Relesed=true;
-        if(flag[6])
+        /*if(flag[6])
         {
             //attack
-        }
+        }*/
+        Attack=flag[6];
         Duck= flag[2];
         LookUp= flag[5];
         int oldState= PlayerTile.AnimationState.state;
-        PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(Moves,  Duck,IsOnGround, LookUp, false, OnEdgeLeft,OnEdgeRight, !CantHangLeft, !CantHangRight);
-        int newState=PlayerTile.AnimationState.state;
+        PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(Moves,  Duck,IsOnGround, LookUp, Attack, OnEdgeLeft,OnEdgeRight, Hang);
+        newState=PlayerTile.AnimationState.state;
         Hang= newState== 8 || newState == 9;
 
         if(newState==9&&newState!=oldState&&direction<0) {
@@ -82,10 +86,11 @@ public class Player {
             direction*=-1;
         }
 
-        if((Hang)&&(!CantHangRight &&direction>0|| !CantHangLeft &&direction<0))
+        if((CanHangRight &&direction>0|| CanHangLeft &&direction<0)&&Relesed)
         {
             IsOnGround=true;
-            y=(int)( y/16 )*16;
+            y=(int)( (y+16)/16 )*16;
+            Hang=true;
         }
         JumpLogic(flag,deltaTime);
         if(x<0)
@@ -100,12 +105,21 @@ public class Player {
     public void Draw(Graphics g) {
         PlayerTile.direction= direction;
         PlayerTile.Draw(g,getX(), getY());
+        if(newState==5&&PlayerTile.AnimationState.frame>2)
+        {
+            WhipTile.direction=direction;
+            WhipTile.state= PlayerTile.AnimationState.frame<5?0:1;
+            if(WhipTile.state==0)
+                WhipTile.Draw(g,getX()-direction*16,getY());
+            else
+                WhipTile.Draw(g,getX()+direction*16,getY());
+        }
     }
 
     private void JumpLogic(boolean[] flag,float deltaTime)
     {
         if (!IsOnGround) {
-            if((int) yVel==0) {p0=y;}
+            //if((int) yVel==0) {p0=y;}
             if((HeadHit ||!flag[0])&& LongJump)
             {
                 yVel =-2*(p0-y)/(TimeToMaxH);
@@ -117,15 +131,15 @@ public class Player {
             yVel+=YAccel*deltaTime;
         } else {
             if(abs(y-p0)>9*16) {
-                p0=y;
+
                 System.out.println("too High");
             }
+            p0=y;
             LongJump=false;
             y=(int)( y/16 )*16;
             yVel = 0;
         }
     }
-
     private void MoveLogic(boolean[] flag,float deltaTime)
     {
         int result = 0;

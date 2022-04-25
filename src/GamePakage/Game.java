@@ -9,7 +9,7 @@ import java.awt.image.BufferStrategy;
 
 public class Game extends JPanel implements Runnable {
     public static final int BottomLine=Game.HEIGHT()-32;
-    public static final int MaxJumpHeight =36;//100
+    public static final int MaxJumpHeight =16+5;//100
     public static final float TimeToMaxH = 0.2F;//0.2
     public static final float YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
     //public static final float MaxYVel=500;
@@ -239,13 +239,13 @@ public class Game extends JPanel implements Runnable {
         int h=player.PlayerTile.TILE_HEIGHT;
         int w=player.PlayerTile.TILE_WIDTH;
         //int wall=184;
-        player.CantHangLeft =map.matrix[(y+6)/16][(x-1)/16] == 184;
+        player.CanHangLeft =!(map.matrix[(y)/16][(x-1)/16] == 184) && (map.matrix[(y+4)/16][(x-1)/16] == 184);
                                                     //left up || left down
-        player.wallLeft=(player.CantHangLeft)||(map.matrix[(y+h-2)/16][(x-1)/16] == 184);
+        player.wallLeft=(map.matrix[(y+6)/16][(x-1)/16] == 184)||(map.matrix[(y+h-2)/16][(x-1)/16] == 184);
 
-        player.CantHangRight =map.matrix[(y+6)/16][(x+w+1)/16] == 184;
+        player.CanHangRight =!(map.matrix[(y)/16][(x+w+1)/16] == 184)&&(map.matrix[(y+4)/16][(x+w+1)/16] == 184);
                                                     //right up || right down
-        player.wallRight=(player.CantHangRight)||(map.matrix[(y+h-2)/16][(x+w+1)/16] == 184);
+        player.wallRight=(map.matrix[(y+6)/16][(x+w+1)/16] == 184)||(map.matrix[(y+h-2)/16][(x+w+1)/16] == 184);
 
                                                     //up left || up right
         player.HeadHit =(map.matrix[(y-2)/16][(x+3)/16] == 184)||(map.matrix[(y-2)/16][(x+w-3)/16] == 184);
