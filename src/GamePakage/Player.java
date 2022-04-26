@@ -1,6 +1,7 @@
 package GamePakage;
 
 import GamePakage.Tiles.PlayerTile;
+import GamePakage.Tiles.Whip;
 import GamePakage.Tiles.WhipTile;
 
 import java.awt.*;
@@ -8,13 +9,13 @@ import java.awt.*;
 import static GamePakage.Game.*;
 import static java.lang.Math.*;
 
-public class Player {
+public class Player implements GameEntity {
     //private static float XDccel=-MaxXSpeed/AccelTimeX;
-
+    Game game;
     public PlayerTile PlayerTile = new PlayerTile(0);
     public WhipTile WhipTile=new WhipTile(0);
     public boolean IsOnGround=true, HeadHit =false,wallRight=false,wallLeft=false;
-    public boolean Duck=false, LookUp=false,Moves=false;
+    public boolean Duck=false, LookUp=false,Moves=false,TooHigh=false,HasRope=true;
     public boolean OnEdgeLeft=false,OnEdgeRight=false,Hang=false;
     public boolean CanHangLeft =false, CanHangRight =false;
     public boolean Relesed=true,LongJump,Attack;
@@ -31,8 +32,9 @@ public class Player {
         return (int)y;
     }
 
-    public Player()
+    public Player(Game game)
     {
+        this.game=game;
         x=32;
         y=64;
     }
@@ -44,8 +46,9 @@ public class Player {
         this.y=y;
     }
 
-    public void Update(boolean[] flag)
+    public void Update()
     {
+        boolean[] flag=game.keys.flag;
         float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
         Moves=false;
         MoveLogic(flag,deltaTime);
@@ -64,18 +67,24 @@ public class Player {
                 }
         }else
             Relesed=true;
-        /*if(flag[6])
+        if(flag[7])
         {
-            //attack
-        }*/
+            if(HasRope) {
+                HasRope = false;
+                //System.out.println("new rope");
+                game.entityList.add(new Whip(getX(), getY()));
+            }
+        }
+        else
+            HasRope=true;
         Attack=flag[6];
         Duck= flag[2];
         LookUp= flag[5];
         int oldState= PlayerTile.AnimationState.state;
-        PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(Moves,  Duck,IsOnGround, LookUp, Attack, OnEdgeLeft,OnEdgeRight, Hang);
+        PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(Moves,  Duck,IsOnGround, LookUp, Attack, OnEdgeLeft,OnEdgeRight, Hang,TooHigh );
         newState=PlayerTile.AnimationState.state;
         Hang= newState== 8 || newState == 9;
-
+        TooHigh=false;
         if(newState==9&&newState!=oldState&&direction<0) {
             x=(int)(x/16)*16;
         }
@@ -131,8 +140,8 @@ public class Player {
             yVel+=YAccel*deltaTime;
         } else {
             if(abs(y-p0)>9*16) {
-
-                System.out.println("too High");
+                TooHigh=true;
+                //System.out.println("too High");
             }
             p0=y;
             LongJump=false;

@@ -2,22 +2,27 @@ package GamePakage.Tiles.PlayerState;
 
 import GamePakage.Tiles.State;
 
-public class HangMoveState extends State {
-    public HangMoveState()
+public class StunState extends State {
+    private int second;
+    public StunState()
     {
-        state=9;
-        TotalFrames=8;
+        state=11;
+        TotalFrames=5;
         frame=0;
-        with=32;
-        height=32;
+        second=0;
+        with=16;
+        height=16;
     }
 
     @Override
     public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean Hang, boolean TooHigh) {
-        if(!IsOnGround)
-            return new FallState();
         if((int)frame==TotalFrames)
-            return new HangState();
+        {
+            second++;
+            frame=0;
+            if(second==2)
+                return new StandState();
+        }
         return this;
     }
 }

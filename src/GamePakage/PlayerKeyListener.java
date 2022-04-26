@@ -9,7 +9,7 @@ public class PlayerKeyListener implements KeyListener {
 
     public PlayerKeyListener()
     {
-        flag = new boolean[7];
+        flag = new boolean[8];
     }
     @Override
     public void keyTyped(KeyEvent e) {
@@ -30,6 +30,8 @@ public class PlayerKeyListener implements KeyListener {
             flag[5] = true;
         if (e.getKeyCode() == KeyEvent.VK_X)
             flag[6] = true;
+        if(e.getKeyCode()==KeyEvent.VK_D)
+            flag[7]=true;
     }
     @Override
     public void keyReleased(KeyEvent e) {
@@ -47,5 +49,7 @@ public class PlayerKeyListener implements KeyListener {
             flag[5] = false;
         if (e.getKeyCode() == KeyEvent.VK_X)
             flag[6] = false;
+        if (e.getKeyCode() == KeyEvent.VK_D)
+            flag[7] = false;
     }
 }
