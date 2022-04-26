@@ -1,6 +1,7 @@
 package GamePakage;
 
 import GamePakage.Tiles.PlayerTile;
+import GamePakage.Tiles.Rope;
 import GamePakage.Tiles.Whip;
 import GamePakage.Tiles.WhipTile;
 
@@ -21,7 +22,7 @@ public class Player implements GameEntity {
     public boolean Relesed=true,LongJump,Attack;
     //private boolean LongJump;
     private int direction =-1;
-    private int newState;
+    private int newState, oldState;
     private float xVel =0,yVel,y,p0,x;
     private long JumpStart,Time=0;
 
@@ -51,64 +52,32 @@ public class Player implements GameEntity {
         boolean[] flag=game.keys.flag;
         float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
         Moves=false;
-        MoveLogic(flag,deltaTime);
-        if (flag[0]) {
-            if(Relesed)
-                if(IsOnGround ||(float) (System.nanoTime() - coyotetimer) / 1_000_000_000<0.1F){
-                    p0 = y;
-                    yVel = -MaxJumpHeight * 2 / TimeToMaxH;
-                    LongJump = true;
-                    Relesed=false;
-                    IsOnGround = false;
-                    JumpStart = System.nanoTime();
-                    if(flag[2]&&Hang) {
-                        yVel=0;
-                    }
-                }
-        }else
-            Relesed=true;
-        if(flag[7])
-        {
-            if(HasRope) {
-                HasRope = false;
-                //System.out.println("new rope");
-                game.entityList.add(new Whip(getX(), getY()));
-            }
+        oldState= PlayerTile.AnimationState.state;
+        if(oldState!=11) {
+            MoveLogic(flag, deltaTime);
+            StartJump(flag);
+            trowRope(flag);
         }
-        else
-            HasRope=true;
+
         Attack=flag[6];
         Duck= flag[2];
         LookUp= flag[5];
-        int oldState= PlayerTile.AnimationState.state;
         PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(Moves,  Duck,IsOnGround, LookUp, Attack, OnEdgeLeft,OnEdgeRight, Hang,TooHigh );
         newState=PlayerTile.AnimationState.state;
         Hang= newState== 8 || newState == 9;
         TooHigh=false;
-        if(newState==9&&newState!=oldState&&direction<0) {
-            x=(int)(x/16)*16;
-        }
-        if(oldState==9 && newState==8) {
-            x=direction>0?x+direction*16:x;
-            x=(int)(x/16)*16;
-            y+=16;
-            direction*=-1;
-        }
 
-        if((CanHangRight &&direction>0|| CanHangLeft &&direction<0)&&Relesed)
-        {
-            IsOnGround=true;
-            y=(int)( (y+16)/16 )*16;
-            Hang=true;
-        }
+        SetHang();
         JumpLogic(flag,deltaTime);
-        if(x<0)
+        Time=System.nanoTime();
+        /*if(x<0)
             x=0;
         if(x>(Game.WIDTH() - PlayerTile.TILE_WIDTH))
             x=(Game.WIDTH()- PlayerTile.TILE_WIDTH);
-        Time=System.nanoTime();
+
         if(y>BottomLine)
-            y=BottomLine;
+            y=BottomLine;*/
+
     }
 
     public void Draw(Graphics g) {
@@ -190,5 +159,53 @@ public class Player implements GameEntity {
         XAccel=MaxXSpeed/AccelTimeX;
         //XDccel=-MaxXSpeed/AccelTimeX;
         x += xVel *deltaTime;
+    }
+    public void StartJump(boolean[] flag)
+    {
+        if (flag[0]) {
+            if(Relesed)
+                if(IsOnGround ||(float) (System.nanoTime() - coyotetimer) / 1_000_000_000<0.1F){
+                    p0 = y;
+                    yVel = -MaxJumpHeight * 2 / TimeToMaxH;
+                    LongJump = true;
+                    Relesed=false;
+                    IsOnGround = false;
+                    JumpStart = System.nanoTime();
+                    if(flag[2]&&Hang) {
+                        yVel=0;
+                    }
+                }
+        }else
+            Relesed=true;
+    }
+    public void SetHang()
+    {
+        if(newState==9&&newState!=oldState&&direction<0) {
+            x=(int)(x/16)*16;
+        }
+        if(oldState==9 && newState==8) {
+            x=direction>0?x+direction*16:x;
+            x=(int)(x/16)*16;
+            y+=16;
+            direction*=-1;
+        }
+        if((CanHangRight &&direction>0|| CanHangLeft &&direction<0)&&Relesed)
+        {
+            IsOnGround=true;
+            y=(int)( (y+16)/16 )*16;
+            Hang=true;
+        }
+    }
+    public void trowRope(boolean[] flag)
+    {
+        if(flag[7])
+        {
+            if(HasRope) {
+                HasRope = false;
+                game.entityList.add(new Rope(getX(), getY()));
+            }
+        }
+        else
+            HasRope=true;
     }
 }

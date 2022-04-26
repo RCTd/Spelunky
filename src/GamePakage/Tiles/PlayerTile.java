@@ -4,8 +4,6 @@ import GamePakage.Tiles.PlayerState.StandState;
 
 import java.awt.*;
 
-import static GamePakage.Game.size;
-
 public class PlayerTile extends Tile {
     public State AnimationState=new StandState();
     public int direction=-1;
@@ -21,7 +19,7 @@ public class PlayerTile extends Tile {
         AnimationState.Update();
         //g.drawRect(x*size,y*size,AnimationState.with*size,AnimationState.height*size);
         g.drawImage(AnimationState.Image,
-                        x*size,y*size,(x+AnimationState.with)*size,(y+AnimationState.height)*size,
+                        x,y,(x+AnimationState.with),(y+AnimationState.height),
                         (1+direction)*AnimationState.with/2,0,(1-direction)*AnimationState.height/2,AnimationState.height, null);
     }
 

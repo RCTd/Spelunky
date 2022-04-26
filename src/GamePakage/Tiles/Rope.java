@@ -4,11 +4,10 @@ import GamePakage.GameEntity;
 
 import java.awt.*;
 
-public class Whip implements GameEntity {
-    public int x;
-    public int y;
+public class Rope implements GameEntity {
+    private int x,y;
 
-    public Whip(int x,int y)
+    public Rope(int x,int y)
     {
         this.x=x;
         this.y=y;

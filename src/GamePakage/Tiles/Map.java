@@ -6,8 +6,6 @@ import GamePakage.Graphics.Assets;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static GamePakage.Game.size;
-
 public class Map {
     public BufferedImage BackGround;
     public Tile[][] tileMap;
@@ -28,20 +26,20 @@ public class Map {
     public void CreateBgImage()
     {
         BackGround = new BufferedImage(
-                Game.WIDTH()*size, Game.HEIGHT()*size, //work these out
+                Game.WIDTH(), Game.HEIGHT(), //work these out
                 BufferedImage.TYPE_INT_RGB);
 
         Graphics g = BackGround.getGraphics();
         for (int i = 0; i <= Game.WIDTH()/64; i++) {
             for (int j = 0; j <= Game.HEIGHT()/64; j++) {
-                g.drawImage(Assets.bgWall,i*64*size,j*64*size,64*size,64*size,null);
+                g.drawImage(Assets.bgWall,i*64,j*64,64,64,null);
             }
         }
         for (int i = 0; i < 6; i++) {
-            g.drawImage(Assets.BgWallRock,(int)(Math.random()*Game.WIDTH()*size),(int)(Math.random()*Game.HEIGHT()*size),50*size ,50*size,null );
+            g.drawImage(Assets.BgWallRock,(int)(Math.random()*Game.WIDTH()),(int)(Math.random()*Game.HEIGHT()) ,50,50,null );
         }
         for (int i = 0; i < 6; i++) {
-            g.drawImage(Assets.BgWallHoll,(int)(Math.random()*Game.WIDTH()*size),(int)(Math.random()*Game.HEIGHT()*size),50*size ,50*size,null );
+            g.drawImage(Assets.BgWallHoll,(int)(Math.random()*Game.WIDTH()),(int)(Math.random()*Game.HEIGHT()),50 ,50,null );
         }
     }
 
@@ -57,9 +55,9 @@ public class Map {
                 {184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,1329,0,0,0,0,184,184,184},
                 {184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,1329,0,0,0,184,184},
                 {184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,184,0,0,184,184},
-                {184,0,0,0,0,0,0,0,0,0,0,0,184,0,0,0,0,0,0,0,0,0,0,0,0,184,184,184,184,184,184,184,0,0,0,0,0,0,0,0,0,184},
-                {184,0,0,0,0,0,0,0,0,0,0,0,184,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1329,0,0,103,0,0,0,0,0,0,0,0,0,0,184},
-                {184,0,0,0,0,0,0,0,0,0,0,0,184,0,0,0,0,0,0,0,0,0,0,0,0,0,184,184,184,184,0,0,0,0,0,0,0,0,0,0,0,184},
+                {184,184,184,184,0,0,0,0,0,0,0,0,184,0,0,0,0,0,0,0,0,0,0,0,0,184,184,184,184,184,184,184,0,0,0,0,0,0,0,0,0,184},
+                {184,184,184,0,0,0,0,0,0,0,0,0,184,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1329,0,0,103,0,0,0,0,0,0,0,0,0,0,184},
+                {184,184,0,0,0,0,0,0,0,0,0,0,184,0,0,0,0,0,0,0,0,0,0,0,0,0,184,184,184,184,0,0,0,0,0,0,0,0,0,0,0,184},
                 {184,0,0,0,0,0,0,0,0,0,0,0,184,0,0,0,0,0,0,0,0,0,0,0,0,0,184,184,184,184,0,0,0,0,0,0,0,0,0,0,0,184},
                 {184,0,0,0,0,0,0,0,0,0,0,0,184,368,1329,0,1329,0,0,0,0,0,0,0,1329,0,184,184,184,184,0,0,0,0,0,0,0,0,0,0,0,184},
                 {184,0,0,0,0,0,0,0,0,0,0,0,184,184,184,184,184,0,0,0,0,184,184,184,184,0,184,184,184,184,0,0,0,0,0,0,0,0,0,0,0,184},
@@ -96,7 +94,7 @@ public class Map {
             for (int j = 0; j < width; j++) {
                 if(matrix[i][j]==184) {
                     if(i>1&&matrix[i-1][j]!=184)
-                        g.drawImage(Assets.upWall,j*16*size,(i*16-16)*size,16*size,16*size,null);
+                        g.drawImage(Assets.upWall,j*16,(i*16-16),16,16,null);
                     tileMap[i][j].Draw(g, j * 16, i * 16);
                 }
             }

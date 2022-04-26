@@ -22,7 +22,6 @@ public class Game extends JPanel implements Runnable {
     public static float XAccel=MaxXSpeed/AccelTimeX;
 
     public static long coyotetimer;
-    public static int size=2;
     //public static final float DccelTimeX=0.2F;
 
     private final float cameraSpeed=0.05F;
@@ -69,9 +68,9 @@ public class Game extends JPanel implements Runnable {
 
      */
     private void InitGame() {
-        wnd = new GameWindow("Schelet Proiect PAOO", width ,height);
-        offsetMaxX=width*(size-1);
-        offsetMaxY=height*(size-1);
+        //wnd = new GameWindow("Schelet Proiect PAOO", width ,height);
+        offsetMaxX=map.width*16-width;
+        offsetMaxY=map.height*16-height;
         offsetMinX=offsetMinY=0;
         /// Este construita fereastra grafica.
         wnd.BuildGameWindow();
@@ -79,8 +78,8 @@ public class Game extends JPanel implements Runnable {
         Assets.Init();
         entityList=new ArrayList<>();
         player=new Player(this);
-        camX= player.getX()*size-width/2;
-        camY= player.getY()*size-height/2;
+        camX= player.getX()-width/2;
+        camY= player.getY()-height/2;
         keys=new PlayerKeyListener();
         wnd.GetCanvas().addKeyListener(keys);
         map.CreateBgImage();
@@ -176,8 +175,16 @@ public class Game extends JPanel implements Runnable {
         {
             obj.Update();
         }
-        camX= player.getX()*size-width/2;
-        camY= player.getY()*size-height/2-player.PlayerTile.TILE_HEIGHT*size;
+        camX= player.getX()-width/2;
+        camY= player.getY()-height/2-player.PlayerTile.TILE_HEIGHT;
+        if(keys.flag[5])
+        {
+            camY-=4*16;
+        }
+        if(keys.flag[2])
+        {
+            camY+=4*16;
+        }
         float dif= camX-camXf;
         if(dif!=0)
         {
