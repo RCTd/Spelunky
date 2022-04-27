@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class Game extends JPanel implements Runnable {
     public ArrayList<GameEntity> entityList;
+    public ArrayList<GameEntity> removeList;
     public static final int BottomLine=Game.HEIGHT()-32;
     public static final int MaxJumpHeight =16+5;//100
     public static final float TimeToMaxH = 0.2F;//0.2
@@ -79,6 +80,7 @@ public class Game extends JPanel implements Runnable {
         /// Se incarca toate elementele grafice (dale)
         Assets.Init();
         entityList=new ArrayList<>();
+        removeList=new ArrayList<>();
         player=new Player(this);
         camX= player.getX()-width/2;
         camY= player.getY()-height/2;
@@ -203,6 +205,12 @@ public class Game extends JPanel implements Runnable {
         else
             if (camY<offsetMinY)
                 camY=offsetMinY;
+
+        for (GameEntity obj:removeList)
+        {
+            entityList.remove(obj);
+        }
+        removeList.clear();
     }
 
     /*! \fn private void Draw()
@@ -248,6 +256,12 @@ public class Game extends JPanel implements Runnable {
 
     public void Collide()
     {
+        player.Collide();
+        for(GameEntity obj:entityList)
+        {
+            obj.Collide();
+        }
+        /*
         int x= player.getX();
         int y= player.getY();
         int h=player.PlayerTile.TILE_HEIGHT;
@@ -275,6 +289,7 @@ public class Game extends JPanel implements Runnable {
         }
         if(!player.Hang)
             player.IsOnGround= temp;
+    */
     }
 }
 

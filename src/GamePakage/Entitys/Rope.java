@@ -25,7 +25,6 @@ public class Rope implements GameEntity {
         state=0;
     }
 
-
     @Override
     public void Update() {
 
@@ -34,17 +33,14 @@ public class Rope implements GameEntity {
         else
         {
             state++;
-            if(state<2) {
-                tile.state = 1;
-            }else
-                tile.state=2;
+            tile.state=state;
             if(y<p0) {
-                game.map.tileMap[(int) y / 16][x / 16] = new Tile(tile.GetBufferedImage(),0,tile.TILE_WIDTH,tile.TILE_HEIGHT);
+                if(game.map.tileMap[(int) y / 16][x / 16].TILE_HEIGHT==0)
+                    game.map.tileMap[(int) y / 16][x / 16] = new Tile(tile.GetBufferedImage(),0,tile.TILE_WIDTH,tile.TILE_HEIGHT);
                 tile.state=0;
                 y += (8 * 16 / 0.5F) * GameTimer.getInstance().getDeltaTime();
-            }
-            //else
-                //delete rope
+            }else
+                game.removeList.add(this);
             state=1;
         }
     }
@@ -52,5 +48,10 @@ public class Rope implements GameEntity {
     @Override
     public void Draw(Graphics g) {
         tile.Draw(g,x,(int) y);
+    }
+
+    public void Collide()
+    {
+        HeadHit =(game.map.matrix[((int)y-2)/16][(x+3)/16] == 184)||(game.map.matrix[((int)y-2)/16][(x+16-3)/16] == 184);
     }
 }

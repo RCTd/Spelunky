@@ -39,12 +39,12 @@ public class Player implements GameEntity {
         y=64;
     }
 
-    public void setX(float x) {
+/*    public void setX(float x) {
         this.x = x;
     }
     public void setY(float y) {
         this.y=y;
-    }
+    }*/
 
     public void Update()
     {
@@ -57,7 +57,6 @@ public class Player implements GameEntity {
             StartJump(flag);
             trowRope(flag);
         }
-
         Attack=flag[6];
         Duck= flag[2];
         LookUp= flag[5];
@@ -69,14 +68,6 @@ public class Player implements GameEntity {
         SetHang();
         JumpLogic(flag,deltaTime);
         Time=System.nanoTime();
-        /*if(x<0)
-            x=0;
-        if(x>(Game.WIDTH() - PlayerTile.TILE_WIDTH))
-            x=(Game.WIDTH()- PlayerTile.TILE_WIDTH);
-
-        if(y>BottomLine)
-            y=BottomLine;*/
-
     }
 
     public void Draw(Graphics g) {
@@ -91,6 +82,36 @@ public class Player implements GameEntity {
             else
                 WhipTile.Draw(g,getX()+direction*16,getY());
         }
+    }
+    public void Collide()
+    {
+        int x= getX();
+        int y= getY();
+        int h=PlayerTile.TILE_HEIGHT;
+        int w=PlayerTile.TILE_WIDTH;
+        //int wall=184;
+        CanHangLeft =!(game.map.matrix[(y)/16][(x-1)/16] == 184) && (game.map.matrix[(y+4)/16][(x-1)/16] == 184);
+        //left up || left down
+        wallLeft=(game.map.matrix[(y+6)/16][(x-1)/16] == 184)||(game.map.matrix[(y+h-2)/16][(x-1)/16] == 184);
+
+        CanHangRight =!(game.map.matrix[(y)/16][(x+w+1)/16] == 184)&&(game.map.matrix[(y+4)/16][(x+w+1)/16] == 184);
+        //right up || right down
+        wallRight=(game.map.matrix[(y+6)/16][(x+w+1)/16] == 184)||(game.map.matrix[(y+h-2)/16][(x+w+1)/16] == 184);
+
+        //up left || up right
+        HeadHit =(game.map.matrix[(y-2)/16][(x+3)/16] == 184)||(game.map.matrix[(y-2)/16][(x+w-3)/16] == 184);
+        //down left
+        OnEdgeLeft=game.map.matrix[(y+h)/16][(x+3)/16] == 184;
+        //down right
+        OnEdgeRight=game.map.matrix[(y+h)/16][(x+w-3)/16] == 184;
+
+        boolean temp=(OnEdgeLeft)||(OnEdgeRight);
+
+        if(IsOnGround!=temp) {
+            coyotetimer = System.nanoTime();
+        }
+        if(!Hang)
+            IsOnGround= temp;
     }
 
     private void JumpLogic(boolean[] flag,float deltaTime)
@@ -197,14 +218,8 @@ public class Player implements GameEntity {
     }
     public void trowRope(boolean[] flag)
     {
-        if(flag[7])
-        {
-            if(HasRope) {
-                HasRope = false;
-                game.entityList.add(new Rope(getX(), getY(),game));
-            }
-        }
-        else
-            HasRope=true;
+        if(flag[7]&&HasRope)
+            game.entityList.add(new Rope(getX(), getY(),game));
+        HasRope=!flag[7];
     }
 }
