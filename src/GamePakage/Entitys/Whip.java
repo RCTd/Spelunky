@@ -1,6 +1,6 @@
-package GamePakage.Tiles;
+package GamePakage.Entitys;
 
-import GamePakage.GameEntity;
+import GamePakage.Entitys.GameEntity;
 
 import java.awt.*;
 

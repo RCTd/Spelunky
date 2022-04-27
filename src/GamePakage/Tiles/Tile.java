@@ -17,7 +17,13 @@ public class Tile {
     private static final int NO_TILES = 32;
     public static Tile[] tiles = new Tile[NO_TILES];       */
 /*!< Vector de referinte de tipuri de dale.*/
-
+   /* public Tile(Tile tile, int id)
+    {
+            this.id = id;
+            img=tile.img;
+            TILE_WIDTH=tile.TILE_WIDTH;
+            TILE_HEIGHT=tile.TILE_HEIGHT;
+    }*/
 
     public Tile(BufferedImage image, int idd,int width,int height) {
         img = image;

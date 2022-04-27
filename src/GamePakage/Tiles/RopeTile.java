@@ -5,23 +5,25 @@ import GamePakage.Graphics.Assets;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class WhipTile extends Tile{
-    public int direction=-1;
+public class RopeTile extends Tile{
     public int state=0;
-    public WhipTile(int id){
+    public RopeTile(int id){
         super(Assets.toolsSprite,id,16,16);
     }
     @Override
     public void Draw(Graphics g, int x, int y) {
-        BufferedImage crntimg = img.getSubimage(state * 16,0 , TILE_WIDTH, TILE_WIDTH);
+        BufferedImage crntimg = img.getSubimage(state * 16,16 , TILE_WIDTH, TILE_WIDTH);
         //g.drawRect(x*size,y*size,TILE_WIDTH*size,TILE_HEIGHT*size);
-        g.drawImage(crntimg,
-                x,y,(x+TILE_WIDTH),(y+TILE_HEIGHT),
-                (1+direction)*TILE_WIDTH/2,0,(1-direction)*TILE_HEIGHT/2,TILE_HEIGHT, null);
+        g.drawImage(crntimg, x,y, null);
     }
 
     @Override
     public boolean IsSolid() {
         return true;
+    }
+
+    public BufferedImage GetBufferedImage()
+    {
+        return img.getSubimage(state * 16,16 , TILE_WIDTH, TILE_WIDTH);
     }
 }

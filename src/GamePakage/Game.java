@@ -1,5 +1,7 @@
 package GamePakage;
 
+import GamePakage.Entitys.GameEntity;
+import GamePakage.Entitys.Player;
 import GamePakage.GameWindow.GameWindow;
 import GamePakage.Graphics.Assets;
 import GamePakage.Tiles.Map;
@@ -40,7 +42,7 @@ public class Game extends JPanel implements Runnable {
     private GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
     private boolean runState;   /*!< Flag ce starea firului de executie.*/
     private Player player;
-    private final Map map;
+    public final Map map;
     private Thread gameThread;
 
     public static int HEIGHT() {return 20*16;}
@@ -177,15 +179,9 @@ public class Game extends JPanel implements Runnable {
         }
         camX= player.getX()-width/2;
         camY= player.getY()-height/2-player.PlayerTile.TILE_HEIGHT;
-        if(keys.flag[5])
-        {
-            camY-=4*16;
-        }
-        if(keys.flag[2])
-        {
-            camY+=4*16;
-        }
+        camY=keys.flag[5]? camY-4*16:(keys.flag[2]?camY+4*16:camY);
         float dif= camX-camXf;
+
         if(dif!=0)
         {
             camXf+=dif*cameraSpeed;

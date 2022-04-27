@@ -1,8 +1,7 @@
-package GamePakage;
+package GamePakage.Entitys;
 
+import GamePakage.Game;
 import GamePakage.Tiles.PlayerTile;
-import GamePakage.Tiles.Rope;
-import GamePakage.Tiles.Whip;
 import GamePakage.Tiles.WhipTile;
 
 import java.awt.*;
@@ -202,7 +201,7 @@ public class Player implements GameEntity {
         {
             if(HasRope) {
                 HasRope = false;
-                game.entityList.add(new Rope(getX(), getY()));
+                game.entityList.add(new Rope(getX(), getY(),game));
             }
         }
         else

@@ -21,6 +21,12 @@ public class Map {
         this.width=width;
         this.height=height;
         tileMap=new Tile[height][width];
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                tileMap[j][i]=new Tile(null,0,0,0);
+            }
+
+        }
     }
 
     public void CreateBgImage()
@@ -95,8 +101,8 @@ public class Map {
                 if(matrix[i][j]==184) {
                     if(i>1&&matrix[i-1][j]!=184)
                         g.drawImage(Assets.upWall,j*16,(i*16-16),16,16,null);
-                    tileMap[i][j].Draw(g, j * 16, i * 16);
                 }
+                tileMap[i][j].Draw(g, j * 16, i * 16);
             }
         }
     }
