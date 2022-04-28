@@ -4,7 +4,7 @@ import GamePakage.Entitys.GameEntity;
 import GamePakage.Entitys.Player;
 import GamePakage.GameWindow.GameWindow;
 import GamePakage.Graphics.Assets;
-import GamePakage.Tiles.Map;
+import GamePakage.Map.Map;
 
 import javax.swing.*;
 import java.awt.*;
@@ -88,7 +88,8 @@ public class Game extends JPanel implements Runnable {
         wnd.GetCanvas().addKeyListener(keys);
         map.CreateBgImage();
 
-        map.LoadTutorial();
+        //map.LoadTutorial();
+        map.Level();
     }
 
     /*! \fn public void run()

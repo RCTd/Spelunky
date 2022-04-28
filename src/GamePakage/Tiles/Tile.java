@@ -52,8 +52,10 @@ public class Tile {
         \brief Returneaza proprietatea de dala solida (supusa coliziunilor) sau nu.
      */
     public boolean IsSolid() {
-        return false;
+        return true;
     }
+
+    public boolean IsDistructable(){return false;}
 
     /*! \fn public int GetId()
         \brief Returneaza id-ul dalei.

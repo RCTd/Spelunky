@@ -11,12 +11,16 @@ public class Assets {
     public static BufferedImage playerSprite;
     public static BufferedImage toolsSprite;
 
-    public static BufferedImage soil;
-    public static BufferedImage soilRock;
-    public static BufferedImage soilGold;
-    public static BufferedImage soilBigGold;
-    public static BufferedImage Wall;
-    public static BufferedImage upWall;
+    public static BufferedImage Brick;
+    public static BufferedImage Brick2;
+    public static BufferedImage BrickDown;
+    public static BufferedImage BrickUp;
+    public static BufferedImage BrickUp2;
+    public static BufferedImage Block;
+    public static BufferedImage BrickGold;
+    public static BufferedImage BrickGoldBig;
+    public static BufferedImage BrickTop;
+    public static BufferedImage BrickTop2;
 
     public static BufferedImage bgWall;
     public static BufferedImage BgWallRock;
@@ -37,13 +41,17 @@ public class Assets {
         playerSprite=ImageLoader.LoadImage("/PlayerSprite.png");
         toolsSprite =ImageLoader.LoadImage("/ToolsSprite.png");
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
-        //playerLeft = sheet.crop(2, 42, 16, 16);
-        upWall=sheet.crop(58,198,16,16);
-        Wall=sheet.crop(798,74,16,16);
-        soil = sheet.crop(738, 74, 16, 16);
-        soilRock = sheet.crop(718, 74, 16, 16);
-        soilGold=sheet.crop(778,74,16,16);
-        soilBigGold=sheet.crop(758,74,16,16);
+        Brick=toolsSprite.getSubimage(0*16,2*16,16,16);
+        Brick2=toolsSprite.getSubimage(1*16,2*16,16,16);
+        BrickDown=toolsSprite.getSubimage(2*16,2*16,16,16);
+        BrickUp=toolsSprite.getSubimage(3*16,2*16,16,16);
+        BrickUp2=toolsSprite.getSubimage(4*16,2*16,16,16);
+        BrickGold=toolsSprite.getSubimage(0*16,3*16,16,16);
+        BrickGoldBig=toolsSprite.getSubimage(1*16,3*16,16,16);
+        Block=toolsSprite.getSubimage(2*16,3*16,16,16);
+        BrickTop=toolsSprite.getSubimage(3*16,3*16,16,16);
+        BrickTop2=toolsSprite.getSubimage(4*16,3*16,16,16);
+
 
         bgWall=sheet.crop(2,198,32,32);
         BgWallRock=sheet.crop(1162,163,32,32);

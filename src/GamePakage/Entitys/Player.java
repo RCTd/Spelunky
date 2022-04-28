@@ -85,7 +85,7 @@ public class Player implements GameEntity {
     }
     public void Collide()
     {
-        int x= getX();
+        /*int x= getX();
         int y= getY();
         int h=PlayerTile.TILE_HEIGHT;
         int w=PlayerTile.TILE_WIDTH;
@@ -111,7 +111,7 @@ public class Player implements GameEntity {
             coyotetimer = System.nanoTime();
         }
         if(!Hang)
-            IsOnGround= temp;
+            IsOnGround= temp;*/
     }
 
     private void JumpLogic(boolean[] flag,float deltaTime)
