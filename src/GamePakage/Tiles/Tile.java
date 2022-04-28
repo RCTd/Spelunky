@@ -52,7 +52,7 @@ public class Tile {
         \brief Returneaza proprietatea de dala solida (supusa coliziunilor) sau nu.
      */
     public boolean IsSolid() {
-        return true;
+        return false;
     }
 
     public boolean IsDistructable(){return false;}

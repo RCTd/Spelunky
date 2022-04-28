@@ -33,6 +33,11 @@ import java.awt.image.BufferedImage;
     }
 
     @Override
+    public boolean IsSolid() {
+        return true;
+    }
+
+    @Override
     public boolean IsDistructable() {
         return true;
     }

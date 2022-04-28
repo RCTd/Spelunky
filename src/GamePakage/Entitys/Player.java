@@ -68,6 +68,12 @@ public class Player implements GameEntity {
         SetHang();
         JumpLogic(flag,deltaTime);
         Time=System.nanoTime();
+        if(x<0)
+            x=0;
+        if(x>(Game.WIDTH() - PlayerTile.TILE_WIDTH))
+            x=(Game.WIDTH()- PlayerTile.TILE_WIDTH);
+        if(y>BottomLine)
+            y=BottomLine;
     }
 
     public void Draw(Graphics g) {
@@ -112,6 +118,34 @@ public class Player implements GameEntity {
         }
         if(!Hang)
             IsOnGround= temp;*/
+        int x= getX();
+        int y= getY();
+        int h=PlayerTile.TILE_HEIGHT;
+        int w=PlayerTile.TILE_WIDTH;
+        //int wall=184;
+        System.out.println(x+"\t"+y);
+        CanHangLeft =!(game.map.tileMap[(y)/16][(x-1)/16].IsSolid()) && (game.map.tileMap[(y+4)/16][(x-1)/16].IsSolid());
+        //left up || left down
+        wallLeft=(game.map.tileMap[(y+6)/16][(x-1)/16].IsSolid())||(game.map.tileMap[(y+h-2)/16][(x-1)/16].IsSolid());
+
+        CanHangRight =!(game.map.tileMap[(y)/16][(x+w+1)/16].IsSolid())&&(game.map.tileMap[(y+4)/16][(x+w+1)/16].IsSolid());
+        //right up || right down
+        wallRight=(game.map.tileMap[(y+6)/16][(x+w+1)/16].IsSolid())||(game.map.tileMap[(y+h-2)/16][(x+w+1)/16].IsSolid());
+
+        //up left || up right
+        HeadHit =(game.map.tileMap[(y-2)/16][(x+3)/16].IsSolid())||(game.map.tileMap[(y-2)/16][(x+w-3)/16].IsSolid());
+        //down left
+        OnEdgeLeft=game.map.tileMap[(y+h)/16][(x+3)/16].IsSolid();
+        //down right
+        OnEdgeRight=game.map.tileMap[(y+h)/16][(x+w-3)/16].IsSolid();
+
+        boolean temp=(OnEdgeLeft)||(OnEdgeRight);
+
+        if(IsOnGround!=temp) {
+            coyotetimer = System.nanoTime();
+        }
+        if(!Hang)
+            IsOnGround= temp;
     }
 
     private void JumpLogic(boolean[] flag,float deltaTime)

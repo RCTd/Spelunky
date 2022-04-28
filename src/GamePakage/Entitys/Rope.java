@@ -35,7 +35,7 @@ public class Rope implements GameEntity {
             state++;
             tile.state=state;
             if(y<p0) {
-                if(game.map.tileMap[(int) y / 16][x / 16].TILE_HEIGHT==0)
+                if(game.map.tileMap[(int) y / 16][x / 16].GetId()==0)
                     game.map.tileMap[(int) y / 16][x / 16] = new Tile(tile.GetBufferedImage(),0,tile.TILE_WIDTH,tile.TILE_HEIGHT);
                 tile.state=0;
                 y += (8 * 16 / 0.5F) * GameTimer.getInstance().getDeltaTime();
@@ -52,6 +52,6 @@ public class Rope implements GameEntity {
 
     public void Collide()
     {
-        HeadHit =(game.map.matrix[((int)y-2)/16][(x+3)/16] == 184)||(game.map.matrix[((int)y-2)/16][(x+16-3)/16] == 184);
+        HeadHit =(game.map.tileMap[((int)y-2)/16][(x+3)/16].IsSolid())||(game.map.tileMap[((int)y-2)/16][(x+16-3)/16].IsSolid());
     }
 }

@@ -2,6 +2,7 @@ package GamePakage.Map;
 
 import GamePakage.Game;
 import GamePakage.Graphics.Assets;
+import GamePakage.Tiles.EdgeTile;
 import GamePakage.Tiles.Tile;
 import GamePakage.Tiles.WallTile;
 import GamePakage.Tiles.WallTopTile;
@@ -117,10 +118,10 @@ public class Map {
         }
         Path path = new Path();
         for (int i = 0; i < width; i++) {
-            tileMap[0][i] = tileMap[height-1][i] = new Tile(Assets.Brick, 3, 16, 16);
+            tileMap[0][i] = tileMap[height-1][i] = new EdgeTile(3);
         }
         for (int j = 0; j < height; j++) {
-            tileMap[j][0] = tileMap[j][width-1] = new Tile(Assets.Brick, 3, 16, 16);
+            tileMap[j][0] = tileMap[j][width-1] = new EdgeTile( 3);
         }
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
