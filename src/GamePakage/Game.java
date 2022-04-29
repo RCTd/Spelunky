@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Game extends JPanel implements Runnable {
     public ArrayList<GameEntity> entityList;
     public ArrayList<GameEntity> removeList;
-    public static final int BottomLine=Game.HEIGHT()-32;
+    public static int BottomLine=Game.HEIGHT()-32;
     public static final int MaxJumpHeight =16+5;//100
     public static final float TimeToMaxH = 0.2F;//0.2
     public static final float YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
@@ -53,14 +53,15 @@ public class Game extends JPanel implements Runnable {
     }
 
     public Game(String title, int width, int height) {
-        this.width=width ;this.height=height;
+        this.width=width;this.height=height;
         /// Obiectul GameWindow este creat insa fereastra nu este construita
         /// Acest lucru va fi realizat in metoda init() prin apelul
         /// functiei BuildGameWindow();
         wnd = new GameWindow(title, width, height);
         /// Resetarea flagului runState ce indica starea firului de executie (started/stoped)
         runState = false;
-        map=new Map(42,20);
+        //map=new Map(42,20);
+        map=new Map();
     }
 
     /*! \fn private void init()
@@ -72,9 +73,6 @@ public class Game extends JPanel implements Runnable {
      */
     private void InitGame() {
         //wnd = new GameWindow("Schelet Proiect PAOO", width ,height);
-        offsetMaxX=map.width*16-width;
-        offsetMaxY=map.height*16-height;
-        offsetMinX=offsetMinY=0;
         /// Este construita fereastra grafica.
         wnd.BuildGameWindow();
         /// Se incarca toate elementele grafice (dale)
@@ -86,10 +84,13 @@ public class Game extends JPanel implements Runnable {
         camY= player.getY()-height/2;
         keys=new PlayerKeyListener();
         wnd.GetCanvas().addKeyListener(keys);
-        map.CreateBgImage();
 
         //map.LoadTutorial();
         map.Level();
+        BottomLine=map.height*16-32;
+        offsetMaxX=map.width*16-width;
+        offsetMaxY=map.height*16-height;
+        offsetMinX=offsetMinY=0;
     }
 
     /*! \fn public void run()
@@ -262,35 +263,6 @@ public class Game extends JPanel implements Runnable {
         {
             obj.Collide();
         }
-        /*
-        int x= player.getX();
-        int y= player.getY();
-        int h=player.PlayerTile.TILE_HEIGHT;
-        int w=player.PlayerTile.TILE_WIDTH;
-        //int wall=184;
-        player.CanHangLeft =!(map.matrix[(y)/16][(x-1)/16] == 184) && (map.matrix[(y+4)/16][(x-1)/16] == 184);
-                                                    //left up || left down
-        player.wallLeft=(map.matrix[(y+6)/16][(x-1)/16] == 184)||(map.matrix[(y+h-2)/16][(x-1)/16] == 184);
-
-        player.CanHangRight =!(map.matrix[(y)/16][(x+w+1)/16] == 184)&&(map.matrix[(y+4)/16][(x+w+1)/16] == 184);
-                                                    //right up || right down
-        player.wallRight=(map.matrix[(y+6)/16][(x+w+1)/16] == 184)||(map.matrix[(y+h-2)/16][(x+w+1)/16] == 184);
-
-                                                    //up left || up right
-        player.HeadHit =(map.matrix[(y-2)/16][(x+3)/16] == 184)||(map.matrix[(y-2)/16][(x+w-3)/16] == 184);
-                                                    //down left
-        player.OnEdgeLeft=map.matrix[(y+h)/16][(x+3)/16] == 184;
-                                                    //down right
-        player.OnEdgeRight=map.matrix[(y+h)/16][(x+w-3)/16] == 184;
-
-        boolean temp=(player.OnEdgeLeft)||(player.OnEdgeRight);
-
-        if(player.IsOnGround!=temp) {
-            coyotetimer = System.nanoTime();
-        }
-        if(!player.Hang)
-            player.IsOnGround= temp;
-    */
     }
 }
 

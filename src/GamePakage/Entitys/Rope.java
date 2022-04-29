@@ -36,7 +36,7 @@ public class Rope implements GameEntity {
             tile.state=state;
             if(y<p0) {
                 if(game.map.tileMap[(int) y / 16][x / 16].GetId()==0)
-                    game.map.tileMap[(int) y / 16][x / 16] = new Tile(tile.GetBufferedImage(),0,tile.TILE_WIDTH,tile.TILE_HEIGHT);
+                    game.map.tileMap[(int) y / 16][x / 16] = new Tile(tile.GetBufferedImage(),6,tile.TILE_WIDTH,tile.TILE_HEIGHT);
                 tile.state=0;
                 y += (8 * 16 / 0.5F) * GameTimer.getInstance().getDeltaTime();
             }else

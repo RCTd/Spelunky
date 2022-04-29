@@ -1,5 +1,7 @@
 package GamePakage.Graphics;
 
+import sun.security.provider.ConfigFile;
+
 import java.awt.image.BufferedImage;
 /*! \class public class Assets
     \brief Clasa incarca fiecare element grafic necesar jocului.
@@ -21,6 +23,13 @@ public class Assets {
     public static BufferedImage BrickGoldBig;
     public static BufferedImage BrickTop;
     public static BufferedImage BrickTop2;
+
+    public static BufferedImage Ladder;
+    public static BufferedImage LadderTop;
+    public static BufferedImage Spikes;
+
+    public static BufferedImage Exit;
+    public static BufferedImage Entrance;
 
     public static BufferedImage bgWall;
     public static BufferedImage BgWallRock;
@@ -51,6 +60,14 @@ public class Assets {
         Block=toolsSprite.getSubimage(2*16,3*16,16,16);
         BrickTop=toolsSprite.getSubimage(3*16,3*16,16,16);
         BrickTop2=toolsSprite.getSubimage(4*16,3*16,16,16);
+
+        LadderTop=toolsSprite.getSubimage(0*16,4*16,16,16);
+        Ladder=toolsSprite.getSubimage(1*16,4*16,16,16);
+
+        Exit=toolsSprite.getSubimage(2*16,4*16,16,16);
+        Entrance=toolsSprite.getSubimage(3*16,4*16,16,16);
+
+        Spikes =toolsSprite.getSubimage(4*16,4*16,16,16);
 
 
         bgWall=sheet.crop(2,198,32,32);

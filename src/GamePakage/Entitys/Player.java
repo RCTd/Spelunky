@@ -68,10 +68,6 @@ public class Player implements GameEntity {
         SetHang();
         JumpLogic(flag,deltaTime);
         Time=System.nanoTime();
-        if(x<0)
-            x=0;
-        if(x>(Game.WIDTH() - PlayerTile.TILE_WIDTH))
-            x=(Game.WIDTH()- PlayerTile.TILE_WIDTH);
         if(y>BottomLine)
             y=BottomLine;
     }
@@ -123,7 +119,6 @@ public class Player implements GameEntity {
         int h=PlayerTile.TILE_HEIGHT;
         int w=PlayerTile.TILE_WIDTH;
         //int wall=184;
-        System.out.println(x+"\t"+y);
         CanHangLeft =!(game.map.tileMap[(y)/16][(x-1)/16].IsSolid()) && (game.map.tileMap[(y+4)/16][(x-1)/16].IsSolid());
         //left up || left down
         wallLeft=(game.map.tileMap[(y+6)/16][(x-1)/16].IsSolid())||(game.map.tileMap[(y+h-2)/16][(x-1)/16].IsSolid());

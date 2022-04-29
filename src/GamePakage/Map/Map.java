@@ -35,24 +35,32 @@ public class Map {
 
     public void CreateBgImage() {
         BackGround = new BufferedImage(
-                Game.WIDTH(), Game.HEIGHT(), //work these out
+                width*16, height*16, //work these out
                 BufferedImage.TYPE_INT_RGB);
 
         Graphics g = BackGround.getGraphics();
-        for (int i = 0; i <= Game.WIDTH() / 64; i++) {
-            for (int j = 0; j <= Game.HEIGHT() / 64; j++) {
+        for (int i = 0; i <= width*16 / 64; i++) {
+            for (int j = 0; j <= height*16 / 64; j++) {
                 g.drawImage(Assets.bgWall, i * 64, j * 64, 64, 64, null);
             }
         }
         for (int i = 0; i < 6; i++) {
-            g.drawImage(Assets.BgWallRock, (int) (Math.random() * Game.WIDTH()), (int) (Math.random() * Game.HEIGHT()), 50, 50, null);
+            g.drawImage(Assets.BgWallRock, (int) (Math.random() * width*16), (int) (Math.random() * height*16), 50, 50, null);
         }
         for (int i = 0; i < 6; i++) {
-            g.drawImage(Assets.BgWallHoll, (int) (Math.random() * Game.WIDTH()), (int) (Math.random() * Game.HEIGHT()), 50, 50, null);
+            g.drawImage(Assets.BgWallHoll, (int) (Math.random() * width*16), (int) (Math.random() * height*16), 50, 50, null);
         }
     }
 
     public void LoadTutorial() {
+        width=42;height=20;
+        tileMap = new Tile[height][width];
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                tileMap[j][i] = new Tile(null, 0, 0, 0);
+            }
+        }
+        CreateBgImage();
         matrix = new int[][]{{184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184},
                 {184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184},
                 {184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 321, 1329, 1525, 1538, 621, 0, 0, 0, 0, 1037, 184},
@@ -73,20 +81,27 @@ public class Map {
                 {184, 0, 184, 184, 184, 0, 1329, 0, 0, 0, 184, 184, 184, 184, 184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 184, 184, 184, 184, 184, 0, 1329, 0, 0, 0, 0, 1329, 0, 1329, 0, 1504, 184},
                 {184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184},
                 {184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184}};
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (matrix[i][j] == 184) {
-                    double rnd = Math.random();
-                    if (rnd < 0.01)
-                        tileMap[i][j] = new Tile(Assets.BrickGoldBig, 185, 16, 16);
-                    else if (rnd < 0.05)
-                        tileMap[i][j] = new Tile(Assets.BrickGold, 186, 16, 16);
-                    else if (rnd < 0.1)
-                        tileMap[i][j] = new Tile(Assets.Brick2, 186, 16, 16);
-                    else if (i + 1 < height && matrix[i + 1][j] == 184)
-                        tileMap[i][j] = new WallTile(184);
-                    else
-                        tileMap[i][j] = new Tile(Assets.Brick, 186, 16, 16);
+        for (int i = 0; i < width; i++) {
+            tileMap[0][i] = tileMap[height-1][i] = new EdgeTile(3);
+        }
+        for (int j = 0; j < height; j++) {
+            tileMap[j][0] = tileMap[j][width-1] = new EdgeTile( 3);
+        }
+
+        for (int i = 1; i < height; i++) {
+            for (int j = 1; j < width; j++) {
+                if (matrix[i][j] == 184)
+                    if (tileMap[i-1][j].GetId() == 0) {
+                        tileMap[i][j] = new WallTile(Assets.BrickUp, 2);
+                        tileMap[i-1][j]= new WallTopTile(1);
+                    } else
+                        tileMap[i][j] = new WallTile(1);
+                else {
+                    tileMap[i][j] = new Tile(null, 0, 16, 16);
+                    if (tileMap[i - 1][j].GetId() == 1)
+                        tileMap[i - 1][j] = new WallTile(Assets.BrickDown, 1);
+                    if (tileMap[i - 1][j].GetId() == 2)
+                        tileMap[i - 1][j] = new WallTile(Assets.BrickUp2, 1);
                 }
             }
         }
@@ -96,13 +111,7 @@ public class Map {
         g.drawImage(BackGround, 0, 0, null);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                tileMap[i][j].Draw(g, j * 16, i * 16);/*
-                if (matrix[i][j] == 184) {
-                    if (i > 1 && matrix[i - 1][j] != 184) {
-                        g.drawImage(Assets.BrickUp, j * 16, i * 16, 16, 16, null);
-                        g.drawImage(Assets.BrickTop, j * 16, (i * 16 - 16), 16, 16, null);
-                    }
-                }*/
+                tileMap[i][j].Draw(g, j * 16, i * 16);
             }
         }
     }
@@ -110,6 +119,7 @@ public class Map {
     public void Level() {
         width=42;
         height=4*8+2;
+        CreateBgImage();
         tileMap = new Tile[height][width];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -125,14 +135,13 @@ public class Map {
         }
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                SetTileMap(tileMap, i * 10 + 1, j * 8 + 1,path);
+                SetTileMap(tileMap, i*10+1,j*8+1,path);
             }
         }
     }
 
     public void SetTileMap(Tile[][] tileMap, int i, int j,Path path) {
-        String strTemp=RoomGetTemplate(path,i/8,j/10);
-        System.out.println(strTemp);
+        String strTemp=RoomGetTemplate(path,i/10,j/8);
         int m=0;
         for (int k = 0; k < 8; k++) {
             for (int l = 0; l < 10; l++) {
@@ -149,6 +158,25 @@ public class Map {
                         tileMap[j + k-1][i + l] = new WallTopTile(1);
                     }else
                         tileMap[j + k][i + l] = new WallTile(1);
+                }else
+                if(strTemp.charAt(m)=='L')
+                    tileMap[j + k][i + l] = new WallTopTile(Assets.Ladder,6);
+                else
+                if(strTemp.charAt(m)=='P')
+                    tileMap[j + k][i + l] = new WallTopTile(Assets.LadderTop,6);
+                else
+                if(strTemp.charAt(m)=='7')
+                    if(path.rand(1,3)==3)
+                        tileMap[j + k][i + l] = new WallTopTile(Assets.Spikes,3);
+                else
+                if(strTemp.charAt(m)=='9') {
+                    System.out.println(strTemp);
+                    if (j / 10 == 0)
+                        tileMap[j + k][i + l] = new WallTopTile(Assets.Entrance, 4);
+                    else
+                    {
+                        tileMap[j + k][i + l] = new WallTopTile(Assets.Exit, 10);
+                    }
                 }
                 m++;
             }
@@ -176,8 +204,8 @@ public class Map {
                 case 7: {strTemp = "00000000000008000000000000000000L000000000P111111000L111111000L00011111111101111";break;}
                 case 8: {strTemp = "0000000000008000000000000000000000000L000111111P000111111L001111000L001111011111";break;}
             }
-        }
-        if(j==4&&i==path.end)
+        }else
+        if(j==3&&i==path.end)
         {
             n= path.rand(1,6);
             if(path.path[j-1][i]==2)
@@ -191,7 +219,7 @@ public class Map {
                 case 5: { strTemp = "60000600000000000000000000000000000000000008000000000000000000000000001111111111"; break; }
                 case 6: { strTemp = "11111111112222222222000000000000000000000008000000000000000000000000001111111111"; break; }
             }
-        }
+        }else
         if(path.path[j][i]==1)
         {
             n= path.rand(1,11);
@@ -216,7 +244,7 @@ public class Map {
                 case 10: { strTemp = "00000000000111111110001111110000000000005000050000000000000000000000001111111111"; break; }
                 case 11: { strTemp = "00000000000000000000000000000000000000000021111200021111112021111111121111111111"; break; }
             }
-        }
+        }else
         if(path.path[j][i]==3){
             n= path.rand(1,7);
             switch (n){
@@ -230,8 +258,7 @@ public class Map {
                 case 6: { strTemp = "00000000000000000000000000000000000000000021111200021111112021111111121111111111"; break; }
                 case 7: { strTemp = "10000000011112002111111200211100000000000022222000111111111111111111111111111111"; break; }
             }
-        }
-
+        }else
         if(path.path[j][i]==2)
         {
             n= path.rand(1,8);
@@ -259,7 +286,6 @@ public class Map {
         pos=strTemp.indexOf("8");
         while (pos>=0)
         {
-            System.out.println("aici1");
             switch(path.rand(1,8))
             {
                 case 1: { strObs1 = "00900"; strObs2 = "01110"; strObs3 = "11111"; break; }
