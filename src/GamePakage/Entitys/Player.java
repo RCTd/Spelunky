@@ -16,9 +16,9 @@ public class Player implements GameEntity {
     public WhipTile WhipTile=new WhipTile(0);
     public boolean IsOnGround=true, HeadHit =false,wallRight=false,wallLeft=false;
     public boolean Duck=false, LookUp=false,Moves=false,TooHigh=false,HasRope=true;
-    public boolean OnEdgeLeft=false,OnEdgeRight=false,Hang=false;
+    public boolean OnEdgeLeft=false,OnEdgeRight=false,Hang=false,Exit=false;
     public boolean CanHangLeft =false, CanHangRight =false;
-    public boolean Relesed=true,LongJump,Attack;
+    public boolean Relesed=true,LongJump,Attack, OnRope =false,Climbing=false;
     //private boolean LongJump;
     private int direction =-1;
     private int newState, oldState;
@@ -39,16 +39,21 @@ public class Player implements GameEntity {
         y=64;
     }
 
-/*    public void setX(float x) {
+    public void setX(float x) {
         this.x = x;
     }
     public void setY(float y) {
         this.y=y;
-    }*/
+    }
 
     public void Update()
     {
         boolean[] flag=game.keys.flag;
+        Climbing=(OnRope&&flag[5])||(Climbing&&IsOnGround);
+        if(Climbing) {
+            IsOnGround=true;
+            x = (int)(( x + 8)/16)*16;
+        }
         float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
         Moves=false;
         oldState= PlayerTile.AnimationState.state;
@@ -60,13 +65,14 @@ public class Player implements GameEntity {
         Attack=flag[6];
         Duck= flag[2];
         LookUp= flag[5];
-        PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(Moves,  Duck,IsOnGround, LookUp, Attack, OnEdgeLeft,OnEdgeRight, Hang,TooHigh );
+        PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(Moves,  Duck,IsOnGround, LookUp, Attack, OnEdgeLeft,OnEdgeRight, Hang,TooHigh,Climbing );
         newState=PlayerTile.AnimationState.state;
         Hang= newState== 8 || newState == 9;
         TooHigh=false;
 
         SetHang();
         JumpLogic(flag,deltaTime);
+
         Time=System.nanoTime();
         if(y>BottomLine)
             y=BottomLine;
@@ -87,37 +93,14 @@ public class Player implements GameEntity {
     }
     public void Collide()
     {
-        /*int x= getX();
-        int y= getY();
-        int h=PlayerTile.TILE_HEIGHT;
-        int w=PlayerTile.TILE_WIDTH;
-        //int wall=184;
-        CanHangLeft =!(game.map.matrix[(y)/16][(x-1)/16] == 184) && (game.map.matrix[(y+4)/16][(x-1)/16] == 184);
-        //left up || left down
-        wallLeft=(game.map.matrix[(y+6)/16][(x-1)/16] == 184)||(game.map.matrix[(y+h-2)/16][(x-1)/16] == 184);
-
-        CanHangRight =!(game.map.matrix[(y)/16][(x+w+1)/16] == 184)&&(game.map.matrix[(y+4)/16][(x+w+1)/16] == 184);
-        //right up || right down
-        wallRight=(game.map.matrix[(y+6)/16][(x+w+1)/16] == 184)||(game.map.matrix[(y+h-2)/16][(x+w+1)/16] == 184);
-
-        //up left || up right
-        HeadHit =(game.map.matrix[(y-2)/16][(x+3)/16] == 184)||(game.map.matrix[(y-2)/16][(x+w-3)/16] == 184);
-        //down left
-        OnEdgeLeft=game.map.matrix[(y+h)/16][(x+3)/16] == 184;
-        //down right
-        OnEdgeRight=game.map.matrix[(y+h)/16][(x+w-3)/16] == 184;
-
-        boolean temp=(OnEdgeLeft)||(OnEdgeRight);
-
-        if(IsOnGround!=temp) {
-            coyotetimer = System.nanoTime();
-        }
-        if(!Hang)
-            IsOnGround= temp;*/
         int x= getX();
         int y= getY();
         int h=PlayerTile.TILE_HEIGHT;
         int w=PlayerTile.TILE_WIDTH;
+
+        OnRope =game.map.tileMap[(y+4)/16][(x+2)/16].GetId()==6&&game.map.tileMap[(y+4)/16][(x+14)/16].GetId()==6;
+
+        Exit=game.map.tileMap[(y+8)/16][(x+8)/16].GetId()==10;
         //int wall=184;
         CanHangLeft =!(game.map.tileMap[(y)/16][(x-1)/16].IsSolid()) && (game.map.tileMap[(y+4)/16][(x-1)/16].IsSolid());
         //left up || left down
@@ -139,7 +122,7 @@ public class Player implements GameEntity {
         if(IsOnGround!=temp) {
             coyotetimer = System.nanoTime();
         }
-        if(!Hang)
+        if(!Hang&&!Climbing)
             IsOnGround= temp;
     }
 
@@ -163,7 +146,8 @@ public class Player implements GameEntity {
             }
             p0=y;
             LongJump=false;
-            y=(int)( y/16 )*16;
+            if(!Climbing)
+                y=(int)( y/16 )*16;
             yVel = 0;
         }
     }
@@ -190,7 +174,10 @@ public class Player implements GameEntity {
         if(result ==0) {
             //stop
             if (xVel != 0)
-                xVel -= signum(xVel) * XAccel * deltaTime;
+                if(abs(xVel)<0.1F|| Climbing) {
+                    xVel = 0;
+                }else
+                    xVel -= signum(xVel) * XAccel * deltaTime;
         }else {    //move
             Moves=true;
             direction =result;
@@ -219,6 +206,7 @@ public class Player implements GameEntity {
                     LongJump = true;
                     Relesed=false;
                     IsOnGround = false;
+                    Climbing=false;
                     JumpStart = System.nanoTime();
                     if(flag[2]&&Hang) {
                         yVel=0;

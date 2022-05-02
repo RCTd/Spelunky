@@ -14,6 +14,7 @@ public class Map {
     public BufferedImage BackGround;
     public Tile[][] tileMap;
     public int width, height;
+    public int x=20,y=20;
     public int[][] matrix;
 
     public Map() {
@@ -165,18 +166,16 @@ public class Map {
                 if(strTemp.charAt(m)=='P')
                     tileMap[j + k][i + l] = new WallTopTile(Assets.LadderTop,6);
                 else
-                if(strTemp.charAt(m)=='7')
+                if(strTemp.charAt(m)=='7'){
                     if(path.rand(1,3)==3)
                         tileMap[j + k][i + l] = new WallTopTile(Assets.Spikes,3);
-                else
+                }else
                 if(strTemp.charAt(m)=='9') {
-                    System.out.println(strTemp);
-                    if (j / 10 == 0)
+                    if (j / 10 == 0) {
+                        x=(i+l)*16;y=(j+k)*16;
                         tileMap[j + k][i + l] = new WallTopTile(Assets.Entrance, 4);
-                    else
-                    {
+                    }else
                         tileMap[j + k][i + l] = new WallTopTile(Assets.Exit, 10);
-                    }
                 }
                 m++;
             }
@@ -186,7 +185,7 @@ public class Map {
     public String RoomGetTemplate(Path path,int i,int j)
     {
         if(path.path[j][i]==0)
-            path.path[j][i]= 2;
+            path.path[j][i]= 1;
         int n;
         String strTemp="00000000000000000000000000000000000000000000000000000000000000000000000000000000";
         if (j==0&&i == path.start){

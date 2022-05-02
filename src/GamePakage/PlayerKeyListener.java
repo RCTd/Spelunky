@@ -2,7 +2,6 @@ package GamePakage;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.EventListener;
 
 public class PlayerKeyListener implements KeyListener {
     public boolean[] flag;

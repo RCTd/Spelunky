@@ -87,6 +87,8 @@ public class Game extends JPanel implements Runnable {
 
         //map.LoadTutorial();
         map.Level();
+        player.setX(map.x);
+        player.setY(map.y);
         BottomLine=map.height*16-32;
         offsetMaxX=map.width*16-width;
         offsetMaxY=map.height*16-height;
@@ -177,6 +179,12 @@ public class Game extends JPanel implements Runnable {
     private void Update() {
         Collide();
         player.Update();
+        if(player.Exit)
+        {
+            map.Level();
+            player.setX(map.x);
+            player.setY(map.y);
+        }
         for(GameEntity obj:entityList)
         {
             obj.Update();

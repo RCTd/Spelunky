@@ -10,7 +10,7 @@ public class FallState extends State {
         frame=0;
     }
     @Override
-    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean Hang, boolean TooHigh) {
+    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean Hang, boolean TooHigh, boolean Climbing) {
         if(TooHigh)
             return new StunState();
         if(OnAttack)
@@ -18,6 +18,8 @@ public class FallState extends State {
         if(Hang) {
             return new HangState();
         }
+        if(Climbing)
+            return new ClimbRope();
         if(IsOnGround)
             return new StandState();
         return this;

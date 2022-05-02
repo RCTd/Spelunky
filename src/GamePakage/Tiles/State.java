@@ -18,7 +18,7 @@ public abstract class State {
         frame=(frame>=TotalFrames)?0:(frame+16 * timer.getDeltaTime());
         Image= Assets.playerSprite.getSubimage((int)frame * with, state * 16, with, height);
     }
-    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean Hang, boolean TooHigh)
+    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean Hang, boolean TooHigh, boolean Climbing)
     {
         return null;
     }

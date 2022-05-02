@@ -11,7 +11,7 @@ public class MoveState extends State {
     }
 
     @Override
-    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean Hang, boolean TooHigh) {
+    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean Hang, boolean TooHigh, boolean Climbing) {
         if(OnAttack)
             return new AttackState();
         if(!IsOnGround)
@@ -20,6 +20,8 @@ public class MoveState extends State {
             return new DuckMoveState();
         if(Moves&&LookUp)
             return new LookUpMoveState();
+        if(Climbing)
+            return new ClimbRope();
         if(!Moves)
             return new StandState();
         return this;
