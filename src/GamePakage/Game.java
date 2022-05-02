@@ -179,7 +179,7 @@ public class Game extends JPanel implements Runnable {
     private void Update() {
         Collide();
         player.Update();
-        if(player.Exit)
+        if(player.trigFlags.Exit)
         {
             map.Level();
             player.setX(map.x);
@@ -191,7 +191,7 @@ public class Game extends JPanel implements Runnable {
         }
         camX= player.getX()-width/2;
         camY= player.getY()-height/2-player.PlayerTile.TILE_HEIGHT;
-        camY=keys.flag[5]? camY-4*16:(keys.flag[2]?camY+4*16:camY);
+        //scamY=keys.flag[5]? camY-4*16:(keys.flag[2]?camY+4*16:camY);
         float dif= camX-camXf;
 
         if(dif!=0)

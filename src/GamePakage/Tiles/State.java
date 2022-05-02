@@ -1,5 +1,6 @@
 package GamePakage.Tiles;
 
+import GamePakage.Flags;
 import GamePakage.Graphics.Assets;
 
 import java.awt.image.BufferedImage;
@@ -18,7 +19,7 @@ public abstract class State {
         frame=(frame>=TotalFrames)?0:(frame+16 * timer.getDeltaTime());
         Image= Assets.playerSprite.getSubimage((int)frame * with, state * 16, with, height);
     }
-    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean Hang, boolean TooHigh, boolean Climbing)
+    public State Handle(Flags trigFlags)
     {
         return null;
     }

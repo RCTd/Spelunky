@@ -1,6 +1,8 @@
 package GamePakage.Entitys;
 
+import GamePakage.Flags;
 import GamePakage.Game;
+import GamePakage.Tiles.PlayerState.ClimbRope;
 import GamePakage.Tiles.PlayerTile;
 import GamePakage.Tiles.WhipTile;
 
@@ -14,12 +16,8 @@ public class Player implements GameEntity {
     Game game;
     public PlayerTile PlayerTile = new PlayerTile(0);
     public WhipTile WhipTile=new WhipTile(0);
-    public boolean IsOnGround=true, HeadHit =false,wallRight=false,wallLeft=false;
-    public boolean Duck=false, LookUp=false,Moves=false,TooHigh=false,HasRope=true;
-    public boolean OnEdgeLeft=false,OnEdgeRight=false,Hang=false,Exit=false;
-    public boolean CanHangLeft =false, CanHangRight =false;
-    public boolean Relesed=true,LongJump,Attack, OnRope =false,Climbing=false;
-    //private boolean LongJump;
+    public Flags trigFlags=new Flags();
+
     private int direction =-1;
     private int newState, oldState;
     private float xVel =0,yVel,y,p0,x;
@@ -49,27 +47,31 @@ public class Player implements GameEntity {
     public void Update()
     {
         boolean[] flag=game.keys.flag;
-        Climbing=(OnRope&&flag[5])||(Climbing&&IsOnGround);
-        if(Climbing) {
-            IsOnGround=true;
+
+        oldState= PlayerTile.AnimationState.state;
+        PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(trigFlags);
+        newState=PlayerTile.AnimationState.state;
+
+        trigFlags.Update(flag,newState);
+        if(trigFlags.Climbing) {
+            trigFlags.IsOnGround=true;
             x = (int)(( x + 8)/16)*16;
         }
         float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
-        Moves=false;
-        oldState= PlayerTile.AnimationState.state;
-        if(oldState!=11) {
+
+        if(newState!=11) {
             MoveLogic(flag, deltaTime);
             StartJump(flag);
             trowRope(flag);
         }
-        Attack=flag[6];
-        Duck= flag[2];
-        LookUp= flag[5];
-        PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(Moves,  Duck,IsOnGround, LookUp, Attack, OnEdgeLeft,OnEdgeRight, Hang,TooHigh,Climbing );
-        newState=PlayerTile.AnimationState.state;
-        Hang= newState== 8 || newState == 9;
-        TooHigh=false;
 
+        if(trigFlags.Climbing&&!trigFlags.Hang)
+        {
+            if(trigFlags.LookUp)
+                y-=MaxXSpeed/2*deltaTime;
+            if(trigFlags.Duck)
+                y+=MaxXSpeed/2*deltaTime;
+        }
         SetHang();
         JumpLogic(flag,deltaTime);
 
@@ -98,55 +100,55 @@ public class Player implements GameEntity {
         int h=PlayerTile.TILE_HEIGHT;
         int w=PlayerTile.TILE_WIDTH;
 
-        OnRope =game.map.tileMap[(y+4)/16][(x+2)/16].GetId()==6&&game.map.tileMap[(y+4)/16][(x+14)/16].GetId()==6;
+        trigFlags.OnRope =game.map.tileMap[(y+4)/16][(x+2)/16].GetId()==6&&game.map.tileMap[(y+4)/16][(x+14)/16].GetId()==6;
 
-        Exit=game.map.tileMap[(y+8)/16][(x+8)/16].GetId()==10;
+        trigFlags.Exit=game.map.tileMap[(y+8)/16][(x+8)/16].GetId()==10;
         //int wall=184;
-        CanHangLeft =!(game.map.tileMap[(y)/16][(x-1)/16].IsSolid()) && (game.map.tileMap[(y+4)/16][(x-1)/16].IsSolid());
+        trigFlags.CanHangLeft =!(game.map.tileMap[(y)/16][(x-1)/16].IsSolid()) && (game.map.tileMap[(y+4)/16][(x-1)/16].IsSolid());
         //left up || left down
-        wallLeft=(game.map.tileMap[(y+6)/16][(x-1)/16].IsSolid())||(game.map.tileMap[(y+h-2)/16][(x-1)/16].IsSolid());
+        trigFlags.wallLeft=(game.map.tileMap[(y+6)/16][(x-1)/16].IsSolid())||(game.map.tileMap[(y+h-2)/16][(x-1)/16].IsSolid());
 
-        CanHangRight =!(game.map.tileMap[(y)/16][(x+w+1)/16].IsSolid())&&(game.map.tileMap[(y+4)/16][(x+w+1)/16].IsSolid());
+        trigFlags.CanHangRight =!(game.map.tileMap[(y)/16][(x+w+1)/16].IsSolid())&&(game.map.tileMap[(y+4)/16][(x+w+1)/16].IsSolid());
         //right up || right down
-        wallRight=(game.map.tileMap[(y+6)/16][(x+w+1)/16].IsSolid())||(game.map.tileMap[(y+h-2)/16][(x+w+1)/16].IsSolid());
+        trigFlags.wallRight=(game.map.tileMap[(y+6)/16][(x+w+1)/16].IsSolid())||(game.map.tileMap[(y+h-2)/16][(x+w+1)/16].IsSolid());
 
         //up left || up right
-        HeadHit =(game.map.tileMap[(y-2)/16][(x+3)/16].IsSolid())||(game.map.tileMap[(y-2)/16][(x+w-3)/16].IsSolid());
+        trigFlags.HeadHit =(game.map.tileMap[(y-2)/16][(x+3)/16].IsSolid())||(game.map.tileMap[(y-2)/16][(x+w-3)/16].IsSolid());
         //down left
-        OnEdgeLeft=game.map.tileMap[(y+h)/16][(x+3)/16].IsSolid();
+        trigFlags.OnEdgeLeft=game.map.tileMap[(y+h)/16][(x+3)/16].IsSolid();
         //down right
-        OnEdgeRight=game.map.tileMap[(y+h)/16][(x+w-3)/16].IsSolid();
+        trigFlags.OnEdgeRight=game.map.tileMap[(y+h)/16][(x+w-3)/16].IsSolid();
 
-        boolean temp=(OnEdgeLeft)||(OnEdgeRight);
+        boolean temp=(trigFlags.OnEdgeLeft)||(trigFlags.OnEdgeRight)|| (trigFlags.OnRope&& trigFlags.Climbing);
 
-        if(IsOnGround!=temp) {
+        if(trigFlags.IsOnGround!=temp) {
             coyotetimer = System.nanoTime();
         }
-        if(!Hang&&!Climbing)
-            IsOnGround= temp;
+        if(!trigFlags.Hang|| !trigFlags.IsOnGround)
+            trigFlags.IsOnGround= temp;
     }
 
     private void JumpLogic(boolean[] flag,float deltaTime)
     {
-        if (!IsOnGround) {
+        if (!trigFlags.IsOnGround) {
             //if((int) yVel==0) {p0=y;}
-            if((HeadHit ||!flag[0])&& LongJump)
+            if((trigFlags.HeadHit ||!flag[0])&& trigFlags.LongJump)
             {
                 yVel =-2*(p0-y)/(TimeToMaxH);
                 yVel += YAccel *(((float)System.nanoTime()- JumpStart)/1_000_000_000);
-                LongJump =false;
-                HeadHit =false;
+                trigFlags.LongJump =false;
+                trigFlags.HeadHit =false;
             }
             y+= (YAccel * deltaTime * deltaTime + yVel * deltaTime);
             yVel+=YAccel*deltaTime;
         } else {
             if(abs(y-p0)>9*16) {
-                TooHigh=true;
+                trigFlags.TooHigh=true;
                 //System.out.println("too High");
             }
             p0=y;
-            LongJump=false;
-            if(!Climbing)
+            trigFlags.LongJump=false;
+            if(!trigFlags.Climbing)
                 y=(int)( y/16 )*16;
             yVel = 0;
         }
@@ -155,31 +157,31 @@ public class Player implements GameEntity {
     {
         int result = 0;
         if(flag[1]) {
-            if (!wallRight&&!Hang)
+            if (!trigFlags.wallRight&&!trigFlags.Hang)
                 result += 1;
             else{
                 xVel = 0;
             }
         }
         if(flag[3]) {
-            if (!wallLeft&&!Hang)
+            if (!trigFlags.wallLeft&&!trigFlags.Hang)
                 result -= 1;
             else{
                 xVel = 0;
             }
         }
-        if((xVel >0&&wallRight)||(xVel <0&&wallLeft)) {
+        if((xVel >0&&trigFlags.wallRight)||(xVel <0&&trigFlags.wallLeft)) {
             xVel = 0;
         }
         if(result ==0) {
             //stop
             if (xVel != 0)
-                if(abs(xVel)<0.1F|| Climbing) {
+                if(abs(xVel)<0.1F|| trigFlags.Climbing) {
                     xVel = 0;
                 }else
                     xVel -= signum(xVel) * XAccel * deltaTime;
         }else {    //move
-            Moves=true;
+            trigFlags.Moves=true;
             direction =result;
             xVel += result * XAccel * deltaTime;
         }
@@ -199,21 +201,21 @@ public class Player implements GameEntity {
     public void StartJump(boolean[] flag)
     {
         if (flag[0]) {
-            if(Relesed)
-                if(IsOnGround ||(float) (System.nanoTime() - coyotetimer) / 1_000_000_000<0.1F){
+            if(trigFlags.Relesed)
+                if(trigFlags.IsOnGround ||(float) (System.nanoTime() - coyotetimer) / 1_000_000_000<0.1F){
                     p0 = y;
                     yVel = -MaxJumpHeight * 2 / TimeToMaxH;
-                    LongJump = true;
-                    Relesed=false;
-                    IsOnGround = false;
-                    Climbing=false;
+                    trigFlags.LongJump = true;
+                    trigFlags.Relesed=false;
+                    trigFlags.IsOnGround = false;
+                    trigFlags.Climbing=false;
                     JumpStart = System.nanoTime();
-                    if(flag[2]&&Hang) {
+                    if(flag[2]&&trigFlags.Hang) {
                         yVel=0;
                     }
                 }
         }else
-            Relesed=true;
+            trigFlags.Relesed=true;
     }
     public void SetHang()
     {
@@ -226,17 +228,17 @@ public class Player implements GameEntity {
             y+=16;
             direction*=-1;
         }
-        if((CanHangRight &&direction>0|| CanHangLeft &&direction<0)&&Relesed)
+        if((trigFlags.CanHangRight &&direction>0|| trigFlags.CanHangLeft &&direction<0)&&trigFlags.Relesed&&!trigFlags.Climbing)
         {
-            IsOnGround=true;
+            trigFlags.IsOnGround=true;
             y=(int)( (y+16)/16 )*16;
-            Hang=true;
+            trigFlags.Hang=true;
         }
     }
     public void trowRope(boolean[] flag)
     {
-        if(flag[7]&&HasRope)
+        if(flag[7]&&trigFlags.HasRope)
             game.entityList.add(new Rope(getX(), getY(),game));
-        HasRope=!flag[7];
+        trigFlags.HasRope=!flag[7];
     }
 }

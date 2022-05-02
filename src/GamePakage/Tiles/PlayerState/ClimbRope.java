@@ -1,5 +1,6 @@
 package GamePakage.Tiles.PlayerState;
 
+import GamePakage.Flags;
 import GamePakage.Graphics.Assets;
 import GamePakage.Tiles.State;
 
@@ -20,8 +21,10 @@ public class ClimbRope extends State {
     }
 
     @Override
-    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean Hang, boolean TooHigh, boolean Climbing) {
-        if(!IsOnGround)
+    public State Handle(Flags trigFlags) {
+        if(trigFlags.Attack)
+            return new AttackState();
+        if(!trigFlags.IsOnGround)
             return new FallState();
         return this;
     }

@@ -1,5 +1,6 @@
 package GamePakage.Tiles.PlayerState;
 
+import GamePakage.Flags;
 import GamePakage.Tiles.State;
 
 public class AttackState extends State {
@@ -13,8 +14,8 @@ public class AttackState extends State {
     }
 
     @Override
-    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean Hang, boolean TooHigh, boolean Climbing) {
-        if(TooHigh)
+    public State Handle(Flags trigFlags) {
+        if(trigFlags.TooHigh)
             return new  StunState();
         if((int)frame==TotalFrames)
             return new StandState();

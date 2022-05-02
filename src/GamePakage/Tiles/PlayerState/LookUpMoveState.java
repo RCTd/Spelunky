@@ -1,5 +1,6 @@
 package GamePakage.Tiles.PlayerState;
 
+import GamePakage.Flags;
 import GamePakage.Tiles.State;
 
 public class LookUpMoveState extends State {
@@ -10,14 +11,14 @@ public class LookUpMoveState extends State {
         frame=0;
     }
     @Override
-    public State Handle(boolean Moves, boolean Duck, boolean IsOnGround, boolean LookUp, boolean OnAttack, boolean OnEdgeLeft, boolean OnEdgeRight, boolean Hang, boolean TooHigh, boolean Climbing) {
-        if(OnAttack)
+    public State Handle(Flags trigFlags) {
+        if(trigFlags.Attack)
             return new AttackState();
-        if(!IsOnGround)
+        if(!trigFlags.IsOnGround)
             return new FallState();
-        if(!Moves&& LookUp)
+        if(!trigFlags.Moves&& trigFlags.LookUp)
             return new LookUpState();
-        if(Moves&&!LookUp)
+        if(trigFlags.Moves&&!trigFlags.LookUp)
             return new MoveState();
         return this;
     }
