@@ -2,7 +2,6 @@ package GamePakage.Entitys;
 
 import GamePakage.Flags;
 import GamePakage.Game;
-import GamePakage.Tiles.PlayerState.ClimbRope;
 import GamePakage.Tiles.PlayerTile;
 import GamePakage.Tiles.WhipTile;
 
@@ -18,6 +17,7 @@ public class Player implements GameEntity {
     public WhipTile WhipTile=new WhipTile(0);
     public Flags trigFlags=new Flags();
 
+    private int Damage=0;
     private int direction =-1;
     private int newState, oldState;
     private float xVel =0,yVel,y,p0,x;
@@ -48,6 +48,8 @@ public class Player implements GameEntity {
     {
         boolean[] flag=game.keys.flag;
 
+        System.out.println(Damage);
+        Damage=0;
         oldState= PlayerTile.AnimationState.state;
         PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(trigFlags);
         newState=PlayerTile.AnimationState.state;
@@ -119,6 +121,8 @@ public class Player implements GameEntity {
         //down right
         trigFlags.OnEdgeRight=game.map.tileMap[(y+h)/16][(x+w-3)/16].IsSolid();
 
+        Damage=((game.map.tileMap[(y+h-2)/16][(x+w-3)/16].GetId()>7||game.map.tileMap[(y+h-2)/16][(x+3)/16].GetId()>7)&&!trigFlags.IsOnGround)?99:0;
+
         boolean temp=(trigFlags.OnEdgeLeft)||(trigFlags.OnEdgeRight)|| (trigFlags.OnRope&& trigFlags.Climbing);
 
         if(trigFlags.IsOnGround!=temp) {
@@ -131,7 +135,6 @@ public class Player implements GameEntity {
     private void JumpLogic(boolean[] flag,float deltaTime)
     {
         if (!trigFlags.IsOnGround) {
-            //if((int) yVel==0) {p0=y;}
             if((trigFlags.HeadHit ||!flag[0])&& trigFlags.LongJump)
             {
                 yVel =-2*(p0-y)/(TimeToMaxH);
@@ -155,6 +158,7 @@ public class Player implements GameEntity {
     }
     private void MoveLogic(boolean[] flag,float deltaTime)
     {
+        int dir=0;
         int result = 0;
         if(flag[1]) {
             if (!trigFlags.wallRight&&!trigFlags.Hang)
@@ -162,6 +166,7 @@ public class Player implements GameEntity {
             else{
                 xVel = 0;
             }
+            dir++;
         }
         if(flag[3]) {
             if (!trigFlags.wallLeft&&!trigFlags.Hang)
@@ -169,12 +174,14 @@ public class Player implements GameEntity {
             else{
                 xVel = 0;
             }
+            dir--;
         }
         if((xVel >0&&trigFlags.wallRight)||(xVel <0&&trigFlags.wallLeft)) {
             xVel = 0;
         }
         if(result ==0) {
             //stop
+            direction=dir!=0?dir:direction;
             if (xVel != 0)
                 if(abs(xVel)<0.1F|| trigFlags.Climbing) {
                     xVel = 0;
