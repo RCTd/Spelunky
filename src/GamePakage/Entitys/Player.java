@@ -238,7 +238,10 @@ public class Player implements GameEntity {
     public void trowRope(boolean[] flag)
     {
         if(flag[7]&&trigFlags.HasRope)
-            game.entityList.add(new Rope(getX(), getY(),game));
+            if(!flag[2])
+                game.entityList.add(new Rope(getX(), getY(),game));
+            else
+                game.entityList.add(new Rope(getX(), getY(),game,true));
         trigFlags.HasRope=!flag[7];
     }
 }
