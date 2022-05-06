@@ -9,6 +9,7 @@ import GamePakage.Map.Map;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Game extends JPanel implements Runnable {
@@ -45,6 +46,7 @@ public class Game extends JPanel implements Runnable {
     private Player player;
     public final Map map;
     private Thread gameThread;
+    BufferedImage bimg;
 
     public static int HEIGHT() {return 20*16;}
 
@@ -93,6 +95,7 @@ public class Game extends JPanel implements Runnable {
         offsetMaxX=map.width*16-width;
         offsetMaxY=map.height*16-height;
         offsetMinX=offsetMinY=0;
+        bimg=new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
     }
 
     /*! \fn public void run()
@@ -245,7 +248,10 @@ public class Game extends JPanel implements Runnable {
         }
         /// Se obtine contextul grafic curent in care se poate desena.
         assert bs != null;
-        Graphics g = bs.getDrawGraphics();
+        Graphics f = bs.getDrawGraphics();
+
+
+        Graphics g=bimg.getGraphics();
 
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
         g.translate(-camX,-camY);
@@ -255,6 +261,8 @@ public class Game extends JPanel implements Runnable {
         {
             obj.Draw(g);
         }
+
+        f.drawImage(bimg,0,0,1920,1080,null);
         // end operatie de desenare
         /// Se afiseaza pe ecran
         bs.show();

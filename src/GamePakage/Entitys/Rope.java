@@ -9,10 +9,13 @@ import java.awt.*;
 
 
 public class Rope implements GameEntity {
-    private Game game;
-    private float y,p0,p1;
-    private int x,state;
-    private RopeTile tile;
+    private final Game game;
+    private float y;
+    private final float p0;
+    private float p1;
+    private final int x;
+    private int state;
+    private final RopeTile tile;
     public boolean HeadHit=false,FloorHit=false;
 
     public Rope(int x,int y,Game game)

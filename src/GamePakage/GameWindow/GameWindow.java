@@ -64,12 +64,15 @@ public class GameWindow {
         /// randate) va recomand sa constrangeti deocamdata jucatorul
         /// sa se joace in fereastra stabilitata de voi. Puteti reveni asupra
         /// urmatorului apel ulterior.
-        wndFrame.setResizable(false);
+        wndFrame.setResizable(true);
         /// Recomand ca fereastra sa apara in centrul ecranului. Pentru orice
         /// alte pozitie se va apela "wndFrame.setLocation(x, y)" etc.
         wndFrame.setLocationRelativeTo(null);
         /// Implicit o fereastra cand este creata nu este vizibila motiv pentru
         /// care trebuie setata aceasta proprietate
+        //wndFrame.setVisible(true);
+        //wndFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //wndFrame.setUndecorated(true);
         wndFrame.setVisible(true);
 
         /// Creaza obiectul de tip canvas (panza) pe care se poate desena.
