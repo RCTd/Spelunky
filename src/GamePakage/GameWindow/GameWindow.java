@@ -32,8 +32,12 @@ public class GameWindow {
          */
     public GameWindow(String title, int width, int height) {
         wndTitle = title;    /*!< Retine titlul ferestrei.*/
-        wndWidth = width;    /*!< Retine latimea ferestrei.*/
-        wndHeight = height;   /*!< Retine inaltimea ferestrei.*/
+        /*wndWidth = width;    *//*!< Retine latimea ferestrei.*//*
+        wndHeight = height;   *//*!< Retine inaltimea ferestrei.*/
+        /*wndWidth=1920;
+        wndHeight=1080;*/
+        wndWidth=1280;
+        wndHeight=720;
         wndFrame = null;     /*!< Fereastra nu este construita.*/
     }
 
@@ -71,8 +75,8 @@ public class GameWindow {
         /// Implicit o fereastra cand este creata nu este vizibila motiv pentru
         /// care trebuie setata aceasta proprietate
         //wndFrame.setVisible(true);
-        //wndFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //wndFrame.setUndecorated(true);
+        wndFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        wndFrame.setUndecorated(true);
         wndFrame.setVisible(true);
 
         /// Creaza obiectul de tip canvas (panza) pe care se poate desena.

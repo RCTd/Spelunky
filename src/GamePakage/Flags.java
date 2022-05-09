@@ -6,6 +6,7 @@ public class Flags {
     public boolean OnEdgeLeft=false,OnEdgeRight=false,Hang=false,Exit=false;
     public boolean CanHangLeft =false, CanHangRight =false;
     public boolean Relesed=true,LongJump,Attack, OnRope =false,Climbing=false;
+    public boolean HasBomb;
 
     public void Update(boolean[] flag,int newState)
     {

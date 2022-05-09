@@ -13,7 +13,7 @@ public class HangState extends State {
 
     @Override
     public State Handle(Flags trigFlags) {
-        if(!trigFlags.IsOnGround)
+        if(!trigFlags.IsOnGround||!trigFlags.Hang)
             return new FallState();
         return this;
     }

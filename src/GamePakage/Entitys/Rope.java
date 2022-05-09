@@ -14,27 +14,23 @@ public class Rope implements GameEntity {
     private final float p0;
     private float p1;
     private final int x;
-    private int state;
-    private final RopeTile tile;
+    private int state=0;
+    private final RopeTile tile=new RopeTile(0);;
     public boolean HeadHit=false,FloorHit=false;
 
     public Rope(int x,int y,Game game)
     {
         this.game=game;
-        tile=new RopeTile(0);
         this.x=(x+8)/16*16;
         this.y=y;
         p0=y;
-        state=0;
     }
     public Rope(int x,int y,Game game,boolean yes)
     {
         this.game=game;
-        tile=new RopeTile(0);
         this.x=(x+8)/16*16;
         this.y=y;
         p0=y+8*16;
-        state=0;
     }
 
     @Override

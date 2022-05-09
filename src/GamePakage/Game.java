@@ -262,7 +262,7 @@ public class Game extends JPanel implements Runnable {
             obj.Draw(g);
         }
 
-        f.drawImage(bimg,0,0,1920,1080,null);
+        f.drawImage(bimg,0,0,wnd.GetWndWidth(),wnd.GetWndHeight(),null);
         // end operatie de desenare
         /// Se afiseaza pe ecran
         bs.show();

@@ -48,7 +48,7 @@ public class Player implements GameEntity {
     {
         boolean[] flag=game.keys.flag;
 
-        System.out.println(Damage);
+        //System.out.println(Damage);
         Damage=0;
         oldState= PlayerTile.AnimationState.state;
         PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(trigFlags);
@@ -65,6 +65,7 @@ public class Player implements GameEntity {
             MoveLogic(flag, deltaTime);
             StartJump(flag);
             trowRope(flag);
+            trowBomb(flag);
         }
 
         if(trigFlags.Climbing&&!trigFlags.Hang)
@@ -161,20 +162,24 @@ public class Player implements GameEntity {
         int dir=0;
         int result = 0;
         if(flag[1]) {
-            if (!trigFlags.wallRight&&!trigFlags.Hang)
-                result += 1;
-            else{
-                xVel = 0;
+            if(!trigFlags.Hang) {
+                if (!trigFlags.wallRight)
+                    result += 1;
+                else {
+                    xVel = 0;
+                }
+                dir++;
             }
-            dir++;
         }
         if(flag[3]) {
-            if (!trigFlags.wallLeft&&!trigFlags.Hang)
-                result -= 1;
-            else{
-                xVel = 0;
+            if(!trigFlags.Hang) {
+                if (!trigFlags.wallLeft)
+                    result -= 1;
+                else {
+                    xVel = 0;
+                }
+                dir--;
             }
-            dir--;
         }
         if((xVel >0&&trigFlags.wallRight)||(xVel <0&&trigFlags.wallLeft)) {
             xVel = 0;
@@ -218,6 +223,7 @@ public class Player implements GameEntity {
                     trigFlags.Climbing=false;
                     JumpStart = System.nanoTime();
                     if(flag[2]&&trigFlags.Hang) {
+                        trigFlags.Hang=false;
                         yVel=0;
                     }
                 }
@@ -239,6 +245,7 @@ public class Player implements GameEntity {
         {
             trigFlags.IsOnGround=true;
             y=(int)( (y+16)/16 )*16;
+            x = (int)(( x + 8)/16)*16;
             trigFlags.Hang=true;
         }
     }
@@ -250,5 +257,12 @@ public class Player implements GameEntity {
             else
                 game.entityList.add(new Rope(getX(), getY(),game,true));
         trigFlags.HasRope=!flag[7];
+    }
+
+    public void trowBomb(boolean[] flag)
+    {
+        if(flag[8]&&trigFlags.HasBomb)
+                game.entityList.add(new Bomb(getX(), getY(),0,0,game));
+        trigFlags.HasBomb=!flag[8];
     }
 }
