@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
     */
     public WallTile(int id) {
         super(null,id,16,16);
+        IsSolid=true;
         double rnd = Math.random();
         if (rnd < 0.1)
             img=Assets.BrickGoldBig;
@@ -30,11 +31,12 @@ import java.awt.image.BufferedImage;
     {
         super(null,id,16,16);
         this.img=img;
+        IsSolid=true;
     }
 
     @Override
     public boolean IsSolid() {
-        return true;
+        return IsSolid;
     }
 
     @Override

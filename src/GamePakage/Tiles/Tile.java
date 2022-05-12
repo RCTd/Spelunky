@@ -8,10 +8,11 @@ import java.awt.image.BufferedImage;
     \brief Retine toate dalele intr-un vector si ofera posibilitatea regasirii dupa un id.
  */
 public class Tile {
+    protected boolean IsSolid=false;
     public int TILE_WIDTH;
     public int TILE_HEIGHT;
     protected BufferedImage img;                                    /*!< Imaginea aferenta tipului de dala.*/
-    protected final int id;                                         /*!< Id-ul unic aferent tipului de dala.*/
+    protected int id;                                         /*!< Id-ul unic aferent tipului de dala.*/
 
 /*
     private static final int NO_TILES = 32;
@@ -52,7 +53,7 @@ public class Tile {
         \brief Returneaza proprietatea de dala solida (supusa coliziunilor) sau nu.
      */
     public boolean IsSolid() {
-        return false;
+        return IsSolid;
     }
 
     public boolean IsDistructable(){return false;}
@@ -63,4 +64,15 @@ public class Tile {
     public int GetId() {
         return id;
     }
+
+    public void Destroy()
+    {
+        if(IsDistructable())
+        {
+            img=null;
+            id=0;
+            IsSolid=false;
+        }
+    }
+
 }

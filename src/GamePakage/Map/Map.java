@@ -2,10 +2,7 @@ package GamePakage.Map;
 
 import GamePakage.Game;
 import GamePakage.Graphics.Assets;
-import GamePakage.Tiles.EdgeTile;
-import GamePakage.Tiles.Tile;
-import GamePakage.Tiles.WallTile;
-import GamePakage.Tiles.WallTopTile;
+import GamePakage.Tiles.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -161,10 +158,10 @@ public class Map {
                         tileMap[j + k][i + l] = new WallTile(1);
                 }else
                 if(strTemp.charAt(m)=='L')
-                    tileMap[j + k][i + l] = new WallTopTile(Assets.Ladder,6);
+                    tileMap[j + k][i + l] = new Tile(Assets.Ladder,6,16,16);
                 else
                 if(strTemp.charAt(m)=='P')
-                    tileMap[j + k][i + l] = new WallTopTile(Assets.LadderTop,6);
+                    tileMap[j + k][i + l] = new Tile(Assets.LadderTop,6,16,16);
                 else
                 if(strTemp.charAt(m)=='7'){
                     if(path.rand(1,3)==3)

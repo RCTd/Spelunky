@@ -188,7 +188,7 @@ public class Player implements GameEntity {
             //stop
             direction=dir!=0?dir:direction;
             if (xVel != 0)
-                if(abs(xVel)<0.1F|| trigFlags.Climbing) {
+                if(abs(xVel)<1F|| trigFlags.Climbing) {
                     xVel = 0;
                 }else
                     xVel -= signum(xVel) * XAccel * deltaTime;
@@ -261,8 +261,9 @@ public class Player implements GameEntity {
 
     public void trowBomb(boolean[] flag)
     {
+        System.out.println(xVel);
         if(flag[8]&&trigFlags.HasBomb)
-                game.entityList.add(new Bomb(getX(), getY(),0,0,game));
+                game.entityList.add(new Bomb(getX(), getY(),xVel,0,direction,game));
         trigFlags.HasBomb=!flag[8];
     }
 }
