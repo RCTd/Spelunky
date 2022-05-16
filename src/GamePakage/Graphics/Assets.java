@@ -12,6 +12,7 @@ public class Assets {
     /// Referinte catre elementele grafice (dale) utilizate in joc.
     public static BufferedImage playerSprite;
     public static BufferedImage toolsSprite;
+    public static BufferedImage explosionSprite;
 
     public static BufferedImage Brick;
     public static BufferedImage Brick2;
@@ -49,6 +50,7 @@ public class Assets {
 
         playerSprite=ImageLoader.LoadImage("/PlayerSprite.png");
         toolsSprite =ImageLoader.LoadImage("/ToolsSprite.png");
+        explosionSprite =ImageLoader.LoadImage("/ExplosionSprite.png");
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
         Brick=toolsSprite.getSubimage(0*16,2*16,16,16);
         Brick2=toolsSprite.getSubimage(1*16,2*16,16,16);

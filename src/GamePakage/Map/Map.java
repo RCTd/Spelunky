@@ -51,6 +51,7 @@ public class Map {
     }
 
     public void LoadTutorial() {
+        x=32;y=64;
         width=42;height=20;
         tileMap = new Tile[height][width];
         for (int i = 0; i < width; i++) {
@@ -86,8 +87,8 @@ public class Map {
             tileMap[j][0] = tileMap[j][width-1] = new EdgeTile( 3);
         }
 
-        for (int i = 1; i < height; i++) {
-            for (int j = 1; j < width; j++) {
+        for (int i = 1; i < height-1; i++) {
+            for (int j = 1; j < width-1; j++) {
                 if (matrix[i][j] == 184)
                     if (tileMap[i-1][j].GetId() == 0) {
                         tileMap[i][j] = new WallTile(Assets.BrickUp, 2);
@@ -95,11 +96,15 @@ public class Map {
                     } else
                         tileMap[i][j] = new WallTile(1);
                 else {
-                    tileMap[i][j] = new Tile(null, 0, 16, 16);
-                    if (tileMap[i - 1][j].GetId() == 1)
-                        tileMap[i - 1][j] = new WallTile(Assets.BrickDown, 1);
-                    if (tileMap[i - 1][j].GetId() == 2)
-                        tileMap[i - 1][j] = new WallTile(Assets.BrickUp2, 1);
+                    if (matrix[i][j] == 626) {
+                        tileMap[i][j] = new WallTopTile(Assets.Exit, 10,false);
+                    } else {
+                        tileMap[i][j] = new Tile(null, 0, 16, 16);
+                        if (tileMap[i - 1][j].GetId() == 1)
+                            tileMap[i - 1][j] = new WallTile(Assets.BrickDown, 1);
+                        if (tileMap[i - 1][j].GetId() == 2)
+                            tileMap[i - 1][j] = new WallTile(Assets.BrickUp2, 1);
+                    }
                 }
             }
         }
@@ -158,10 +163,10 @@ public class Map {
                         tileMap[j + k][i + l] = new WallTile(1);
                 }else
                 if(strTemp.charAt(m)=='L')
-                    tileMap[j + k][i + l] = new Tile(Assets.Ladder,6,16,16);
+                    tileMap[j + k][i + l] = new WallTopTile(Assets.Ladder,6,false);
                 else
                 if(strTemp.charAt(m)=='P')
-                    tileMap[j + k][i + l] = new Tile(Assets.LadderTop,6,16,16);
+                    tileMap[j + k][i + l] = new WallTopTile(Assets.LadderTop,6,false);
                 else
                 if(strTemp.charAt(m)=='7'){
                     if(path.rand(1,3)==3)
@@ -170,9 +175,9 @@ public class Map {
                 if(strTemp.charAt(m)=='9') {
                     if (j / 10 == 0) {
                         x=(i+l)*16;y=(j+k)*16;
-                        tileMap[j + k][i + l] = new WallTopTile(Assets.Entrance, 4);
+                        tileMap[j + k][i + l] = new WallTopTile(Assets.Entrance, 4,false);
                     }else
-                        tileMap[j + k][i + l] = new WallTopTile(Assets.Exit, 10);
+                        tileMap[j + k][i + l] = new WallTopTile(Assets.Exit, 10,false);
                 }
                 m++;
             }

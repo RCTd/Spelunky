@@ -5,6 +5,7 @@ import GamePakage.Graphics.Assets;
 import java.awt.image.BufferedImage;
 
 public class WallTopTile extends Tile {
+    boolean destructable=true;
     /*! \fn public WaterTile(int id)
        \brief Constructorul de initializare al clasei
 
@@ -22,10 +23,15 @@ public class WallTopTile extends Tile {
     {
         super(img,id,16,16);
     }
+    public WallTopTile(BufferedImage img,int id,boolean destructable)
+    {
+        super(img,id,16,16);
+        this.destructable=destructable;
+    }
 
     @Override
     public boolean IsDistructable() {
-        return true;
+        return destructable;
     }
 
     @Override

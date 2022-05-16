@@ -4,60 +4,84 @@ import GamePakage.Flags;
 import GamePakage.Game;
 import GamePakage.GameTimer;
 import GamePakage.Tiles.BombTile;
-import GamePakage.Tiles.Tile;
 
 import java.awt.*;
 
-import static GamePakage.Game.XAccel;
+import static GamePakage.Game.*;
+import static java.lang.Math.abs;
 import static java.lang.Math.signum;
 
 public class Bomb implements GameEntity {
     private final BombTile tile;
-    private float xVel,yVel,x,y,p0,yAccel=100/(0.1F*0.1F);
-    private Game game;
-    private Flags trigFlags=new Flags();
-    private long StartMoment;
+    private float xVel;
+    private float yVel;
+    private float x;
+    private float y;
+    private final float p0;
+    private final Game game;
+    private final Flags trigFlags=new Flags();
+    private final long StartMoment;
 
 
-    public Bomb(float x, float y, float xVel, float yVel,int direction, Game game)
+    public Bomb(float x, float y, float xVel, float yVel, Game game)
     {
         tile=new BombTile(0);
         this.x=x;
         this.y=y;
-        this.xVel=xVel+direction*800;
+        p0=y;
+        this.xVel=xVel;
         this.yVel=yVel;
-        this.yVel += -100 / 0.1F;
+        //this.yVel += -100 / 0.1F;
         this.game=game;
         StartMoment=System.nanoTime();
+        trigFlags.LongJump=true;
+        trigFlags.IsOnGround=false;
     }
 
     @Override
     public void Update() {
-        if(System.nanoTime()-StartMoment>2_000_000_000)
+        if(System.nanoTime()-StartMoment>1_000_000_000)
         {
-            for (int i = -16; i <=16; i+=16) {
-                for (int j = -16; j <=16; j+=16) {
-                    game.map.tileMap[((int) y + i) / 16][((int) x+j) / 16].Destroy();
-                }
-            }/*
-            game.map.tileMap[((int) y + 8) / 16][((int) x + 3) / 16].Destroy();
-            game.map.tileMap[((int) y ) / 16][((int) x + 3) / 16].Destroy();
-            game.map.tileMap[((int) y -8) / 16][((int) x + 3) / 16].Destroy();
-            game.map.tileMap[((int) y + 8) / 16][((int) x + 3) / 16].Destroy();*/
+            game.addList.add(new Explosion((int)x,(int)y,game));
             game.removeList.add(this);
         }
         float deltaTime=GameTimer.getInstance().getDeltaTime();
+        MoveLogic(deltaTime);
+        FloatLogic(deltaTime);
+    }
+
+    private void MoveLogic(float deltaTime)
+    {
+        if((xVel >0&&trigFlags.wallRight)||(xVel <0&&trigFlags.wallLeft)) {
+            xVel = abs(xVel)<1F?0:-xVel*0.66F;
+        }
         x+=xVel*deltaTime;
         xVel -= signum(xVel) * XAccel * deltaTime;
-        FloatLogic(deltaTime);
     }
 
     private void FloatLogic(float deltaTime)
     {
         if(!trigFlags.IsOnGround)
         {
+            if(trigFlags.HeadHit && trigFlags.LongJump)
+            {
+                yVel =-(p0-y)/(0.1F);
+                yVel += YAccel *(((float)System.nanoTime()- StartMoment)/1_000_000_000);
+                trigFlags.LongJump =false;
+                trigFlags.HeadHit =false;
+            }
+            float yAccel = 100 / (0.1F * 0.1F);
             y+= (yAccel * deltaTime * deltaTime + yVel * deltaTime);
-            yVel+=yAccel*deltaTime;
+            yVel+= yAccel *deltaTime;
+        }else
+        {
+            if(abs(yVel)>=200)
+            {
+                yVel = -yVel / 2;
+                y -= 1;
+                trigFlags.IsOnGround = false;
+            }else
+                yVel=0;
         }
     }
 
@@ -68,12 +92,6 @@ public class Bomb implements GameEntity {
 
     @Override
     public void Collide() {
-        int x=(int)this.x;
-        int y=(int)this.y;
-        //down left
-        trigFlags.OnEdgeLeft=game.map.tileMap[(y+8)/16][(x+3)/16].IsSolid();
-        //down right
-        trigFlags.OnEdgeRight=game.map.tileMap[(y+8)/16][(x+8-3)/16].IsSolid();
-        trigFlags.IsOnGround=(trigFlags.OnEdgeLeft)||(trigFlags.OnEdgeRight);
+        trigFlags.Collide((int)x,(int)y,8,8,game);
     }
 }

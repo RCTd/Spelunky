@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class Game extends JPanel implements Runnable {
     public ArrayList<GameEntity> entityList;
     public ArrayList<GameEntity> removeList;
+    public ArrayList<GameEntity> addList;
     public static int BottomLine=Game.HEIGHT()-32;
     public static final int MaxJumpHeight =16+5;//100
     public static final float TimeToMaxH = 0.2F;//0.2
@@ -81,14 +82,15 @@ public class Game extends JPanel implements Runnable {
         Assets.Init();
         entityList=new ArrayList<>();
         removeList=new ArrayList<>();
+        addList=new ArrayList<>();
         player=new Player(this);
         camX= player.getX()-width/2;
         camY= player.getY()-height/2;
         keys=new PlayerKeyListener();
         wnd.GetCanvas().addKeyListener(keys);
 
-        //map.LoadTutorial();
-        map.Level();
+        map.LoadTutorial();
+        //map.Level();
         player.setX(map.x);
         player.setY(map.y);
         BottomLine=map.height*16-32;
@@ -187,6 +189,10 @@ public class Game extends JPanel implements Runnable {
             map.Level();
             player.setX(map.x);
             player.setY(map.y);
+            BottomLine=map.height*16-32;
+            offsetMaxX=map.width*16-width;
+            offsetMaxY=map.height*16-height;
+            offsetMinX=offsetMinY=0;
         }
         for(GameEntity obj:entityList)
         {
@@ -224,6 +230,8 @@ public class Game extends JPanel implements Runnable {
             entityList.remove(obj);
         }
         removeList.clear();
+        entityList.addAll(addList);
+        addList.clear();
     }
 
     /*! \fn private void Draw()

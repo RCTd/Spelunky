@@ -47,8 +47,6 @@ public class Player implements GameEntity {
     public void Update()
     {
         boolean[] flag=game.keys.flag;
-
-        //System.out.println(Damage);
         Damage=0;
         oldState= PlayerTile.AnimationState.state;
         PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(trigFlags);
@@ -102,35 +100,10 @@ public class Player implements GameEntity {
         int y= getY();
         int h=PlayerTile.TILE_HEIGHT;
         int w=PlayerTile.TILE_WIDTH;
-
-        trigFlags.OnRope =game.map.tileMap[(y+4)/16][(x+2)/16].GetId()==6&&game.map.tileMap[(y+4)/16][(x+14)/16].GetId()==6;
-
-        trigFlags.Exit=game.map.tileMap[(y+8)/16][(x+8)/16].GetId()==10;
-        //int wall=184;
-        trigFlags.CanHangLeft =!(game.map.tileMap[(y)/16][(x-1)/16].IsSolid()) && (game.map.tileMap[(y+4)/16][(x-1)/16].IsSolid());
-        //left up || left down
-        trigFlags.wallLeft=(game.map.tileMap[(y+6)/16][(x-1)/16].IsSolid())||(game.map.tileMap[(y+h-2)/16][(x-1)/16].IsSolid());
-
-        trigFlags.CanHangRight =!(game.map.tileMap[(y)/16][(x+w+1)/16].IsSolid())&&(game.map.tileMap[(y+4)/16][(x+w+1)/16].IsSolid());
-        //right up || right down
-        trigFlags.wallRight=(game.map.tileMap[(y+6)/16][(x+w+1)/16].IsSolid())||(game.map.tileMap[(y+h-2)/16][(x+w+1)/16].IsSolid());
-
-        //up left || up right
-        trigFlags.HeadHit =(game.map.tileMap[(y-2)/16][(x+3)/16].IsSolid())||(game.map.tileMap[(y-2)/16][(x+w-3)/16].IsSolid());
-        //down left
-        trigFlags.OnEdgeLeft=game.map.tileMap[(y+h)/16][(x+3)/16].IsSolid();
-        //down right
-        trigFlags.OnEdgeRight=game.map.tileMap[(y+h)/16][(x+w-3)/16].IsSolid();
+        trigFlags.Collide(x,y,w,h,game);
 
         Damage=((game.map.tileMap[(y+h-2)/16][(x+w-3)/16].GetId()>7||game.map.tileMap[(y+h-2)/16][(x+3)/16].GetId()>7)&&!trigFlags.IsOnGround)?99:0;
 
-        boolean temp=(trigFlags.OnEdgeLeft)||(trigFlags.OnEdgeRight)|| (trigFlags.OnRope&& trigFlags.Climbing);
-
-        if(trigFlags.IsOnGround!=temp) {
-            coyotetimer = System.nanoTime();
-        }
-        if(!trigFlags.Hang|| !trigFlags.IsOnGround)
-            trigFlags.IsOnGround= temp;
     }
 
     private void JumpLogic(boolean[] flag,float deltaTime)
@@ -147,8 +120,7 @@ public class Player implements GameEntity {
             yVel+=YAccel*deltaTime;
         } else {
             if(abs(y-p0)>9*16) {
-                trigFlags.TooHigh=true;
-                //System.out.println("too High");
+                trigFlags.TooHigh = true;
             }
             p0=y;
             trigFlags.LongJump=false;
@@ -161,25 +133,21 @@ public class Player implements GameEntity {
     {
         int dir=0;
         int result = 0;
-        if(flag[1]) {
-            if(!trigFlags.Hang) {
-                if (!trigFlags.wallRight)
-                    result += 1;
-                else {
-                    xVel = 0;
-                }
-                dir++;
+        if(flag[1]&&!trigFlags.Hang) {
+            if (!trigFlags.wallRight)
+                result += 1;
+            else {
+                xVel = 0;
             }
+            dir++;
         }
-        if(flag[3]) {
-            if(!trigFlags.Hang) {
-                if (!trigFlags.wallLeft)
-                    result -= 1;
-                else {
-                    xVel = 0;
-                }
-                dir--;
+        if(flag[3]&&!trigFlags.Hang) {
+            if (!trigFlags.wallLeft)
+                result -= 1;
+            else {
+                xVel = 0;
             }
+            dir--;
         }
         if((xVel >0&&trigFlags.wallRight)||(xVel <0&&trigFlags.wallLeft)) {
             xVel = 0;
@@ -261,9 +229,15 @@ public class Player implements GameEntity {
 
     public void trowBomb(boolean[] flag)
     {
-        System.out.println(xVel);
-        if(flag[8]&&trigFlags.HasBomb)
-                game.entityList.add(new Bomb(getX(), getY(),xVel,0,direction,game));
+        if(flag[8]&&trigFlags.HasBomb) {
+            if(flag[5])
+                game.entityList.add(new Bomb(getX()+8, getY(), xVel+direction*800, -abs(yVel)-(100 / 0.1F), game));
+            else
+                if(flag[2])
+                    game.entityList.add(new Bomb(getX()+8, getY(), xVel, 0, game));
+                else
+                    game.entityList.add(new Bomb(getX()+8, getY(), xVel+direction*900,-abs(yVel)-(70 / 0.1F) , game));
+        }
         trigFlags.HasBomb=!flag[8];
     }
 }
