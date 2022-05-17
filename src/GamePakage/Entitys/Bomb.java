@@ -3,7 +3,7 @@ package GamePakage.Entitys;
 import GamePakage.Flags;
 import GamePakage.Game;
 import GamePakage.GameTimer;
-import GamePakage.Tiles.BombTile;
+import GamePakage.Tiles.PlayerToolsTiles.BombTile;
 
 import java.awt.*;
 

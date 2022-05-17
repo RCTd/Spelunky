@@ -1,11 +1,12 @@
-package GamePakage.Tiles;
+package GamePakage.Tiles.PlayerToolsTiles;
 
 import GamePakage.Graphics.Assets;
+import GamePakage.Tiles.Tile;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class RopeTile extends Tile{
+public class RopeTile extends Tile {
     public int state=0;
     public RopeTile(int id){
         super(Assets.toolsSprite,id,16,16);

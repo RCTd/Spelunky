@@ -1,8 +1,9 @@
-package GamePakage.Tiles;
+package GamePakage.Tiles.WorldTiles;
 
 import GamePakage.Graphics.Assets;
+import GamePakage.Tiles.Tile;
 
-public class EdgeTile extends Tile{
+public class EdgeTile extends Tile {
     public EdgeTile(int id)
     {
         super(Assets.Brick,id,16,16);

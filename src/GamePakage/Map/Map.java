@@ -1,8 +1,10 @@
 package GamePakage.Map;
 
-import GamePakage.Game;
 import GamePakage.Graphics.Assets;
 import GamePakage.Tiles.*;
+import GamePakage.Tiles.WorldTiles.EdgeTile;
+import GamePakage.Tiles.WorldTiles.WallTile;
+import GamePakage.Tiles.WorldTiles.WallTopTile;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

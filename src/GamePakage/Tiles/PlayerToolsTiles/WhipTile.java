@@ -1,11 +1,12 @@
-package GamePakage.Tiles;
+package GamePakage.Tiles.PlayerToolsTiles;
 
 import GamePakage.Graphics.Assets;
+import GamePakage.Tiles.Tile;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class WhipTile extends Tile{
+public class WhipTile extends Tile {
     public int direction=-1;
     public int state=0;
     public WhipTile(int id){

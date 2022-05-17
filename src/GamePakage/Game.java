@@ -44,7 +44,7 @@ public class Game extends JPanel implements Runnable {
     private final int height;
     private GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
     private boolean runState;   /*!< Flag ce starea firului de executie.*/
-    private Player player;
+    public Player player;
     public final Map map;
     private Thread gameThread;
     BufferedImage bimg;
@@ -288,5 +288,10 @@ public class Game extends JPanel implements Runnable {
             obj.Collide();
         }
     }
+
+    public double getDeltaTime() {
+        return GameTimer.getInstance().getDeltaTime();
+    }
+
 }
 

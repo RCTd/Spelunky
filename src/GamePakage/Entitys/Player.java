@@ -2,8 +2,8 @@ package GamePakage.Entitys;
 
 import GamePakage.Flags;
 import GamePakage.Game;
-import GamePakage.Tiles.PlayerTile;
-import GamePakage.Tiles.WhipTile;
+import GamePakage.Tiles.PlayerToolsTiles.PlayerTile;
+import GamePakage.Tiles.PlayerToolsTiles.WhipTile;
 
 import java.awt.*;
 
@@ -21,6 +21,7 @@ public class Player implements GameEntity {
     private int direction =-1;
     private int newState, oldState;
     private float xVel =0,yVel,y,p0,x;
+    private  float OldX,OldY;
     private long JumpStart,Time=0;
 
     public int getX() {
@@ -47,6 +48,8 @@ public class Player implements GameEntity {
     public void Update()
     {
         boolean[] flag=game.keys.flag;
+        OldX=x;
+        OldY=y;
         Damage=0;
         oldState= PlayerTile.AnimationState.state;
         PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(trigFlags);
@@ -220,8 +223,10 @@ public class Player implements GameEntity {
     public void trowRope(boolean[] flag)
     {
         if(flag[7]&&trigFlags.HasRope)
-            if(!flag[2])
+            if(!flag[2]){
                 game.entityList.add(new Rope(getX(), getY(),game));
+                game.entityList.add(new Bat(getX(), getY(),game));
+            }
             else
                 game.entityList.add(new Rope(getX(), getY(),game,true));
         trigFlags.HasRope=!flag[7];

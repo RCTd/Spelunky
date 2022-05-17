@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 
 public class PlayerKeyListener implements KeyListener {
     public boolean[] flag;
+    public boolean up, down, left, right;
 
     public PlayerKeyListener()
     {
@@ -55,4 +56,5 @@ public class PlayerKeyListener implements KeyListener {
         if(e.getKeyCode()==KeyEvent.VK_C)
             flag[8]=false;
     }
+
 }

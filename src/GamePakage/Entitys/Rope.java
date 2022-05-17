@@ -2,7 +2,7 @@ package GamePakage.Entitys;
 
 import GamePakage.Game;
 import GamePakage.GameTimer;
-import GamePakage.Tiles.RopeTile;
+import GamePakage.Tiles.PlayerToolsTiles.RopeTile;
 import GamePakage.Tiles.Tile;
 
 import java.awt.*;

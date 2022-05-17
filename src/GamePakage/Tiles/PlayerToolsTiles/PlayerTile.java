@@ -1,6 +1,8 @@
-package GamePakage.Tiles;
+package GamePakage.Tiles.PlayerToolsTiles;
 import GamePakage.Graphics.Assets;
 import GamePakage.Tiles.PlayerState.StandState;
+import GamePakage.Tiles.State;
+import GamePakage.Tiles.Tile;
 
 import java.awt.*;
 

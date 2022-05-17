@@ -1,5 +1,6 @@
-package GamePakage.Tiles;
+package GamePakage.Tiles.WorldTiles;
 import GamePakage.Graphics.Assets;
+import GamePakage.Tiles.Tile;
 
 import java.awt.image.BufferedImage;
 
