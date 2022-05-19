@@ -64,7 +64,7 @@ public class Game extends JPanel implements Runnable {
         /// Resetarea flagului runState ce indica starea firului de executie (started/stoped)
         runState = false;
         //map=new Map(42,20);
-        map=new Map();
+        map=new Map(this);
     }
 
     /*! \fn private void init()
@@ -89,8 +89,8 @@ public class Game extends JPanel implements Runnable {
         keys=new PlayerKeyListener();
         wnd.GetCanvas().addKeyListener(keys);
 
-        map.LoadTutorial();
-        //map.Level();
+        //map.LoadTutorial();
+        map.Level();
         player.setX(map.x);
         player.setY(map.y);
         BottomLine=map.height*16-32;
@@ -186,6 +186,7 @@ public class Game extends JPanel implements Runnable {
         player.Update();
         if(player.trigFlags.Exit)
         {
+            entityList.clear();
             map.Level();
             player.setX(map.x);
             player.setY(map.y);

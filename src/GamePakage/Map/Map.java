@@ -1,5 +1,7 @@
 package GamePakage.Map;
 
+import GamePakage.Entitys.Bat;
+import GamePakage.Game;
 import GamePakage.Graphics.Assets;
 import GamePakage.Tiles.*;
 import GamePakage.Tiles.WorldTiles.EdgeTile;
@@ -15,14 +17,17 @@ public class Map {
     public int width, height;
     public int x=20,y=20;
     public int[][] matrix;
+    private Game game;
 
-    public Map() {
+    public Map(Game game) {
+        this.game=game;
         width = 42;
         height = 20;
         tileMap = new Tile[height][width];
     }
 
-    public Map(int width, int height) {
+    public Map(int width, int height,Game game) {
+        this.game=game;
         this.width = width;
         this.height = height;
         tileMap = new Tile[height][width];
@@ -140,20 +145,37 @@ public class Map {
         }
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                SetTileMap(tileMap, i*10+1,j*8+1,path);
+                SetTileMap(i*10+1,j*8+1,path);
+            }
+        }
+        SetEntitys();
+    }
+
+    private void SetEntitys() {
+        for (int i = 5; i < height-1; i++) {
+            for (int j = 5; j < width-1; j++) {
+                if (!tileMap[i][j].IsSolid()) {
+                    if (tileMap[i - 1][j].IsSolid()&&Math.random()<0.0366)
+                    {
+                        game.entityList.add(new Bat(j*16,i*16,game));
+                    }
+                    /*if(tileMap[i+1][j].IsSolid()&&Math.random()<166)
+                        game.entityList.add(new Bat(j*16,i*16,game));*/
+                }
             }
         }
     }
 
-    public void SetTileMap(Tile[][] tileMap, int i, int j,Path path) {
+    private void SetTileMap(int i, int j,Path path) {
         String strTemp=RoomGetTemplate(path,i/10,j/8);
         int m=0;
         for (int k = 0; k < 8; k++) {
             for (int l = 0; l < 10; l++) {
                 if(strTemp.charAt(m)=='0') {
                     tileMap[j + k][i + l] = new Tile(null, 0, 16, 16);
-                    if(tileMap[j+k-1][i+l].GetId()==1)
+                    if(tileMap[j+k-1][i+l].GetId()==1){
                         tileMap[j + k-1][i + l]=new WallTile(Assets.BrickDown,1);
+                    }
                     if(tileMap[j+k-1][i+l].GetId()==2)
                         tileMap[j + k-1][i + l]=new WallTile(Assets.BrickUp2,1);
                 }else
@@ -186,7 +208,7 @@ public class Map {
         }
     }
 
-    public String RoomGetTemplate(Path path,int i,int j)
+    private String RoomGetTemplate(Path path,int i,int j)
     {
         if(path.path[j][i]==0)
             path.path[j][i]= 1;

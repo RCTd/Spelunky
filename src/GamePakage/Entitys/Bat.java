@@ -2,28 +2,40 @@ package GamePakage.Entitys;
 
 import GamePakage.Flags;
 import GamePakage.Game;
+import GamePakage.Tiles.BatTile;
 
 import java.awt.*;
 
 public class Bat implements GameEntity{
-        private float x;
-        private float y;
-        private float oldX;
-        private float oldY;
-        private Game game;
-        private float batspeed=120;
-        private Flags triflag;
+    private float x, y,oldX,oldY,targetX,targetY,deltaX,deltaY,distance;
+    private final Game game;
+    private final Flags triflag;
+    private final BatTile batTile=new BatTile(0);
 
     public Bat( float x, float y,Game game){
         this.game = game;
         this.x = (int)x;
         this.y = (int)y;
+        oldX=this.x;
+        oldY=this.y;
         triflag = new Flags();
+        triflag.HeadHit=true;
     }
 
     @Override
     public void Update() {
-        Target();
+        targetX = game.player.getX();
+        targetY = game.player.getY();
+        deltaX = targetX - x;
+        deltaY = targetY - y;
+        distance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        if(batTile.getState()==0) {
+            if (distance < 100&&deltaY>0||!triflag.HeadHit) {
+                batTile.setState(1);
+            }
+        }else {
+            Target();
+        }
         //collision detection with player
         /*if(game.player.getX()>x && game.player.getX()<x+16 && game.player.getY()>y && game.player.getY()<y+16){
             game.player.setHealth(game.player.getHealth()-1);
@@ -36,11 +48,7 @@ public class Bat implements GameEntity{
         oldX = x;
         oldY = y;
         double deltatime = game.getDeltaTime();
-        float targetX = game.player.getX();
-        float targetY = game.player.getY();
-        float deltaX = targetX - x;
-        float deltaY = targetY - y;
-        float distance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        float batspeed = 120;
         float speed = (float) (deltatime * batspeed);
         if (distance < speed) {
             x = targetX;
@@ -50,12 +58,16 @@ public class Bat implements GameEntity{
             x += deltaX / distance * speed;
             y += deltaY / distance * speed;
         }
+        if(oldX-x>0){
+            batTile.setState(1);
+        }else
+            batTile.setState(2);
+
     }
 
     @Override
     public void Draw(Graphics g) {
-        g.setColor(Color.red);
-        g.fillRect((int) x, (int) y, 16, 16);
+        batTile.Draw(g, (int) x, (int) y);
     }
 
     @Override
