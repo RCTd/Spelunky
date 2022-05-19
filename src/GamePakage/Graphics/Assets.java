@@ -46,7 +46,6 @@ public class Assets {
      */
     public static void Init() {
         /// Se creaza temporar un obiect SpriteSheet initializat prin intermediul clasei ImageLoader
-        //SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/textures/PaooGameSpriteSheet.png")); res/textures/spritesheet.png
         SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/BGSprite.png"));
 
         playerSprite=ImageLoader.LoadImage("/PlayerSprite.png");

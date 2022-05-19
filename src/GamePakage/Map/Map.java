@@ -1,6 +1,7 @@
 package GamePakage.Map;
 
 import GamePakage.Entitys.Bat;
+import GamePakage.Entitys.Snake;
 import GamePakage.Game;
 import GamePakage.Graphics.Assets;
 import GamePakage.Tiles.*;
@@ -17,7 +18,7 @@ public class Map {
     public int width, height;
     public int x=20,y=20;
     public int[][] matrix;
-    private Game game;
+    private final Game game;
 
     public Map(Game game) {
         this.game=game;
@@ -159,8 +160,8 @@ public class Map {
                     {
                         game.entityList.add(new Bat(j*16,i*16,game));
                     }
-                    /*if(tileMap[i+1][j].IsSolid()&&Math.random()<166)
-                        game.entityList.add(new Bat(j*16,i*16,game));*/
+                    if(tileMap[i+1][j].IsSolid()&&Math.random()<0.0366)
+                        game.entityList.add(new Snake(j*16,i*16,game));
                 }
             }
         }
