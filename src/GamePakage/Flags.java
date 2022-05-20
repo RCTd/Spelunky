@@ -20,27 +20,28 @@ public class Flags {
         Hang= newState== 8 || newState == 9;
         TooHigh=false;
     }
-    public void Collide(int x,int y,int w,int h,Game game)
+    public void Collide(int x, int y, int w, int h, int ofx, int ofy, Game game)
     {
+        //ofx=1; ofy=2
         OnRope =game.map.tileMap[(y+4)/16][(x+2)/16].GetId()==6&&game.map.tileMap[(y+4)/16][(x+14)/16].GetId()==6;
 
         Exit=game.map.tileMap[(y+8)/16][(x+8)/16].GetId()==10;
         //int wall=184;
         CanHangLeft =!(game.map.tileMap[(y)/16][(x-1)/16].IsSolid()) && (game.map.tileMap[(y+4)/16][(x-1)/16].IsSolid());
         //left up || left down
-        wallLeft=(game.map.tileMap[(y+6)/16][(x-1)/16].IsSolid())||(game.map.tileMap[(y+h-2)/16][(x-1)/16].IsSolid());
+        wallLeft=(game.map.tileMap[(y+ofy)/16][(x-ofx)/16].IsSolid())||(game.map.tileMap[(y+h-ofy)/16][(x-ofx)/16].IsSolid());
 
         CanHangRight =!(game.map.tileMap[(y)/16][(x+w+1)/16].IsSolid())&&(game.map.tileMap[(y+4)/16][(x+w+1)/16].IsSolid());
         //right up || right down
-        wallRight=(game.map.tileMap[(y+6)/16][(x+w+1)/16].IsSolid())||(game.map.tileMap[(y+h-2)/16][(x+w+1)/16].IsSolid());
+        wallRight=(game.map.tileMap[(y+ofy)/16][(x+w+ofx)/16].IsSolid())||(game.map.tileMap[(y+h-ofy)/16][(x+w+ofx)/16].IsSolid());
 
         //up left || up right
-        HeadHit =(game.map.tileMap[(y-2)/16][(x+3)/16].IsSolid())||(game.map.tileMap[(y-2)/16][(x+w-3)/16].IsSolid());
+        HeadHit =(game.map.tileMap[(y-ofy)/16][(x+ofx)/16].IsSolid())||(game.map.tileMap[(y-ofy)/16][(x+w-ofx)/16].IsSolid());
         //down left
 
-        OnEdgeLeft=game.map.tileMap[(y+h)/16][(x+3)/16].IsSolid();
+        OnEdgeLeft=game.map.tileMap[(y+h)/16][(x+ofx)/16].IsSolid();
         //down right
-        OnEdgeRight=game.map.tileMap[(y+h)/16][(x+w-3)/16].IsSolid();
+        OnEdgeRight=game.map.tileMap[(y+h)/16][(x+w-ofx)/16].IsSolid();
 
         boolean temp=(OnEdgeLeft)||(OnEdgeRight)|| (OnRope&& Climbing);
 

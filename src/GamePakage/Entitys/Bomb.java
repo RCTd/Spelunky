@@ -92,6 +92,6 @@ public class Bomb implements GameEntity {
 
     @Override
     public void Collide() {
-        trigFlags.Collide((int)x,(int)y,8,8,game);
+        trigFlags.Collide((int)x,(int)y, 8, 8, 0,2, game);
     }
 }

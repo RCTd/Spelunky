@@ -157,9 +157,7 @@ public class Map {
             for (int j = 5; j < width-1; j++) {
                 if (!tileMap[i][j].IsSolid()) {
                     if (tileMap[i - 1][j].IsSolid()&&Math.random()<0.0366)
-                    {
                         game.entityList.add(new Bat(j*16,i*16,game));
-                    }
                     if(tileMap[i+1][j].IsSolid()&&Math.random()<0.0366)
                         game.entityList.add(new Snake(j*16,i*16,game));
                 }

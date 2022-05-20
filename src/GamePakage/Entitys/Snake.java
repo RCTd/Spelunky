@@ -9,7 +9,7 @@ import java.awt.*;
 import static GamePakage.Game.YAccel;
 
 public class Snake implements GameEntity{
-    private float x, y,oldX,oldY,yVel=0;
+    private float x, y,oldX,yVel=0;
     private int direction=1;
     private final Flags triflag=new Flags();
     private final Game game;
@@ -20,13 +20,11 @@ public class Snake implements GameEntity{
         this.x=x;
         this.y=y;
         oldX=x;
-        oldY=y;
     }
 
     @Override
     public void Update() {
         oldX=x;
-        oldY=y;
         float snakespeed=80;
         double deltaTime=game.getDeltaTime();
         x+=direction*snakespeed*game.getDeltaTime();
@@ -45,7 +43,7 @@ public class Snake implements GameEntity{
 
     @Override
     public void Collide() {
-        triflag.Collide((int)x,(int)y,16,16,game);
+        triflag.Collide((int)x,(int)y, 16, 16, 0,2, game);
         if(triflag.wallLeft||triflag.wallRight||(triflag.OnEdgeLeft^triflag.OnEdgeRight)){
             x += oldX-x;
             direction=direction*-1;

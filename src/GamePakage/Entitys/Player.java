@@ -103,7 +103,7 @@ public class Player implements GameEntity {
         int y= getY();
         int h=PlayerTile.TILE_HEIGHT;
         int w=PlayerTile.TILE_WIDTH;
-        trigFlags.Collide(x,y,w,h,game);
+        trigFlags.Collide(x,y, w, h, 1,2, game);
 
         Damage=((game.map.tileMap[(y+h-2)/16][(x+w-3)/16].GetId()>7||game.map.tileMap[(y+h-2)/16][(x+3)/16].GetId()>7)&&!trigFlags.IsOnGround)?99:0;
 
@@ -225,7 +225,6 @@ public class Player implements GameEntity {
         if(flag[7]&&trigFlags.HasRope)
             if(!flag[2]){
                 game.entityList.add(new Rope(getX(), getY(),game));
-                game.entityList.add(new Bat(getX(), getY(),game));
             }
             else
                 game.entityList.add(new Rope(getX(), getY(),game,true));

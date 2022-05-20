@@ -15,7 +15,7 @@ public class Bat implements GameEntity{
     public Bat( float x, float y,Game game){
         this.game = game;
         this.x = (int)x;
-        this.y = (int)y;
+        this.y = (int)y-1;
         oldX=this.x;
         oldY=this.y;
         triflag = new Flags();
@@ -32,6 +32,7 @@ public class Bat implements GameEntity{
         if(batTile.getState()==0) {
             if (distance < 100&&deltaY>0||!triflag.HeadHit) {
                 batTile.setState(1);
+                y+=2;
             }
         }else {
             Target();
@@ -72,12 +73,14 @@ public class Bat implements GameEntity{
 
     @Override
     public void Collide() {
-        triflag.Collide((int)x, (int) y,16,16,game);
-        if(triflag.IsOnGround||triflag.HeadHit) {
-            y += oldY-y;
-        }
-        if(triflag.wallLeft||triflag.wallRight){
-            x += oldX-x;
+        triflag.Collide((int)x+1, (int) y, 13, 13, 0,1, game);
+        if(batTile.getState()!=0) {
+            if (triflag.IsOnGround || triflag.HeadHit) {
+                y += oldY - y;
+            }
+            if (triflag.wallLeft || triflag.wallRight) {
+                x += oldX - x;
+            }
         }
     }
 }
