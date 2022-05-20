@@ -38,10 +38,15 @@ public class Bat implements GameEntity{
             Target();
         }
         //collision detection with player
-        /*if(game.player.getX()>x && game.player.getX()<x+16 && game.player.getY()>y && game.player.getY()<y+16){
-            game.player.setHealth(game.player.getHealth()-1);
-        }*/
-
+        if(game.player.getX()>x-13 && game.player.getX()<x+13 && game.player.getY()<y+16){
+            if(game.player.getY()>y-13 )
+                game.player.TakeDamage(1);
+            else
+            if(game.player.getY()>y-16) {
+                game.removeList.add(this);
+                game.player.Jump();
+            }
+        }
     }
 
     private void Target()
@@ -82,5 +87,15 @@ public class Bat implements GameEntity{
                 x += oldX - x;
             }
         }
+    }
+
+    @Override
+    public int getX() {
+        return (int)x;
+    }
+
+    @Override
+    public int getY() {
+        return (int)y;
     }
 }

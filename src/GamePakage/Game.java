@@ -16,7 +16,6 @@ public class Game extends JPanel implements Runnable {
     public ArrayList<GameEntity> entityList;
     public ArrayList<GameEntity> removeList;
     public ArrayList<GameEntity> addList;
-    public static int BottomLine=Game.HEIGHT()-32;
     public static final int MaxJumpHeight =16+5;//100
     public static final float TimeToMaxH = 0.2F;//0.2
     public static final float YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
@@ -27,33 +26,23 @@ public class Game extends JPanel implements Runnable {
     public static float XAccel=MaxXSpeed/AccelTimeX;
 
     public static long coyotetimer;
-    //public static final float DccelTimeX=0.2F;
 
-    private final float cameraSpeed=0.05F;
     private int camX,camY;
     private float camXf=1,camYf=1;
     private int offsetMaxX,offsetMaxY;
     private int offsetMinX,offsetMinY;
-    //public long timer,deltatime;
     public static GameTimer timer = GameTimer.getInstance();
 
 
     public PlayerKeyListener keys;
-    //private final boolean[] flag;
     private final int width;
     private final int height;
-    private GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
+    private final GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
     private boolean runState;   /*!< Flag ce starea firului de executie.*/
     public Player player;
     public final Map map;
-    private Thread gameThread;
+    public HUD hud=new HUD();
     BufferedImage bimg;
-
-    public static int HEIGHT() {return 20*16;}
-
-    public static int WIDTH() {
-        return 42*16;
-    }
 
     public Game(String title, int width, int height) {
         this.width=width;this.height=height;
@@ -75,8 +64,6 @@ public class Game extends JPanel implements Runnable {
 
      */
     private void InitGame() {
-        //wnd = new GameWindow("Schelet Proiect PAOO", width ,height);
-        /// Este construita fereastra grafica.
         wnd.BuildGameWindow();
         /// Se incarca toate elementele grafice (dale)
         Assets.Init();
@@ -93,7 +80,6 @@ public class Game extends JPanel implements Runnable {
         map.Level();
         player.setX(map.x);
         player.setY(map.y);
-        BottomLine=map.height*16-32;
         offsetMaxX=map.width*16-width;
         offsetMaxY=map.height*16-height;
         offsetMinX=offsetMinY=0;
@@ -149,7 +135,7 @@ public class Game extends JPanel implements Runnable {
             /// Se construieste threadul avand ca parametru obiectul Game. De retinut faptul ca Game class
             /// implementeaza interfata Runnable. Threadul creat va executa functia run() suprascrisa in clasa Game.
             /*!< Referinta catre thread-ul de update si draw al ferestrei*/
-            gameThread = new Thread(this);
+            Thread gameThread = new Thread(this);
             /// Threadul creat este lansat in executie (va executa metoda run())
             gameThread.start();
         }
@@ -160,7 +146,7 @@ public class Game extends JPanel implements Runnable {
 
         Metoda trebuie sa fie declarata synchronized pentru ca apelul acesteia sa fie semaforizat.
      */
-    public synchronized void StopGame() {
+    /*public synchronized void StopGame() {
         if (runState) {
             /// Actualizare stare thread
             runState = false;
@@ -174,7 +160,7 @@ public class Game extends JPanel implements Runnable {
                 ex.printStackTrace();
             }
         }
-    }
+    }*/
 
     /*! \fn private void Update()
         \brief Actualizeaza starea elementelor din joc.
@@ -190,10 +176,11 @@ public class Game extends JPanel implements Runnable {
             map.Level();
             player.setX(map.x);
             player.setY(map.y);
-            BottomLine=map.height*16-32;
+            player.p0=map.y;
             offsetMaxX=map.width*16-width;
             offsetMaxY=map.height*16-height;
             offsetMinX=offsetMinY=0;
+            hud.Level++;
         }
         for(GameEntity obj:entityList)
         {
@@ -204,14 +191,15 @@ public class Game extends JPanel implements Runnable {
         //scamY=keys.flag[5]? camY-4*16:(keys.flag[2]?camY+4*16:camY);
         float dif= camX-camXf;
 
+        float cameraSpeed = 0.05F;
         if(dif!=0)
         {
-            camXf+=dif*cameraSpeed;
+            camXf+=dif* cameraSpeed;
         }
         dif=camY-camYf;
         if(dif!=0)
         {
-            camYf+=dif*cameraSpeed;
+            camYf+=dif* cameraSpeed;
         }
         camX=(int)camXf;
         camY=(int)camYf;
@@ -258,19 +246,18 @@ public class Game extends JPanel implements Runnable {
         /// Se obtine contextul grafic curent in care se poate desena.
         assert bs != null;
         Graphics f = bs.getDrawGraphics();
-
-
         Graphics g=bimg.getGraphics();
 
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
         g.translate(-camX,-camY);
         map.Draw(g);
-        player.Draw(g);
         for(GameEntity obj:entityList)
         {
             obj.Draw(g);
         }
-
+        player.Draw(g);
+        g.translate(camX,camY);
+        hud.Draw(g);
         f.drawImage(bimg,0,0,wnd.GetWndWidth(),wnd.GetWndHeight(),null);
         // end operatie de desenare
         /// Se afiseaza pe ecran
@@ -281,7 +268,7 @@ public class Game extends JPanel implements Runnable {
         g.dispose();
     }
 
-    public void Collide()
+    private void Collide()
     {
         player.Collide();
         for(GameEntity obj:entityList)

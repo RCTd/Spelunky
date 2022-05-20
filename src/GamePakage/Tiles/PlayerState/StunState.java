@@ -21,8 +21,10 @@ public class StunState extends State {
         {
             second++;
             frame=0;
-            if(second==2)
+            if(second==2) {
+                trigFlags.TooHigh=false;
                 return new StandState();
+            }
         }
         return this;
     }

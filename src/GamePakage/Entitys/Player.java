@@ -2,6 +2,7 @@ package GamePakage.Entitys;
 
 import GamePakage.Flags;
 import GamePakage.Game;
+import GamePakage.HUD;
 import GamePakage.Tiles.PlayerToolsTiles.PlayerTile;
 import GamePakage.Tiles.PlayerToolsTiles.WhipTile;
 
@@ -14,14 +15,14 @@ public class Player implements GameEntity {
     //private static float XDccel=-MaxXSpeed/AccelTimeX;
     Game game;
     public PlayerTile PlayerTile = new PlayerTile(0);
-    public WhipTile WhipTile=new WhipTile(0);
+    private final WhipTile WhipTile=new WhipTile(0);
     public Flags trigFlags=new Flags();
 
     private int Damage=0;
     private int direction =-1;
     private int newState, oldState;
-    private float xVel =0,yVel,y,p0,x;
-    private  float OldX,OldY;
+    private float xVel =0,yVel,y,x;
+    public float p0;
     private long JumpStart,Time=0;
 
     public int getX() {
@@ -48,8 +49,6 @@ public class Player implements GameEntity {
     public void Update()
     {
         boolean[] flag=game.keys.flag;
-        OldX=x;
-        OldY=y;
         Damage=0;
         oldState= PlayerTile.AnimationState.state;
         PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(trigFlags);
@@ -80,21 +79,20 @@ public class Player implements GameEntity {
         JumpLogic(flag,deltaTime);
 
         Time=System.nanoTime();
-        if(y>BottomLine)
-            y=BottomLine;
+        /*if(y>BottomLine)
+            y=BottomLine;*/
     }
 
     public void Draw(Graphics g) {
-        PlayerTile.direction= direction;
-        PlayerTile.Draw(g,getX(), getY());
-        if(newState==5&&PlayerTile.AnimationState.frame>2)
-        {
-            WhipTile.direction=direction;
-            WhipTile.state= PlayerTile.AnimationState.frame<5?0:1;
-            if(WhipTile.state==0)
-                WhipTile.Draw(g,getX()-direction*16,getY());
+        PlayerTile.direction = direction;
+        PlayerTile.Draw(g, getX(), getY());
+        if (newState == 5 && PlayerTile.AnimationState.frame > 2) {
+            WhipTile.direction = direction;
+            WhipTile.state = PlayerTile.AnimationState.frame < 5 ? 0 : 1;
+            if (WhipTile.state == 0)
+                WhipTile.Draw(g, getX() - direction * 16, getY());
             else
-                WhipTile.Draw(g,getX()+direction*16,getY());
+                WhipTile.Draw(g, getX() + direction * 16, getY());
         }
     }
     public void Collide()
@@ -124,6 +122,7 @@ public class Player implements GameEntity {
         } else {
             if(abs(y-p0)>9*16) {
                 trigFlags.TooHigh = true;
+                game.hud.Lives--;
             }
             p0=y;
             trigFlags.LongJump=false;
@@ -181,7 +180,7 @@ public class Player implements GameEntity {
         //XDccel=-MaxXSpeed/AccelTimeX;
         x += xVel *deltaTime;
     }
-    public void StartJump(boolean[] flag)
+    private void StartJump(boolean[] flag)
     {
         if (flag[0]) {
             if(trigFlags.Relesed)
@@ -201,7 +200,7 @@ public class Player implements GameEntity {
         }else
             trigFlags.Relesed=true;
     }
-    public void SetHang()
+    private void SetHang()
     {
         if(newState==9&&newState!=oldState&&direction<0) {
             x=(int)(x/16)*16;
@@ -220,28 +219,48 @@ public class Player implements GameEntity {
             trigFlags.Hang=true;
         }
     }
-    public void trowRope(boolean[] flag)
+    private void trowRope(boolean[] flag)
     {
-        if(flag[7]&&trigFlags.HasRope)
-            if(!flag[2]){
-                game.entityList.add(new Rope(getX(), getY(),game));
-            }
-            else
-                game.entityList.add(new Rope(getX(), getY(),game,true));
+        if(flag[7]&& game.hud.Rope>0&&trigFlags.HasRope) {
+            if (!flag[2]) {
+                game.entityList.add(new Rope(getX(), getY(), game));
+            } else
+                game.entityList.add(new Rope(getX(), getY(), game, true));
+            game.hud.Rope--;
+        }
         trigFlags.HasRope=!flag[7];
     }
 
-    public void trowBomb(boolean[] flag)
+    private void trowBomb(boolean[] flag)
     {
-        if(flag[8]&&trigFlags.HasBomb) {
+        if(flag[8]&& game.hud.Bomb>0&&trigFlags.HasBomb) {
             if(flag[5])
                 game.entityList.add(new Bomb(getX()+8, getY(), xVel+direction*800, -abs(yVel)-(100 / 0.1F), game));
             else
                 if(flag[2])
                     game.entityList.add(new Bomb(getX()+8, getY(), xVel, 0, game));
                 else
-                    game.entityList.add(new Bomb(getX()+8, getY(), xVel+direction*900,-abs(yVel)-(70 / 0.1F) , game));
+                    game.entityList.add(new Bomb(getX()+8, getY(), xVel+direction*900,-abs(yVel)-(40 / 0.1F) , game));
+            game.hud.Bomb--;
         }
         trigFlags.HasBomb=!flag[8];
+    }
+
+    public void TakeDamage(int d)
+    {
+        if(!trigFlags.TooHigh) {
+            game.hud.Lives -= d;
+            trigFlags.TooHigh = true;
+        }
+    }
+
+    public void Jump() {
+        p0 = y;
+        yVel = -MaxJumpHeight * 2 / TimeToMaxH;
+        trigFlags.LongJump = true;
+        trigFlags.Relesed=false;
+        trigFlags.IsOnGround = false;
+        trigFlags.Climbing=false;
+        JumpStart = System.nanoTime();
     }
 }

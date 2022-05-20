@@ -40,7 +40,7 @@ public class Bomb implements GameEntity {
 
     @Override
     public void Update() {
-        if(System.nanoTime()-StartMoment>1_000_000_000)
+        if(System.nanoTime()-StartMoment>2_000_000_000)
         {
             game.addList.add(new Explosion((int)x,(int)y,game));
             game.removeList.add(this);
@@ -93,5 +93,15 @@ public class Bomb implements GameEntity {
     @Override
     public void Collide() {
         trigFlags.Collide((int)x,(int)y, 8, 8, 0,2, game);
+    }
+
+    @Override
+    public int getX() {
+        return (int)x;
+    }
+
+    @Override
+    public int getY() {
+        return (int) y;
     }
 }

@@ -18,7 +18,6 @@ public class Flags {
         Duck= flag[2];
         LookUp= flag[5];
         Hang= newState== 8 || newState == 9;
-        TooHigh=false;
     }
     public void Collide(int x, int y, int w, int h, int ofx, int ofy, Game game)
     {

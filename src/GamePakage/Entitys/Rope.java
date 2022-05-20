@@ -15,7 +15,7 @@ public class Rope implements GameEntity {
     private float p1;
     private final int x;
     private int state=0;
-    private final RopeTile tile=new RopeTile(0);;
+    private final RopeTile tile=new RopeTile(0);
     public boolean HeadHit=false,FloorHit=false;
 
     public Rope(int x,int y,Game game)
@@ -63,5 +63,15 @@ public class Rope implements GameEntity {
     {
         HeadHit =(game.map.tileMap[((int)y-2)/16][(x+3)/16].IsSolid());//||(game.map.tileMap[((int)y-2)/16][(x+16-3)/16].IsSolid());
         FloorHit =(game.map.tileMap[((int)y+14)/16][(x+3)/16].IsSolid());//||(game.map.tileMap[((int)y+16)/16][(x+16-3)/16].IsSolid());
+    }
+
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        return (int) y;
     }
 }

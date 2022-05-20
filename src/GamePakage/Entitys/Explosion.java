@@ -8,9 +8,10 @@ import java.awt.*;
 import static GamePakage.Game.timer;
 
 public class Explosion implements GameEntity{
-    private int x,y;
+    private final int x;
+    private final int y;
     private float frame =0;
-    private Game game;
+    private final Game game;
 
     public Explosion(int x,int y,Game game)
     {
@@ -25,11 +26,18 @@ public class Explosion implements GameEntity{
         {
             for (int i = -16; i <=16; i+=16) {
                 for (int j = -16; j <=16; j+=16) {
-                    game.map.tileMap[((int) y + i+20) / 16][((int) x+j+20) / 16].Destroy();
+                    game.map.tileMap[( y + i+20) / 16][(x+j+20) / 16].Destroy();
                 }
             }
-           game.removeList.add(this);
+            for (GameEntity object : game.entityList) {
+                if(object.getX()>x-32 && object.getX()<x+32 && object.getY()>y-32 && object.getY()<y+32) {
+                    game.removeList.add(object);
+                }
+            }
         }else {
+            if(game.player.getX()>x-16 && game.player.getX()<x+16  && game.player.getY()>y-30 && game.player.getY()<y+30) {
+                game.player.TakeDamage(4);
+            }
             frame = frame + 48 * timer.getDeltaTime();
         }
     }
@@ -42,5 +50,15 @@ public class Explosion implements GameEntity{
     @Override
     public void Collide() {
 
+    }
+
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
     }
 }

@@ -34,6 +34,15 @@ public class Snake implements GameEntity{
             yVel += YAccel * deltaTime;
         }else
             yVel=0;
+        if(game.player.getX()>x-13 && game.player.getX()<x+13 && game.player.getY()<y+16){
+            if(game.player.getY()>y-13 )
+                game.player.TakeDamage(1);
+            else
+            if(game.player.getY()>y-16) {
+                game.removeList.add(this);
+                game.player.Jump();
+            }
+        }
     }
 
     @Override
@@ -49,5 +58,15 @@ public class Snake implements GameEntity{
             direction=direction*-1;
             snakeTile.setDirection(direction);
         }
+    }
+
+    @Override
+    public int getX() {
+        return (int)x;
+    }
+
+    @Override
+    public int getY() {
+        return (int)y;
     }
 }

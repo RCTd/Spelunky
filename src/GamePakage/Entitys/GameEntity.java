@@ -3,7 +3,10 @@ package GamePakage.Entitys;
 import java.awt.*;
 
 public interface GameEntity {
-    public void Update();
-    public void Draw(Graphics g);
-    public void Collide();
+    void Update();
+    void Draw(Graphics g);
+    void Collide();
+
+    int getX();
+    int getY();
 }

@@ -36,6 +36,11 @@ public class Assets {
     public static BufferedImage bgWall;
     public static BufferedImage BgWallRock;
     public static BufferedImage BgWallHoll;
+    public static BufferedImage LvlIcon;
+    public static BufferedImage HeartIcon;
+    public static BufferedImage BombIcon;
+    public static BufferedImage RopeIcon;
+    public static BufferedImage DollarIcon;
 
 
     /*! \fn public static void Init()
@@ -53,24 +58,30 @@ public class Assets {
         explosionSprite =ImageLoader.LoadImage("/ExplosionSprite.png");
         EnemySprite =ImageLoader.LoadImage("/EnemySprite.png");
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
-        Brick=toolsSprite.getSubimage(0*16,2*16,16,16);
-        Brick2=toolsSprite.getSubimage(1*16,2*16,16,16);
+        Brick=toolsSprite.getSubimage(0,2*16,16,16);
+        Brick2=toolsSprite.getSubimage(16,2*16,16,16);
         BrickDown=toolsSprite.getSubimage(2*16,2*16,16,16);
         BrickUp=toolsSprite.getSubimage(3*16,2*16,16,16);
         BrickUp2=toolsSprite.getSubimage(4*16,2*16,16,16);
-        BrickGold=toolsSprite.getSubimage(0*16,3*16,16,16);
-        BrickGoldBig=toolsSprite.getSubimage(1*16,3*16,16,16);
+        BrickGold=toolsSprite.getSubimage(0,3*16,16,16);
+        BrickGoldBig=toolsSprite.getSubimage(16,3*16,16,16);
         Block=toolsSprite.getSubimage(2*16,3*16,16,16);
         BrickTop=toolsSprite.getSubimage(3*16,3*16,16,16);
         BrickTop2=toolsSprite.getSubimage(4*16,3*16,16,16);
 
-        LadderTop=toolsSprite.getSubimage(0*16,4*16,16,16);
-        Ladder=toolsSprite.getSubimage(1*16,4*16,16,16);
+        LadderTop=toolsSprite.getSubimage(0,4*16,16,16);
+        Ladder=toolsSprite.getSubimage(16,4*16,16,16);
 
         Exit=toolsSprite.getSubimage(2*16,4*16,16,16);
         Entrance=toolsSprite.getSubimage(3*16,4*16,16,16);
 
         Spikes =toolsSprite.getSubimage(4*16,4*16,16,16);
+
+        LvlIcon =toolsSprite.getSubimage(0,6*16,16,16);
+        HeartIcon =toolsSprite.getSubimage(16,6*16,16,16);
+        BombIcon =toolsSprite.getSubimage(4*16,6*16,16,16);
+        RopeIcon =toolsSprite.getSubimage(3*16,6*16,16,16);
+        DollarIcon =toolsSprite.getSubimage(2*16,6*16,16,16);
 
 
         bgWall=sheet.crop(0,0,32,32);
