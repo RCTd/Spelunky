@@ -2,7 +2,6 @@ package GamePakage.Entitys;
 
 import GamePakage.Flags;
 import GamePakage.Game;
-import GamePakage.HUD;
 import GamePakage.Tiles.PlayerToolsTiles.PlayerTile;
 import GamePakage.Tiles.PlayerToolsTiles.WhipTile;
 
@@ -17,13 +16,12 @@ public class Player implements GameEntity {
     public PlayerTile PlayerTile = new PlayerTile(0);
     private final WhipTile WhipTile=new WhipTile(0);
     public Flags trigFlags=new Flags();
-
-    private int Damage=0;
     private int direction =-1;
-    private int newState, oldState;
+    public int newState, oldState;
     private float xVel =0,yVel,y,x;
     public float p0;
     private long JumpStart,Time=0;
+    private Whip whip;
 
     public int getX() {
         return (int)x;
@@ -49,7 +47,6 @@ public class Player implements GameEntity {
     public void Update()
     {
         boolean[] flag=game.keys.flag;
-        Damage=0;
         oldState= PlayerTile.AnimationState.state;
         PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(trigFlags);
         newState=PlayerTile.AnimationState.state;
@@ -87,12 +84,21 @@ public class Player implements GameEntity {
         PlayerTile.direction = direction;
         PlayerTile.Draw(g, getX(), getY());
         if (newState == 5 && PlayerTile.AnimationState.frame > 2) {
-            WhipTile.direction = direction;
+            if(whip==null) {
+                whip = new Whip(getX(), getY(), game);
+                game.toolList.add(whip);
+            }if(PlayerTile.AnimationState.frame>=5)
+                whip.whipTile.state=1;
+            /*WhipTile.direction = direction;
             WhipTile.state = PlayerTile.AnimationState.frame < 5 ? 0 : 1;
             if (WhipTile.state == 0)
                 WhipTile.Draw(g, getX() - direction * 16, getY());
             else
-                WhipTile.Draw(g, getX() + direction * 16, getY());
+                WhipTile.Draw(g, getX() + direction * 16, getY());*/
+        }else
+        {
+            game.removeList.add(whip);
+            whip=null;
         }
     }
     public void Collide()
@@ -101,10 +107,7 @@ public class Player implements GameEntity {
         int y= getY();
         int h=PlayerTile.TILE_HEIGHT;
         int w=PlayerTile.TILE_WIDTH;
-        trigFlags.Collide(x,y, w, h, 1,2, game);
-
-        Damage=((game.map.tileMap[(y+h-2)/16][(x+w-3)/16].GetId()>7||game.map.tileMap[(y+h-2)/16][(x+3)/16].GetId()>7)&&!trigFlags.IsOnGround)?99:0;
-
+        trigFlags.Collide(x,y, w, h, game);
     }
 
     private void JumpLogic(boolean[] flag,float deltaTime)
@@ -223,9 +226,9 @@ public class Player implements GameEntity {
     {
         if(flag[7]&& game.hud.Rope>0&&trigFlags.HasRope) {
             if (!flag[2]) {
-                game.entityList.add(new Rope(getX(), getY(), game));
+                game.toolList.add(new Rope(getX(), getY(), game));
             } else
-                game.entityList.add(new Rope(getX(), getY(), game, true));
+                game.toolList.add(new Rope(getX(), getY(), game, true));
             game.hud.Rope--;
         }
         trigFlags.HasRope=!flag[7];
@@ -235,12 +238,12 @@ public class Player implements GameEntity {
     {
         if(flag[8]&& game.hud.Bomb>0&&trigFlags.HasBomb) {
             if(flag[5])
-                game.entityList.add(new Bomb(getX()+8, getY(), xVel+direction*800, -abs(yVel)-(100 / 0.1F), game));
+                game.toolList.add(new Bomb(getX()+8, getY(), xVel+direction*800, -abs(yVel)-(100 / 0.1F), game));
             else
                 if(flag[2])
-                    game.entityList.add(new Bomb(getX()+8, getY(), xVel, 0, game));
+                    game.toolList.add(new Bomb(getX()+8, getY(), xVel, 0, game));
                 else
-                    game.entityList.add(new Bomb(getX()+8, getY(), xVel+direction*900,-abs(yVel)-(40 / 0.1F) , game));
+                    game.toolList.add(new Bomb(getX()+8, getY(), xVel+direction*900,-abs(yVel)-(40 / 0.1F) , game));
             game.hud.Bomb--;
         }
         trigFlags.HasBomb=!flag[8];
@@ -262,5 +265,9 @@ public class Player implements GameEntity {
         trigFlags.IsOnGround = false;
         trigFlags.Climbing=false;
         JumpStart = System.nanoTime();
+    }
+
+    public int getDirection() {
+        return direction;
     }
 }

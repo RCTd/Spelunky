@@ -35,8 +35,8 @@ public class Explosion implements GameEntity{
                 }
             }
         }else {
-            if(game.player.getX()>x-16 && game.player.getX()<x+16  && game.player.getY()>y-30 && game.player.getY()<y+30) {
-                game.player.TakeDamage(4);
+            if(game.getPlayer().getX()>x-16 && game.getPlayer().getX()<x+16  && game.getPlayer().getY()>y-30 && game.getPlayer().getY()<y+30) {
+                game.getPlayer().TakeDamage(4);
             }
             frame = frame + 48 * timer.getDeltaTime();
         }

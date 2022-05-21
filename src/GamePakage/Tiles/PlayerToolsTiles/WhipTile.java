@@ -15,7 +15,6 @@ public class WhipTile extends Tile {
     @Override
     public void Draw(Graphics g, int x, int y) {
         BufferedImage crntimg = img.getSubimage(state * 16,0 , TILE_WIDTH, TILE_WIDTH);
-        //g.drawRect(x*size,y*size,TILE_WIDTH*size,TILE_HEIGHT*size);
         g.drawImage(crntimg,
                 x,y,(x+TILE_WIDTH),(y+TILE_HEIGHT),
                 (1+direction)*TILE_WIDTH/2,0,(1-direction)*TILE_HEIGHT/2,TILE_HEIGHT, null);

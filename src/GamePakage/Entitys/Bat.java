@@ -24,28 +24,18 @@ public class Bat implements GameEntity{
 
     @Override
     public void Update() {
-        targetX = game.player.getX();
-        targetY = game.player.getY();
+        targetX = game.getPlayer().getX();
+        targetY = game.getPlayer().getY();
         deltaX = targetX - x;
         deltaY = targetY - y;
         distance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         if(batTile.getState()==0) {
             if (distance < 100&&deltaY>0||!triflag.HeadHit) {
                 batTile.setState(1);
-                y+=2;
+                y+=3;
             }
         }else {
             Target();
-        }
-        //collision detection with player
-        if(game.player.getX()>x-13 && game.player.getX()<x+13 && game.player.getY()<y+16){
-            if(game.player.getY()>y-13 )
-                game.player.TakeDamage(1);
-            else
-            if(game.player.getY()>y-16) {
-                game.removeList.add(this);
-                game.player.Jump();
-            }
         }
     }
 
@@ -78,13 +68,28 @@ public class Bat implements GameEntity{
 
     @Override
     public void Collide() {
-        triflag.Collide((int)x+1, (int) y, 13, 13, 0,1, game);
+        triflag.Collide((int)x+1, (int) y, 13, 13,  game);
         if(batTile.getState()!=0) {
             if (triflag.IsOnGround || triflag.HeadHit) {
                 y += oldY - y;
             }
             if (triflag.wallLeft || triflag.wallRight) {
                 x += oldX - x;
+            }
+        }
+        //collision detection with getPlayer()
+        if(game.getPlayer().getX()>x-13 && game.getPlayer().getX()<x+13 && game.getPlayer().getY()<y+16){
+            if(game.getPlayer().getY()>y-13 )
+                game.getPlayer().TakeDamage(1);
+            else
+            if(game.getPlayer().getY()>y-16) {
+                game.removeList.add(this);
+                game.getPlayer().Jump();
+            }
+        }
+        for (GameEntity entity : game.toolList) {
+            if(entity.getX()>x-13-16 && entity.getX()<x+13+16 && entity.getY()<y+16&&entity.getY()>y-16){
+                game.removeList.add(this);
             }
         }
     }

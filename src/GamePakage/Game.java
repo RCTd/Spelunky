@@ -7,6 +7,7 @@ import GamePakage.Graphics.Assets;
 import GamePakage.Map.Map;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicArrowButton;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 
 public class Game extends JPanel implements Runnable {
     public ArrayList<GameEntity> entityList;
+    public ArrayList<GameEntity> toolList;
     public ArrayList<GameEntity> removeList;
     public ArrayList<GameEntity> addList;
     public static final int MaxJumpHeight =16+5;//100
@@ -39,7 +41,7 @@ public class Game extends JPanel implements Runnable {
     private final int height;
     private final GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
     private boolean runState;   /*!< Flag ce starea firului de executie.*/
-    public Player player;
+    private Player player;
     public final Map map;
     public HUD hud=new HUD();
     BufferedImage bimg;
@@ -69,6 +71,7 @@ public class Game extends JPanel implements Runnable {
         Assets.Init();
         entityList=new ArrayList<>();
         removeList=new ArrayList<>();
+        toolList=new ArrayList<>();
         addList=new ArrayList<>();
         player=new Player(this);
         camX= player.getX()-width/2;
@@ -182,25 +185,17 @@ public class Game extends JPanel implements Runnable {
             offsetMinX=offsetMinY=0;
             hud.Level++;
         }
-        for(GameEntity obj:entityList)
-        {
-            obj.Update();
-        }
+        for(GameEntity obj:entityList) {obj.Update();}
+        for(GameEntity obj:toolList) {obj.Update();}
         camX= player.getX()-width/2;
         camY= player.getY()-height/2-player.PlayerTile.TILE_HEIGHT;
         //scamY=keys.flag[5]? camY-4*16:(keys.flag[2]?camY+4*16:camY);
         float dif= camX-camXf;
 
         float cameraSpeed = 0.05F;
-        if(dif!=0)
-        {
-            camXf+=dif* cameraSpeed;
-        }
+        if(dif!=0) {camXf+=dif* cameraSpeed;}
         dif=camY-camYf;
-        if(dif!=0)
-        {
-            camYf+=dif* cameraSpeed;
-        }
+        if(dif!=0) {camYf+=dif* cameraSpeed;}
         camX=(int)camXf;
         camY=(int)camYf;
         if(camX>offsetMaxX)
@@ -217,6 +212,7 @@ public class Game extends JPanel implements Runnable {
         for (GameEntity obj:removeList)
         {
             entityList.remove(obj);
+            toolList.remove(obj);
         }
         removeList.clear();
         entityList.addAll(addList);
@@ -251,10 +247,8 @@ public class Game extends JPanel implements Runnable {
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
         g.translate(-camX,-camY);
         map.Draw(g);
-        for(GameEntity obj:entityList)
-        {
-            obj.Draw(g);
-        }
+        for(GameEntity obj:entityList) {obj.Draw(g);}
+        for(GameEntity obj:toolList) {obj.Draw(g);}
         player.Draw(g);
         g.translate(camX,camY);
         hud.Draw(g);
@@ -271,15 +265,16 @@ public class Game extends JPanel implements Runnable {
     private void Collide()
     {
         player.Collide();
-        for(GameEntity obj:entityList)
-        {
-            obj.Collide();
-        }
+        for(GameEntity obj:entityList) {obj.Collide();}
+        for(GameEntity obj:toolList) {obj.Collide();}
     }
 
     public double getDeltaTime() {
         return GameTimer.getInstance().getDeltaTime();
     }
 
+    public Player getPlayer() {
+        return player;
+    }
 }
 

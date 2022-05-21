@@ -34,15 +34,6 @@ public class Snake implements GameEntity{
             yVel += YAccel * deltaTime;
         }else
             yVel=0;
-        if(game.player.getX()>x-13 && game.player.getX()<x+13 && game.player.getY()<y+16){
-            if(game.player.getY()>y-13 )
-                game.player.TakeDamage(1);
-            else
-            if(game.player.getY()>y-16) {
-                game.removeList.add(this);
-                game.player.Jump();
-            }
-        }
     }
 
     @Override
@@ -52,11 +43,25 @@ public class Snake implements GameEntity{
 
     @Override
     public void Collide() {
-        triflag.Collide((int)x,(int)y, 16, 16, 0,2, game);
+        triflag.Collide((int)x,(int)y, 16, 16,  game);
         if(triflag.wallLeft||triflag.wallRight||(triflag.OnEdgeLeft^triflag.OnEdgeRight)){
             x += oldX-x;
             direction=direction*-1;
             snakeTile.setDirection(direction);
+        }
+        if(game.getPlayer().getX()>x-13&& game.getPlayer().getX()<x+13 && game.getPlayer().getY()<y+16){
+            if(game.getPlayer().getY()>y-13 )
+                game.getPlayer().TakeDamage(1);
+            else
+            if(game.getPlayer().getY()>y-16) {
+                game.removeList.add(this);
+                game.getPlayer().Jump();
+            }
+        }
+        for (GameEntity entity : game.toolList) {
+            if(entity.getX()>x-13-16 && entity.getX()<x+13+16 && entity.getY()<y+16&&entity.getY()>y-16){
+                game.removeList.add(this);
+            }
         }
     }
 
