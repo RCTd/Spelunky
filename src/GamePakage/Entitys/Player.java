@@ -2,8 +2,8 @@ package GamePakage.Entitys;
 
 import GamePakage.Flags;
 import GamePakage.Game;
+import GamePakage.Money;
 import GamePakage.Tiles.PlayerToolsTiles.PlayerTile;
-import GamePakage.Tiles.PlayerToolsTiles.WhipTile;
 
 import java.awt.*;
 
@@ -14,11 +14,10 @@ public class Player implements GameEntity {
     //private static float XDccel=-MaxXSpeed/AccelTimeX;
     Game game;
     public PlayerTile PlayerTile = new PlayerTile(0);
-    private final WhipTile WhipTile=new WhipTile(0);
     public Flags trigFlags=new Flags();
     private int direction =-1;
     public int newState, oldState;
-    private float xVel =0,yVel,y,x;
+    private float xVel =0,yVel,y,x,oldy;
     public float p0;
     private long JumpStart,Time=0;
     private Whip whip;
@@ -35,6 +34,7 @@ public class Player implements GameEntity {
         this.game=game;
         x=32;
         y=64;
+        oldy=y;
     }
 
     public void setX(float x) {
@@ -46,6 +46,7 @@ public class Player implements GameEntity {
 
     public void Update()
     {
+        oldy=y;
         boolean[] flag=game.keys.flag;
         oldState= PlayerTile.AnimationState.state;
         PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(trigFlags);
@@ -76,8 +77,6 @@ public class Player implements GameEntity {
         JumpLogic(flag,deltaTime);
 
         Time=System.nanoTime();
-        /*if(y>BottomLine)
-            y=BottomLine;*/
     }
 
     public void Draw(Graphics g) {
@@ -89,12 +88,6 @@ public class Player implements GameEntity {
                 game.toolList.add(whip);
             }if(PlayerTile.AnimationState.frame>=5)
                 whip.whipTile.state=1;
-            /*WhipTile.direction = direction;
-            WhipTile.state = PlayerTile.AnimationState.frame < 5 ? 0 : 1;
-            if (WhipTile.state == 0)
-                WhipTile.Draw(g, getX() - direction * 16, getY());
-            else
-                WhipTile.Draw(g, getX() + direction * 16, getY());*/
         }else
         {
             game.removeList.add(whip);
@@ -108,6 +101,16 @@ public class Player implements GameEntity {
         int h=PlayerTile.TILE_HEIGHT;
         int w=PlayerTile.TILE_WIDTH;
         trigFlags.Collide(x,y, w, h, game);
+        for (Money money : game.GoldList) {
+            if(x>money.getX()-w&&x<money.getX()+w&&y>money.getY()-h&&y<money.getY()+h) {
+                game.hud.Score += money.getValue();
+                game.GoldremoveList.add(money);
+            }
+        }
+        if((game.map.tileMap[(y+h-2)/16][(x+3)/16].GetId()==3||game.map.tileMap[(y+h-2)/16][(x+w-3)/16].GetId()==3)&&y-oldy>0)
+        {
+            TakeDamage(99);
+        }
     }
 
     private void JumpLogic(boolean[] flag,float deltaTime)

@@ -4,6 +4,7 @@ import GamePakage.Entitys.Bat;
 import GamePakage.Entitys.Snake;
 import GamePakage.Game;
 import GamePakage.Graphics.Assets;
+import GamePakage.Money;
 import GamePakage.Tiles.*;
 import GamePakage.Tiles.WorldTiles.EdgeTile;
 import GamePakage.Tiles.WorldTiles.WallTile;
@@ -158,8 +159,12 @@ public class Map {
                 if (!tileMap[i][j].IsSolid()) {
                     if (tileMap[i - 1][j].IsSolid()&&Math.random()<0.0366)
                         game.entityList.add(new Bat(j*16,i*16,game));
-                    if(tileMap[i+1][j].IsSolid()&&Math.random()<0.0366)
-                        game.entityList.add(new Snake(j*16,i*16,game));
+                    if(tileMap[i+1][j].IsSolid()) {
+                        if (Math.random() < 0.0366)
+                            game.entityList.add(new Snake(j * 16, i * 16, game));
+                        if(Math.random()<0.166)
+                            game.GoldList.add(new Money(j * 16, i * 16));
+                    }
                 }
             }
         }
@@ -306,7 +311,7 @@ public class Map {
         String strObs1 = "00000";
         String strObs2 = "00000";
         String strObs3 = "00000";
-        int pos=0,tmp;
+        int pos,tmp;
         pos=strTemp.indexOf("8");
         while (pos>=0)
         {
@@ -325,7 +330,7 @@ public class Map {
             strTemp=strTemp.substring(0,pos+10)+strObs2+strTemp.substring(pos+15);
             strTemp=strTemp.substring(0,pos+20)+strObs3+strTemp.substring(pos+25);
             tmp=strTemp.substring(pos).indexOf("8");
-            pos=tmp>0?pos+tmp:tmp;
+            pos= tmp;
         }
         pos=strTemp.indexOf("5");
         while (pos>=0)

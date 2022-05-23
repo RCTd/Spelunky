@@ -41,6 +41,14 @@ public class Assets {
     public static BufferedImage BombIcon;
     public static BufferedImage RopeIcon;
     public static BufferedImage DollarIcon;
+    public static BufferedImage BigGold;
+    public static BufferedImage Gold;
+    public static BufferedImage SmallGold;
+    public static BufferedImage TinyGold;
+    public static BufferedImage Ruby;
+    public static BufferedImage RubyBig;
+    public static BufferedImage Sapphire;
+    public static BufferedImage SapphireBig;
 
 
     /*! \fn public static void Init()
@@ -87,5 +95,14 @@ public class Assets {
         bgWall=sheet.crop(0,0,32,32);
         BgWallRock=sheet.crop(32,0,32,32);
         BgWallHoll=sheet.crop(2*32,0,32,32);
+
+        BigGold=toolsSprite.getSubimage(0,5*16,16,16);
+        Gold=toolsSprite.getSubimage(16,5*16,8,8);
+        SmallGold=toolsSprite.getSubimage(2*16,5*16,8,8);
+        TinyGold=toolsSprite.getSubimage(3*16,5*16,4,4);
+        Ruby=toolsSprite.getSubimage(4*16+8,5*16,4,4);
+        RubyBig=toolsSprite.getSubimage(4*16,5*16,8,8);
+        Sapphire=toolsSprite.getSubimage(4*16+8,5*16+8,4,4);
+        SapphireBig=toolsSprite.getSubimage(4*16,5*16+8,8,8);
     }
 }

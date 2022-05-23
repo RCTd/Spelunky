@@ -7,7 +7,6 @@ import GamePakage.Graphics.Assets;
 import GamePakage.Map.Map;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicArrowButton;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -15,6 +14,8 @@ import java.util.ArrayList;
 
 public class Game extends JPanel implements Runnable {
     public ArrayList<GameEntity> entityList;
+    public ArrayList<Money> GoldList;
+    public ArrayList<Money> GoldremoveList;
     public ArrayList<GameEntity> toolList;
     public ArrayList<GameEntity> removeList;
     public ArrayList<GameEntity> addList;
@@ -70,6 +71,8 @@ public class Game extends JPanel implements Runnable {
         /// Se incarca toate elementele grafice (dale)
         Assets.Init();
         entityList=new ArrayList<>();
+        GoldList=new ArrayList<>();
+        GoldremoveList =new ArrayList<>();
         removeList=new ArrayList<>();
         toolList=new ArrayList<>();
         addList=new ArrayList<>();
@@ -176,6 +179,7 @@ public class Game extends JPanel implements Runnable {
         if(player.trigFlags.Exit)
         {
             entityList.clear();
+            GoldList.clear();
             map.Level();
             player.setX(map.x);
             player.setY(map.y);
@@ -214,6 +218,10 @@ public class Game extends JPanel implements Runnable {
             entityList.remove(obj);
             toolList.remove(obj);
         }
+        for (Money obj: GoldremoveList){
+           GoldList.remove(obj);
+        }
+        GoldremoveList.clear();
         removeList.clear();
         entityList.addAll(addList);
         addList.clear();
@@ -249,6 +257,7 @@ public class Game extends JPanel implements Runnable {
         map.Draw(g);
         for(GameEntity obj:entityList) {obj.Draw(g);}
         for(GameEntity obj:toolList) {obj.Draw(g);}
+        for (Money obj:GoldList) {obj.Draw(g);}
         player.Draw(g);
         g.translate(camX,camY);
         hud.Draw(g);
