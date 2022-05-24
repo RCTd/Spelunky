@@ -28,12 +28,6 @@ public class Path {
                 j=down(path,j,i);
             }
         }
-        /*for (int k = 0; k < 4; k++) {
-            for (int l = 0; l < 4; l++) {
-                System.out.print(path[k][l]);
-            }System.out.println();
-        }
-        System.out.println();*/
         end=i;
     }
     private static int down(int[][] path,int j,int i)

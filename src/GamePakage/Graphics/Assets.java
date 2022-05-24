@@ -50,6 +50,7 @@ public class Assets {
     public static BufferedImage RubyBig;
     public static BufferedImage Sapphire;
     public static BufferedImage SapphireBig;
+    public static BufferedImage Title;
 
 
     /*! \fn public static void Init()
@@ -62,6 +63,7 @@ public class Assets {
         /// Se creaza temporar un obiect SpriteSheet initializat prin intermediul clasei ImageLoader
         SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/BGSprite.png"));
 
+        Title=ImageLoader.LoadImage("/TitleBG.png");
         playerSprite=ImageLoader.LoadImage("/PlayerSprite.png");
         toolsSprite =ImageLoader.LoadImage("/ToolsSprite.png");
         explosionSprite =ImageLoader.LoadImage("/ExplosionSprite.png");
@@ -92,7 +94,7 @@ public class Assets {
         RopeIcon =toolsSprite.getSubimage(3*16,6*16,16,16);
         DollarIcon =toolsSprite.getSubimage(2*16,6*16,16,16);
 
-        MsgSign =toolsSprite.getSubimage(4*16,1*16,16,16);
+        MsgSign =toolsSprite.getSubimage(4*16,16,16,16);
 
         bgWall=sheet.crop(0,0,32,32);
         BgWallRock=sheet.crop(32,0,32,32);

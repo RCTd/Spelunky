@@ -47,7 +47,6 @@ public class Player implements GameEntity {
 
     public void Update()
     {
-        System.out.println(x+" "+y);
         oldy=y;
         PlayerKeyListener key=game.getKeys();
         oldState= PlayerTile.AnimationState.state;
@@ -179,7 +178,7 @@ public class Player implements GameEntity {
         if(xVel >MaxXSpeed|| xVel <-MaxXSpeed)
             xVel = result *MaxXSpeed;
         //max speed variation
-        if(key.isShift()) {//Slow down on shift
+        if(!key.isShift()) {//speed up on shift
             MaxXSpeed=100F;
         }else {
             MaxXSpeed=200F;

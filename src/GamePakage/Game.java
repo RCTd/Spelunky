@@ -31,7 +31,7 @@ public class Game extends JPanel implements Runnable {
     private PlayerKeyListener keys;
     private final int width=27*16,height=16*16;
     private final GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
-    private boolean runState,fullscreen=false,relesedEsc=false;   /*!< Flag ce starea firului de executie.*/
+    private boolean runState,relesedEsc=false;   /*!< Flag ce starea firului de executie.*/
     private Player player;
     public Map map;
     public HUD hud=new HUD();
@@ -86,8 +86,8 @@ public class Game extends JPanel implements Runnable {
         keys=new PlayerKeyListener();
         wnd.GetCanvas().addKeyListener(keys);
 
-        map.LoadTutorial();
-        //map.Level();
+        //map.LoadTutorial();
+        map.Level();
         player.setX(map.x);
         player.setY(map.y);
         offsetMaxX=map.width*16-width;
@@ -207,11 +207,16 @@ public class Game extends JPanel implements Runnable {
 
         Metoda este declarata privat deoarece trebuie apelata doar in metoda run()
      */
-    public void newLevel()
+    public void newLevel(boolean tutorial)
     {
         entityList.clear();
         GoldList.clear();
-        map.Level();
+        if(map.isTutorial)
+            hud.reset();
+        if(tutorial)
+            map.LoadTutorial();
+        else
+            map.Level();
         player.reset(map.x,map.y);
         offsetMaxX=map.width*16-width;
         offsetMaxY=map.height*16-height;
@@ -233,7 +238,7 @@ public class Game extends JPanel implements Runnable {
         player.Update();
         if(player.trigFlags.Exit)
         {
-            newLevel();
+            newLevel(false);
         }
         for(GameEntity obj:entityList) {obj.Update();}
         for(GameEntity obj:toolList) {obj.Update();}
@@ -336,11 +341,6 @@ public class Game extends JPanel implements Runnable {
     public BufferStrategy getBufferStrategy() {
         return wnd.GetCanvas().getBufferStrategy();
     }
-
-    public boolean isFullscreen() {
-        return fullscreen;
-    }
-
     public String getScore() {
         return Integer.toString(hud.Score * hud.Level);
     }

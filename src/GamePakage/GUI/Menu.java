@@ -47,11 +47,19 @@ public class Menu {
                 game.db.UpdateSettings(Music);
             }
             else if(Selection==2){
+                game.db.Clear();
+            }
+            else if(Selection==3){
+                game.newLevel(true);
+                game.menu=false;
+            }
+            else if(Selection==4){
                 game.setGameOver(true);
                 game.db.UpdateScore(Integer.parseInt(game.getScore()));
                 game.menu=false;
             }
-            else if(Selection==3){
+            else if(Selection==5){
+                game.db.Close();
                 System.exit(0);
             }
         }
@@ -80,6 +88,8 @@ public class Menu {
         menu.add("Resume");
         menu.add( "Music <" + (Music ? "On" : "Off")+">");
         //menu.add("Fullscreen <" + (game.isFullscreen() ? "On" : "Off")+">");
+        menu.add("Reset Highscore");
+        menu.add("Tutorial");
         menu.add("Die!");
         menu.add("Quit");
         for(int i=0;i<menu.size();i++){

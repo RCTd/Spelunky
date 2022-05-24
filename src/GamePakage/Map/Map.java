@@ -13,34 +13,21 @@ import GamePakage.Tiles.WorldTiles.WallTopTile;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Map {
     public BufferedImage BackGround;
     public Tile[][] tileMap;
     public int width, height;
     public int x=20,y=20;
-    public int[][] matrix;
     private final Game game;
-
+    public boolean isTutorial=false;
     public Map(Game game) {
-        this.game=game;
+        this.game = game;
         width = 42;
         height = 20;
         tileMap = new Tile[height][width];
     }
-
-    public Map(int width, int height,Game game) {
-        this.game=game;
-        this.width = width;
-        this.height = height;
-        tileMap = new Tile[height][width];
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                tileMap[j][i] = new Tile(null, 0, 0, 0);
-            }
-        }
-    }
-
     public void CreateBgImage() {
         BackGround = new BufferedImage(
                 width*16, height*16, //work these out
@@ -59,102 +46,6 @@ public class Map {
             g.drawImage(Assets.BgWallHoll, (int) (Math.random() * width*16), (int) (Math.random() * height*16), 50, 50, null);
         }
     }
-
-    public void LoadTutorial() {
-        x=32;y=64;
-        width=42;height=20;
-        tileMap = new Tile[height][width];
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                tileMap[j][i] = new Tile(null, 0, 0, 0);
-            }
-        }
-        CreateBgImage();
-        matrix = new int[][]{{184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184},
-                {184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184},
-                {184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 321, 1329, 1525, 1538, 621, 0, 0, 0, 0, 1037, 184},
-                {184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 184, 184, 184, 184, 184, 184, 184, 184, 1038, 184},
-                {184, 0, 1329, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1329, 0, 0, 0, 1681, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1037, 184},
-                {184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 184, 184, 184, 184, 184, 184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1037, 184},
-                {184, 184, 184, 0, 0, 1329, 0, 0, 184, 0, 0, 1329, 0, 0, 184, 184, 184, 184, 184, 184, 184, 184, 184, 0, 1329, 0, 889, 889, 889, 889, 889, 889, 886, 0, 0, 0, 0, 0, 0, 0, 1329, 184},
-                {184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 1329, 0, 0, 0, 0, 184, 184, 184},
-                {184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 1329, 0, 0, 0, 184, 184},
-                {184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 0, 0, 184, 184},
-                {184, 184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 184, 184, 184, 184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184},
-                {184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1329, 0, 0, 103, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184},
-                {184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184},
-                {184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184},
-                {184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 368, 1329, 0, 1329, 0, 0, 0, 0, 0, 0, 0, 1329, 0, 184, 184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184},
-                {184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 184, 184, 184, 184, 0, 0, 0, 0, 184, 184, 184, 184, 0, 184, 184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184},
-                {184, 0, 0, 626, 0, 0, 0, 0, 0, 0, 0, 184, 184, 184, 184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184},
-                {184, 0, 184, 184, 184, 0, 1329, 0, 0, 0, 184, 184, 184, 184, 184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 184, 184, 184, 184, 184, 0, 1329, 0, 0, 0, 0, 1329, 0, 1329, 0, 1504, 184},
-                {184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184},
-                {184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184}};
-        for (int i = 0; i < width; i++) {
-            tileMap[0][i] = tileMap[height-1][i] = new EdgeTile(3);
-        }
-        for (int j = 0; j < height; j++) {
-            tileMap[j][0] = tileMap[j][width-1] = new EdgeTile( 3);
-        }
-
-        for (int i = 1; i < height-1; i++) {
-            for (int j = 1; j < width-1; j++) {
-                if (matrix[i][j] == 184)
-                    if (tileMap[i-1][j].GetId() == 0) {
-                        tileMap[i][j] = new WallTile(Assets.BrickUp, 2);
-                        tileMap[i-1][j]= new WallTopTile(1);
-                    } else
-                        tileMap[i][j] = new WallTile(1);
-                else {
-                    if (matrix[i][j] == 626) {
-                        tileMap[i][j] = new WallTopTile(Assets.Exit, 10,false);
-                    } else {
-                        tileMap[i][j] = new Tile(null, 0, 16, 16);
-                        if (tileMap[i - 1][j].GetId() == 1)
-                            tileMap[i - 1][j] = new WallTile(Assets.BrickDown, 1);
-                        if (tileMap[i - 1][j].GetId() == 2)
-                            tileMap[i - 1][j] = new WallTile(Assets.BrickUp2, 1);
-                    }
-                    if(matrix[i][j] == 1037)
-                    {
-                        tileMap[i][j] = new WallTopTile(Assets.Ladder, 6,false);
-                    }
-                    if (matrix[i][j] == 1038)
-                    {
-                        tileMap[i][j] = new WallTopTile(Assets.LadderTop, 6,false);
-                    }
-                }
-            }
-        }
-        game.GoldList.add(new Money(416,96));
-        game.GoldList.add(new Money(432,96));
-        game.GoldList.add(new Money(448,96));
-        game.GoldList.add(new Money(464,96));
-
-        game.GoldList.add(new Money(544,32));
-        game.GoldList.add(new Money(528,32));
-        game.GoldList.add(new Money(512,32));
-        game.GoldList.add(new Money(496,32));
-
-        game.entityList.add(new Bat(480,176,game));
-        game.entityList.add(new Snake(320,65,game));
-
-        game.entityList.add(new Sign(32,64,game,"Keys to Move"));
-        game.entityList.add(new Sign(80,96,game,"Z to Jump"));
-        game.entityList.add(new Sign(192,96,game,"Can hang on edges"));
-        game.entityList.add(new Sign(256,64,game,"X to attack or jump on head"));
-        game.entityList.add(new Sign(384,96,game,"score is gold*level"));
-        game.entityList.add(new Sign(624,96,game,"press up to climb    "));
-        game.entityList.add(new Sign(480,96,game,"press down to crawl"));
-        game.entityList.add(new Sign(544,112,game,"crawl to edge to hang"));
-        game.entityList.add(new Sign(592,128,game,"down and z to drop"));
-        game.entityList.add(new Sign(608,272,game,"up and c to throw bomb"));
-        game.entityList.add(new Sign(576,272,game,"d to throw rope"));
-        game.entityList.add(new Sign(352,224,game,"shift to sprint"));
-        game.entityList.add(new Sign(224,224,game,"down and c to place bomb"));
-        game.entityList.add(new Sign(112,272,game,"touch exit to advance"));
-    }
-
     public void Draw(Graphics g) {
         g.drawImage(BackGround, 0, 0, null);
         for (int i = 0; i < height; i++) {
@@ -164,7 +55,80 @@ public class Map {
         }
     }
 
+    public void LoadTutorial() {
+        isTutorial=true;
+        x=32;y=64;
+        width=42;height=20;
+        tileMap = new Tile[height][width];
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                tileMap[j][i] = new Tile(null, 0, 0, 0);
+            }
+        }
+        CreateBgImage();
+        String tutorial="111111111111111111111111111111111111111111" +
+                        "100000000000000000000000000000000000000001" +
+                        "1000000000000000000000000000000000000000L1" +
+                        "1000000000000000000000000000000111111111P1" +
+                        "1000000000000000000000000000000000000000L1" +
+                        "1110000000000011111111100000000000000000L1" +
+                        "111000001000001111111110000000000000000001" +
+                        "111111111111111111111111111111111100000111" +
+                        "111111111111111111111111111111111111000011" +
+                        "111111111111111111111111111111111111110011" +
+                        "111100000000100000000000011111110000000001" +
+                        "111000000000100000000000000000000000000001" +
+                        "110000000000100000000000001111000000000001" +
+                        "100000000000100000000000001111000000000001" +
+                        "100000000000100000000000001111000000000001" +
+                        "100000000000111110000111101111000000000001" +
+                        "100900000001111110000000001111000000000001" +
+                        "101110000011111110000000011111000000000001" +
+                        "111111111111111111111111111111111111111111" +
+                        "111111111111111111111111111111111111111111";
+        for (int i = 0; i < width; i++) {
+            tileMap[0][i] = tileMap[height-1][i] = new EdgeTile(3);
+        }
+        for (int j = 0; j < height; j++) {
+            tileMap[j][0] = tileMap[j][width-1] = new EdgeTile( 3);
+        }
+        for (int i = 1; i < height-1; i++) {
+            for (int j = 1; j < width-1; j++) {
+                setTileMap(j,i,0,0,tutorial,j+i*width);
+            }
+        }
+        {
+            game.GoldList.add(new Money(416, 96));
+            game.GoldList.add(new Money(432, 96));
+            game.GoldList.add(new Money(448, 96));
+            game.GoldList.add(new Money(464, 96));
+
+            game.GoldList.add(new Money(544, 32));
+            game.GoldList.add(new Money(528, 32));
+            game.GoldList.add(new Money(512, 32));
+            game.GoldList.add(new Money(496, 32));
+
+            game.entityList.add(new Bat(480, 176, game));
+            game.entityList.add(new Snake(320, 65, game));
+
+            game.entityList.add(new Sign(32, 64, game, "Keys to Move"));
+            game.entityList.add(new Sign(80, 96, game, "Z to Jump"));
+            game.entityList.add(new Sign(192, 96, game, "Can hang on edges"));
+            game.entityList.add(new Sign(256, 64, game, "X to attack or jump on head"));
+            game.entityList.add(new Sign(384, 96, game, "score is gold*level"));
+            game.entityList.add(new Sign(624, 96, game, "press up to climb    "));
+            game.entityList.add(new Sign(480, 96, game, "press down to crawl"));
+            game.entityList.add(new Sign(544, 112, game, "crawl to edge to hang"));
+            game.entityList.add(new Sign(592, 128, game, "down and z to drop"));
+            game.entityList.add(new Sign(608, 272, game, "up and c to throw bomb"));
+            game.entityList.add(new Sign(576, 272, game, "d to throw rope"));
+            game.entityList.add(new Sign(352, 224, game, "shift to sprint"));
+            game.entityList.add(new Sign(224, 224, game, "down and c to place bomb"));
+            game.entityList.add(new Sign(112, 272, game, "touch exit to advance"));
+        }
+    }
     public void Level() {
+        isTutorial = false;
         width=42;
         height=4*8+2;
         CreateBgImage();
@@ -211,40 +175,43 @@ public class Map {
         int m=0;
         for (int k = 0; k < 8; k++) {
             for (int l = 0; l < 10; l++) {
-                if(strTemp.charAt(m)=='0') {
-                    tileMap[j + k][i + l] = new Tile(null, 0, 16, 16);
-                    if(tileMap[j+k-1][i+l].GetId()==1){
-                        tileMap[j + k-1][i + l]=new WallTile(Assets.BrickDown,1);
-                    }
-                    if(tileMap[j+k-1][i+l].GetId()==2)
-                        tileMap[j + k-1][i + l]=new WallTile(Assets.BrickUp2,1);
-                }else
-                if(strTemp.charAt(m)=='1'||(strTemp.charAt(m)=='2'&&Math.random()<0.5)) {
-                    if(tileMap[j+k-1][i+l].GetId()==0) {
-                        tileMap[j+k][i+l]=new WallTile(Assets.BrickUp,2);
-                        tileMap[j + k-1][i + l] = new WallTopTile(1);
-                    }else
-                        tileMap[j + k][i + l] = new WallTile(1);
-                }else
-                if(strTemp.charAt(m)=='L')
-                    tileMap[j + k][i + l] = new WallTopTile(Assets.Ladder,6,false);
-                else
-                if(strTemp.charAt(m)=='P')
-                    tileMap[j + k][i + l] = new WallTopTile(Assets.LadderTop,6,false);
-                else
-                if(strTemp.charAt(m)=='7'){
-                    if(path.rand(1,3)==3)
-                        tileMap[j + k][i + l] = new WallTopTile(Assets.Spikes,3);
-                }else
-                if(strTemp.charAt(m)=='9') {
-                    if (j / 10 == 0) {
-                        x=(i+l)*16;y=(j+k)*16;
-                        tileMap[j + k][i + l] = new WallTopTile(Assets.Entrance, 4,false);
-                    }else
-                        tileMap[j + k][i + l] = new WallTopTile(Assets.Exit, 10,false);
-                }
+                    setTileMap(i,j,l,k,strTemp,m);
                 m++;
             }
+        }
+    }
+    private void setTileMap(int i, int j,int l,int k,String strTemp,int m) {
+        if(strTemp.charAt(m)=='0') {
+            tileMap[j + k][i + l] = new Tile(null, 0, 16, 16);
+            if(tileMap[j+k-1][i+l].GetId()==1){
+                tileMap[j + k-1][i + l]=new WallTile(Assets.BrickDown,1);
+            }
+            if(tileMap[j+k-1][i+l].GetId()==2)
+                tileMap[j + k-1][i + l]=new WallTile(Assets.BrickUp2,1);
+        }else
+        if(strTemp.charAt(m)=='1'||(strTemp.charAt(m)=='2'&&Math.random()<0.5)) {
+            if(tileMap[j+k-1][i+l].GetId()==0) {
+                tileMap[j+k][i+l]=new WallTile(Assets.BrickUp,2);
+                tileMap[j + k-1][i + l] = new WallTopTile(1);
+            }else
+                tileMap[j + k][i + l] = new WallTile(1);
+        }else
+        if(strTemp.charAt(m)=='L')
+            tileMap[j + k][i + l] = new WallTopTile(Assets.Ladder,6,false);
+        else
+        if(strTemp.charAt(m)=='P')
+            tileMap[j + k][i + l] = new WallTopTile(Assets.LadderTop,6,false);
+        else
+        if(strTemp.charAt(m)=='7'){
+            if(new Random().nextInt(3-1+1)+1==3)
+                tileMap[j + k][i + l] = new WallTopTile(Assets.Spikes,3);
+        }else
+        if(strTemp.charAt(m)=='9') {
+            if (j / 10 == 0) {
+                x=(i+l)*16;y=(j+k)*16;
+                tileMap[j + k][i + l] = new WallTopTile(Assets.Entrance, 4,false);
+            }else
+                tileMap[j + k][i + l] = new WallTopTile(Assets.Exit, 10,false);
         }
     }
 

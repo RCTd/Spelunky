@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class GameOver {
     private final Game game;
     private final PlayerKeyListener key;
+    private boolean relesed=false;
 
     public GameOver(PlayerKeyListener key,Game game) {
         this.game = game;
@@ -21,13 +22,15 @@ public class GameOver {
     }
 
     public void Update(){
-        if(key.isEnter()){
+        if(key.isEnter()&&relesed){
             GameTimer.getInstance().StartTimer();
             game.gameOver = false;
             game.hud.reset();
-            game.newLevel();
+            game.newLevel(false);
         }
+        relesed=!key.isEnter();
         if(key.isEscape()){
+            game.db.Close();
             System.exit(0);
         }
     }
