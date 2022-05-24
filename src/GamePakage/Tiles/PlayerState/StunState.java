@@ -1,6 +1,6 @@
 package GamePakage.Tiles.PlayerState;
 
-import GamePakage.Flags;
+import GamePakage.GameTools.Flags;
 import GamePakage.Tiles.State;
 
 public class StunState extends State {
@@ -17,7 +17,7 @@ public class StunState extends State {
 
     @Override
     public State Handle(Flags trigFlags) {
-        if((int)frame==TotalFrames)
+        if((int)frame>=TotalFrames)
         {
             second++;
             frame=0;
@@ -26,6 +26,8 @@ public class StunState extends State {
                 return new StandState();
             }
         }
+        if(!trigFlags.TooHigh)
+            return new StandState();
         return this;
     }
 }

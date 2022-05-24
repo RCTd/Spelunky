@@ -1,8 +1,8 @@
 package GamePakage.Entitys;
 
-import GamePakage.Flags;
+import GamePakage.GameTools.Flags;
 import GamePakage.Game;
-import GamePakage.GameTimer;
+import GamePakage.GameTools.GameTimer;
 import GamePakage.Tiles.PlayerToolsTiles.BombTile;
 
 import java.awt.*;

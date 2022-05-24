@@ -1,6 +1,6 @@
 package GamePakage.Entitys;
 
-import GamePakage.Flags;
+import GamePakage.GameTools.Flags;
 import GamePakage.Game;
 import GamePakage.Tiles.BatTile;
 
@@ -88,7 +88,7 @@ public class Bat implements GameEntity{
             }
         }
         for (GameEntity entity : game.toolList) {
-            if(entity.getX()>x-13-16 && entity.getX()<x+13+16 && entity.getY()<y+16&&entity.getY()>y-16){
+            if(entity.getX()>x-13 && entity.getX()<x+13 && entity.getY()<y+16&&entity.getY()>y-16){
                 game.removeList.add(this);
             }
         }

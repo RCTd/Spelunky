@@ -1,4 +1,6 @@
-package GamePakage;
+package GamePakage.GameTools;
+
+import GamePakage.Game;
 
 import static GamePakage.Game.coyotetimer;
 
@@ -10,7 +12,7 @@ public class Flags {
     public boolean Relesed=true,LongJump,Attack, OnRope =false,Climbing=false;
     public boolean HasBomb;
 
-    public void Update(PlayerKeyListener key,int newState)
+    public void Update(PlayerKeyListener key, int newState)
     {
         Climbing=(OnRope&& key.isUp())||(Climbing&&IsOnGround&&OnRope);
         Moves=false;
@@ -19,7 +21,7 @@ public class Flags {
         LookUp= key.isUp();
         Hang= newState== 8 || newState == 9;
     }
-    public void Collide(int x,int y,int w,int h,Game game)
+    public void Collide(int x, int y, int w, int h, Game game)
     {
         OnRope =game.map.tileMap[(y+4)/16][(x+2)/16].GetId()==6&&game.map.tileMap[(y+4)/16][(x+14)/16].GetId()==6;
 

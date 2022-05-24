@@ -1,6 +1,6 @@
 package GamePakage.Tiles;
 
-import GamePakage.Flags;
+import GamePakage.GameTools.Flags;
 import GamePakage.Graphics.Assets;
 
 import java.awt.image.BufferedImage;
@@ -17,7 +17,6 @@ public abstract class State {
     }
     public void Update(){
         frame=(frame>=TotalFrames)?0:(frame+16 * timer.getDeltaTime());
-        System.out.println(frame);
         Image= Assets.playerSprite.getSubimage((int)frame * with, state * 16, with, height);
     }
     public State Handle(Flags trigFlags)

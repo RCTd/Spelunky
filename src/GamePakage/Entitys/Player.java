@@ -1,9 +1,9 @@
 package GamePakage.Entitys;
 
-import GamePakage.Flags;
+import GamePakage.GameTools.Flags;
 import GamePakage.Game;
-import GamePakage.Money;
-import GamePakage.PlayerKeyListener;
+import GamePakage.Tiles.Money;
+import GamePakage.GameTools.PlayerKeyListener;
 import GamePakage.Tiles.PlayerToolsTiles.PlayerTile;
 
 import java.awt.*;
@@ -273,5 +273,24 @@ public class Player implements GameEntity {
 
     public int getDirection() {
         return direction;
+    }
+
+    public void reset(int x, int y) {
+        this.x = x;
+        this.y = y;
+        this.xVel = 0;
+        this.yVel = 0;
+        this.p0 = y;
+        this.JumpStart = 0;
+        this.trigFlags.LongJump = false;
+        this.trigFlags.Relesed = true;
+        this.trigFlags.IsOnGround = false;
+        this.trigFlags.Climbing = false;
+        this.trigFlags.Hang = false;
+        this.trigFlags.TooHigh = false;
+        this.trigFlags.CanHangLeft = false;
+        this.trigFlags.CanHangRight = false;
+        this.trigFlags.HasBomb = false;
+        this.trigFlags.HasRope = false;
     }
 }

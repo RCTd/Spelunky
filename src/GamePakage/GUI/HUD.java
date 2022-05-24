@@ -1,4 +1,4 @@
-package GamePakage;
+package GamePakage.GUI;
 
 import GamePakage.Graphics.Assets;
 
@@ -38,7 +38,7 @@ public class HUD {
 
     public void reset(){
         Lives=4;
-        Level=0;
+        Level=-1;
         Rope=4;
         Bomb=4;
         Score=0;

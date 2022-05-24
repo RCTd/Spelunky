@@ -2,9 +2,15 @@ package GamePakage;
 
 import GamePakage.Entitys.GameEntity;
 import GamePakage.Entitys.Player;
+import GamePakage.GUI.GameOver;
+import GamePakage.GUI.HUD;
+import GamePakage.GUI.Menu;
+import GamePakage.GameTools.GameTimer;
+import GamePakage.GameTools.PlayerKeyListener;
 import GamePakage.GameWindow.GameWindow;
 import GamePakage.Graphics.Assets;
 import GamePakage.Map.Map;
+import GamePakage.Tiles.Money;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,7 +44,7 @@ public class Game extends JPanel implements Runnable {
     public HUD hud=new HUD();
     public boolean menu=false, gameOver =false;
     BufferedImage bimg;
-    private boolean fullscreen=false;
+    private boolean fullscreen=false,relesedEsc=false;
 
     public int getWidth() {
         return width;
@@ -145,7 +151,7 @@ public class Game extends JPanel implements Runnable {
 
     private void Menu()
     {
-        Menu mainMenu=new Menu(keys,this);
+        GamePakage.GUI.Menu mainMenu=new Menu(keys,this);
         while(menu)
         {
             mainMenu.Update();
@@ -213,9 +219,7 @@ public class Game extends JPanel implements Runnable {
         entityList.clear();
         GoldList.clear();
         map.Level();
-        player.setX(map.x);
-        player.setY(map.y);
-        player.p0=map.y;
+        player.reset(map.x,map.y);
         offsetMaxX=map.width*16-width;
         offsetMaxY=map.height*16-height;
         offsetMinX=offsetMinY=0;
@@ -227,11 +231,11 @@ public class Game extends JPanel implements Runnable {
             gameOver=true;
             return;
         }
-        if(keys.flag[9])
+        if(keys.flag[9]&&relesedEsc)
         {
             menu=true;
-            return;
         }
+        relesedEsc=!keys.flag[9];
         Collide();
         player.Update();
         if(player.trigFlags.Exit)

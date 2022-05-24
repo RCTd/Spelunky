@@ -1,6 +1,6 @@
 package GamePakage.Tiles.PlayerState;
 
-import GamePakage.Flags;
+import GamePakage.GameTools.Flags;
 import GamePakage.Graphics.Assets;
 import GamePakage.Tiles.State;
 

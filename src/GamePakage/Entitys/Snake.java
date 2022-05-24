@@ -1,6 +1,6 @@
 package GamePakage.Entitys;
 
-import GamePakage.Flags;
+import GamePakage.GameTools.Flags;
 import GamePakage.Game;
 import GamePakage.Tiles.SnakeTile;
 

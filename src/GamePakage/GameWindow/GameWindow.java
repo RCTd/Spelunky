@@ -34,10 +34,10 @@ public class GameWindow {
         wndTitle = title;    /*!< Retine titlul ferestrei.*/
         /*wndWidth = width;    *//*!< Retine latimea ferestrei.*//*
         wndHeight = height;   *//*!< Retine inaltimea ferestrei.*/
-        /*wndWidth=1920;
-        wndHeight=1080;*/
-        wndWidth=1280;
-        wndHeight=720;
+        wndWidth=1920;
+        wndHeight=1080;
+       /* wndWidth=1280;
+        wndHeight=720;*/
         wndFrame = null;     /*!< Fereastra nu este construita.*/
     }
 

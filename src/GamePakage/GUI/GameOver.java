@@ -1,4 +1,8 @@
-package GamePakage;
+package GamePakage.GUI;
+
+import GamePakage.Game;
+import GamePakage.GameTools.GameTimer;
+import GamePakage.GameTools.PlayerKeyListener;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;

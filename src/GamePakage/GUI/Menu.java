@@ -1,4 +1,8 @@
-package GamePakage;
+package GamePakage.GUI;
+
+import GamePakage.Game;
+import GamePakage.GameTools.GameTimer;
+import GamePakage.GameTools.PlayerKeyListener;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -10,7 +14,7 @@ public class Menu {
     private final PlayerKeyListener keys;
     private final Game game;
     private int Selection =0;
-    private boolean Music = true;
+    private boolean Music = true,releseedup=true,releseeddown=true,relesedEsc=false,relesedEnter=true;
     private ArrayList<String> menu;
 
     public Menu(PlayerKeyListener keys, Game game) {
@@ -19,37 +23,42 @@ public class Menu {
     }
 
     public void Update() {
-        if(keys.isUp()){
+        if(keys.isUp()&&releseedup){
             Selection--;
             if(Selection<0){
                 Selection=menu.size()-1;
             }
         }
-        if(keys.isDown()){
+        releseedup=!keys.isUp();
+        if(keys.isDown()&&releseeddown){
             Selection++;
             if(Selection>=menu.size()){
                 Selection=0;
             }
         }
-        if(keys.isEnter()){
+        releseeddown=!keys.isDown();
+        if(keys.isEnter()&&relesedEnter){
             if(Selection==0){
+                game.menu=false;
+                GameTimer.getInstance().StartTimer();
+            }
+            else if(Selection==1){
                 Music=!Music;
             }
-            /*if(Selection==1){
-                //game.setFullscreen(!game.isFullscreen());
-            }*/
-            if(Selection==2){
+            else if(Selection==2){
                 game.setGameOver(true);
                 game.menu=false;
             }
-            if(Selection==3){
+            else if(Selection==3){
                 System.exit(0);
             }
         }
-        if(keys.isEscape()){
+        relesedEnter=!keys.isEnter();
+        if(keys.isEscape()&&relesedEsc){
             game.menu=false;
             GameTimer.getInstance().StartTimer();
         }
+        relesedEsc=!keys.isEscape();
     }
 
     public void Draw(){
@@ -66,6 +75,7 @@ public class Menu {
         }
         g.setFont(fnt);
         menu = new ArrayList<>();
+        menu.add("Resume");
         menu.add( "Music <" + (Music ? "On" : "Off")+">");
         //menu.add("Fullscreen <" + (game.isFullscreen() ? "On" : "Off")+">");
         menu.add("Die!");
@@ -77,7 +87,8 @@ public class Menu {
             else{
                 g.setColor(Color.WHITE);
             }
-            }
+        g.drawString(menu.get(i), game.getWndWidth()/2-g.getFontMetrics().stringWidth(menu.get(i))/2, game.getWndHeight()/2-menu.size()*g.getFontMetrics().getHeight()/2+i*g.getFontMetrics().getHeight());
+        }
         bs.show();
     }
 }

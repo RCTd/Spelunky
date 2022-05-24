@@ -1,7 +1,7 @@
 package GamePakage.Entitys;
 
 import GamePakage.Game;
-import GamePakage.GameTimer;
+import GamePakage.GameTools.GameTimer;
 import GamePakage.Tiles.PlayerToolsTiles.RopeTile;
 import GamePakage.Tiles.Tile;
 

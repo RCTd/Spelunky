@@ -1,4 +1,4 @@
-package GamePakage;
+package GamePakage.GameTools;
 
 public class GameTimer {
     private static GameTimer single_instance = null;

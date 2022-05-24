@@ -1,4 +1,4 @@
-package GamePakage;
+package GamePakage.Tiles;
 
 import GamePakage.Graphics.Assets;
 

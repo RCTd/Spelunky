@@ -4,7 +4,7 @@ import GamePakage.Entitys.Bat;
 import GamePakage.Entitys.Snake;
 import GamePakage.Game;
 import GamePakage.Graphics.Assets;
-import GamePakage.Money;
+import GamePakage.Tiles.Money;
 import GamePakage.Tiles.*;
 import GamePakage.Tiles.WorldTiles.EdgeTile;
 import GamePakage.Tiles.WorldTiles.WallTile;
