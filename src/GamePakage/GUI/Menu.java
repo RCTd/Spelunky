@@ -44,9 +44,11 @@ public class Menu {
             }
             else if(Selection==1){
                 Music=!Music;
+                game.db.UpdateSettings(Music);
             }
             else if(Selection==2){
                 game.setGameOver(true);
+                game.db.UpdateScore(Integer.parseInt(game.getScore()));
                 game.menu=false;
             }
             else if(Selection==3){

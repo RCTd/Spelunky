@@ -22,30 +22,22 @@ public class Game extends JPanel implements Runnable {
     public ArrayList<GameEntity> entityList,toolList,removeList,addList;
     public ArrayList<Money> GoldList, GoldremoveList;
     public static final int MaxJumpHeight =16+5;//100
-    public static final float TimeToMaxH = 0.2F;//0.2
-    public static final float YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
-    //public static final float MaxYVel=500;
-
-    public static final float AccelTimeX=0.1F;
-    public static float MaxXSpeed;//0.05  /0.05
-    public static float XAccel=MaxXSpeed/AccelTimeX;
-
+    public static final float TimeToMaxH = 0.2F,YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH), AccelTimeX=0.1F;
+    public static float MaxXSpeed, XAccel=MaxXSpeed/AccelTimeX;
     public static long coyotetimer;
-
     private int camX,camY,offsetMaxX,offsetMaxY,offsetMinX,offsetMinY;
     private float camXf=1,camYf=1;
     public static GameTimer timer = GameTimer.getInstance();
     private PlayerKeyListener keys;
     private final int width=27*16,height=16*16;
     private final GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
-    private boolean runState;   /*!< Flag ce starea firului de executie.*/
+    private boolean runState,fullscreen=false,relesedEsc=false;   /*!< Flag ce starea firului de executie.*/
     private Player player;
     public Map map;
     public HUD hud=new HUD();
     public boolean menu=false, gameOver =false;
-    BufferedImage bimg;
-    private boolean fullscreen=false,relesedEsc=false;
-
+    private BufferedImage bimg;
+    public SQLiteDB db=new SQLiteDB();
     public int getWidth() {
         return width;
     }
@@ -94,13 +86,14 @@ public class Game extends JPanel implements Runnable {
         keys=new PlayerKeyListener();
         wnd.GetCanvas().addKeyListener(keys);
 
-        //map.LoadTutorial();
-        map.Level();
+        map.LoadTutorial();
+        //map.Level();
         player.setX(map.x);
         player.setY(map.y);
         offsetMaxX=map.width*16-width;
         offsetMaxY=map.height*16-height;
         offsetMinX=offsetMinY=0;
+        db.Connect();
         bimg=new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
     }
 

@@ -1,6 +1,7 @@
 package GamePakage.Map;
 
 import GamePakage.Entitys.Bat;
+import GamePakage.Entitys.Sign;
 import GamePakage.Entitys.Snake;
 import GamePakage.Game;
 import GamePakage.Graphics.Assets;
@@ -73,7 +74,7 @@ public class Map {
                 {184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184},
                 {184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 321, 1329, 1525, 1538, 621, 0, 0, 0, 0, 1037, 184},
                 {184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 184, 184, 184, 184, 184, 184, 184, 184, 1038, 184},
-                {184, 626, 1329, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1329, 0, 0, 0, 1681, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1037, 184},
+                {184, 0, 1329, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1329, 0, 0, 0, 1681, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1037, 184},
                 {184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 184, 184, 184, 184, 184, 184, 184, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1037, 184},
                 {184, 184, 184, 0, 0, 1329, 0, 0, 184, 0, 0, 1329, 0, 0, 184, 184, 184, 184, 184, 184, 184, 184, 184, 0, 1329, 0, 889, 889, 889, 889, 889, 889, 886, 0, 0, 0, 0, 0, 0, 0, 1329, 184},
                 {184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 1329, 0, 0, 0, 0, 184, 184, 184},
@@ -114,9 +115,44 @@ public class Map {
                         if (tileMap[i - 1][j].GetId() == 2)
                             tileMap[i - 1][j] = new WallTile(Assets.BrickUp2, 1);
                     }
+                    if(matrix[i][j] == 1037)
+                    {
+                        tileMap[i][j] = new WallTopTile(Assets.Ladder, 6,false);
+                    }
+                    if (matrix[i][j] == 1038)
+                    {
+                        tileMap[i][j] = new WallTopTile(Assets.LadderTop, 6,false);
+                    }
                 }
             }
         }
+        game.GoldList.add(new Money(416,96));
+        game.GoldList.add(new Money(432,96));
+        game.GoldList.add(new Money(448,96));
+        game.GoldList.add(new Money(464,96));
+
+        game.GoldList.add(new Money(544,32));
+        game.GoldList.add(new Money(528,32));
+        game.GoldList.add(new Money(512,32));
+        game.GoldList.add(new Money(496,32));
+
+        game.entityList.add(new Bat(480,176,game));
+        game.entityList.add(new Snake(320,65,game));
+
+        game.entityList.add(new Sign(32,64,game,"Keys to Move"));
+        game.entityList.add(new Sign(80,96,game,"Z to Jump"));
+        game.entityList.add(new Sign(192,96,game,"Can hang on edges"));
+        game.entityList.add(new Sign(256,64,game,"X to attack or jump on head"));
+        game.entityList.add(new Sign(384,96,game,"score is gold*level"));
+        game.entityList.add(new Sign(624,96,game,"press up to climb    "));
+        game.entityList.add(new Sign(480,96,game,"press down to crawl"));
+        game.entityList.add(new Sign(544,112,game,"crawl to edge to hang"));
+        game.entityList.add(new Sign(592,128,game,"down and z to drop"));
+        game.entityList.add(new Sign(608,272,game,"up and c to throw bomb"));
+        game.entityList.add(new Sign(576,272,game,"d to throw rope"));
+        game.entityList.add(new Sign(352,224,game,"shift to sprint"));
+        game.entityList.add(new Sign(224,224,game,"down and c to place bomb"));
+        game.entityList.add(new Sign(112,272,game,"touch exit to advance"));
     }
 
     public void Draw(Graphics g) {

@@ -32,6 +32,7 @@ public class Assets {
 
     public static BufferedImage Exit;
     public static BufferedImage Entrance;
+    public static BufferedImage MsgSign;
 
     public static BufferedImage bgWall;
     public static BufferedImage BgWallRock;
@@ -91,6 +92,7 @@ public class Assets {
         RopeIcon =toolsSprite.getSubimage(3*16,6*16,16,16);
         DollarIcon =toolsSprite.getSubimage(2*16,6*16,16,16);
 
+        MsgSign =toolsSprite.getSubimage(4*16,1*16,16,16);
 
         bgWall=sheet.crop(0,0,32,32);
         BgWallRock=sheet.crop(32,0,32,32);

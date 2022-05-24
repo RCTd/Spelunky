@@ -17,6 +17,7 @@ public class GameOver {
     public GameOver(PlayerKeyListener key,Game game) {
         this.game = game;
         this.key = key;
+        game.db.UpdateScore(Integer.parseInt(game.getScore()));
     }
 
     public void Update(){

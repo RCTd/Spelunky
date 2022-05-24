@@ -47,6 +47,7 @@ public class Player implements GameEntity {
 
     public void Update()
     {
+        System.out.println(x+" "+y);
         oldy=y;
         PlayerKeyListener key=game.getKeys();
         oldState= PlayerTile.AnimationState.state;
