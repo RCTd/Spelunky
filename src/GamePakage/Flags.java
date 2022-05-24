@@ -10,13 +10,13 @@ public class Flags {
     public boolean Relesed=true,LongJump,Attack, OnRope =false,Climbing=false;
     public boolean HasBomb;
 
-    public void Update(boolean[] flag,int newState)
+    public void Update(PlayerKeyListener key,int newState)
     {
-        Climbing=(OnRope&&flag[5])||(Climbing&&IsOnGround&&OnRope);
+        Climbing=(OnRope&& key.isUp())||(Climbing&&IsOnGround&&OnRope);
         Moves=false;
-        Attack=flag[6];
-        Duck= flag[2];
-        LookUp= flag[5];
+        Attack=key.isX();
+        Duck= key.isDown();
+        LookUp= key.isUp();
         Hang= newState== 8 || newState == 9;
     }
     public void Collide(int x,int y,int w,int h,Game game)

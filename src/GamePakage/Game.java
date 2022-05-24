@@ -13,12 +13,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Game extends JPanel implements Runnable {
-    public ArrayList<GameEntity> entityList;
-    public ArrayList<Money> GoldList;
-    public ArrayList<Money> GoldremoveList;
-    public ArrayList<GameEntity> toolList;
-    public ArrayList<GameEntity> removeList;
-    public ArrayList<GameEntity> addList;
+    public ArrayList<GameEntity> entityList,toolList,removeList,addList;
+    public ArrayList<Money> GoldList, GoldremoveList;
     public static final int MaxJumpHeight =16+5;//100
     public static final float TimeToMaxH = 0.2F;//0.2
     public static final float YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH);
@@ -30,29 +26,39 @@ public class Game extends JPanel implements Runnable {
 
     public static long coyotetimer;
 
-    private int camX,camY;
+    private int camX,camY,offsetMaxX,offsetMaxY,offsetMinX,offsetMinY;
     private float camXf=1,camYf=1;
-    private int offsetMaxX,offsetMaxY;
-    private int offsetMinX,offsetMinY;
     public static GameTimer timer = GameTimer.getInstance();
-
-
-    public PlayerKeyListener keys;
-    private final int width;
-    private final int height;
+    private PlayerKeyListener keys;
+    private final int width=27*16,height=16*16;
     private final GameWindow wnd;        /*!< Fereastra in care se va desena tabla jocului*/
     private boolean runState;   /*!< Flag ce starea firului de executie.*/
     private Player player;
-    public final Map map;
+    public Map map;
     public HUD hud=new HUD();
+    public boolean menu=false, gameOver =false;
     BufferedImage bimg;
+    private boolean fullscreen=false;
 
-    public Game(String title, int width, int height) {
-        this.width=width;this.height=height;
+    public int getWidth() {
+        return width;
+    }
+    public int getHeight() {
+        return height;
+    }
+    public int getWndWidth() {
+        return wnd.getWidth();
+    }
+    public int getWndHeight() {
+        return wnd.getHeight();
+    }
+
+    public Game(String title){//, int width, int height) {
+        //this.width=width;this.height=height;
         /// Obiectul GameWindow este creat insa fereastra nu este construita
         /// Acest lucru va fi realizat in metoda init() prin apelul
         /// functiei BuildGameWindow();
-        wnd = new GameWindow(title, width, height);
+        wnd = new GameWindow(title);//, width, height);
         /// Resetarea flagului runState ce indica starea firului de executie (started/stoped)
         runState = false;
         //map=new Map(42,20);
@@ -112,6 +118,14 @@ public class Game extends JPanel implements Runnable {
 
         /// Atat timp timp cat threadul este pornit Update() & Draw()
         while (runState) {
+            if(menu)
+            {
+                Menu();
+            }
+            if(gameOver)
+            {
+                GameOver();
+            }
             /// Se obtine timpul curent
             timer.update();
             //curentTime = System.nanoTime();
@@ -128,6 +142,27 @@ public class Game extends JPanel implements Runnable {
             }
         }
     }
+
+    private void Menu()
+    {
+        Menu mainMenu=new Menu(keys,this);
+        while(menu)
+        {
+            mainMenu.Update();
+            mainMenu.Draw();
+        }
+    }
+
+    private void GameOver()
+    {
+        GameOver gameOver=new GameOver(keys,this);
+        while(this.gameOver)
+        {
+            gameOver.Update();
+            gameOver.Draw();
+        }
+    }
+
 
     /*! \fn public synchronized void start()
         \brief Creaza si starteaza firul separat de executie (thread).
@@ -173,21 +208,35 @@ public class Game extends JPanel implements Runnable {
 
         Metoda este declarata privat deoarece trebuie apelata doar in metoda run()
      */
+    public void newLevel()
+    {
+        entityList.clear();
+        GoldList.clear();
+        map.Level();
+        player.setX(map.x);
+        player.setY(map.y);
+        player.p0=map.y;
+        offsetMaxX=map.width*16-width;
+        offsetMaxY=map.height*16-height;
+        offsetMinX=offsetMinY=0;
+        hud.Level++;
+    }
     private void Update() {
+        if(hud.Lives<=0)
+        {
+            gameOver=true;
+            return;
+        }
+        if(keys.flag[9])
+        {
+            menu=true;
+            return;
+        }
         Collide();
         player.Update();
         if(player.trigFlags.Exit)
         {
-            entityList.clear();
-            GoldList.clear();
-            map.Level();
-            player.setX(map.x);
-            player.setY(map.y);
-            player.p0=map.y;
-            offsetMaxX=map.width*16-width;
-            offsetMaxY=map.height*16-height;
-            offsetMinX=offsetMinY=0;
-            hud.Level++;
+            newLevel();
         }
         for(GameEntity obj:entityList) {obj.Update();}
         for(GameEntity obj:toolList) {obj.Update();}
@@ -268,6 +317,7 @@ public class Game extends JPanel implements Runnable {
 
         /// Elibereaza resursele de memorie aferente contextului grafic curent (zonele de memorie ocupate de
         /// elementele grafice ce au fost desenate pe canvas).
+        f.dispose();
         g.dispose();
     }
 
@@ -284,6 +334,26 @@ public class Game extends JPanel implements Runnable {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public BufferStrategy getBufferStrategy() {
+        return wnd.GetCanvas().getBufferStrategy();
+    }
+
+    public boolean isFullscreen() {
+        return fullscreen;
+    }
+
+    public String getScore() {
+        return Integer.toString(hud.Score * hud.Level);
+    }
+
+    public void setGameOver(boolean b) {
+        gameOver = b;
+    }
+
+    public PlayerKeyListener getKeys() {
+        return keys;
     }
 }
 

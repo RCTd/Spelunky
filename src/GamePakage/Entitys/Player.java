@@ -3,6 +3,7 @@ package GamePakage.Entitys;
 import GamePakage.Flags;
 import GamePakage.Game;
 import GamePakage.Money;
+import GamePakage.PlayerKeyListener;
 import GamePakage.Tiles.PlayerToolsTiles.PlayerTile;
 
 import java.awt.*;
@@ -47,12 +48,12 @@ public class Player implements GameEntity {
     public void Update()
     {
         oldy=y;
-        boolean[] flag=game.keys.flag;
+        PlayerKeyListener key=game.getKeys();
         oldState= PlayerTile.AnimationState.state;
         PlayerTile.AnimationState= PlayerTile.AnimationState.Handle(trigFlags);
         newState=PlayerTile.AnimationState.state;
 
-        trigFlags.Update(flag,newState);
+        trigFlags.Update(key,newState);
         if(trigFlags.Climbing) {
             trigFlags.IsOnGround=true;
             x = (int)(( x + 8)/16)*16;
@@ -60,10 +61,10 @@ public class Player implements GameEntity {
         float deltaTime=((float) (System.nanoTime() - Time) / 1_000_000_000);
 
         if(newState!=11) {
-            MoveLogic(flag, deltaTime);
-            StartJump(flag);
-            trowRope(flag);
-            trowBomb(flag);
+            MoveLogic(key, deltaTime);
+            StartJump(key);
+            trowRope(key);
+            trowBomb(key);
         }
 
         if(trigFlags.Climbing&&!trigFlags.Hang)
@@ -74,7 +75,7 @@ public class Player implements GameEntity {
                 y+=MaxXSpeed/2*deltaTime;
         }
         SetHang();
-        JumpLogic(flag,deltaTime);
+        JumpLogic(key,deltaTime);
 
         Time=System.nanoTime();
     }
@@ -113,10 +114,10 @@ public class Player implements GameEntity {
         }
     }
 
-    private void JumpLogic(boolean[] flag,float deltaTime)
+    private void JumpLogic(PlayerKeyListener key, float deltaTime)
     {
         if (!trigFlags.IsOnGround) {
-            if((trigFlags.HeadHit ||!flag[0])&& trigFlags.LongJump)
+            if((trigFlags.HeadHit ||!key.isZ())&& trigFlags.LongJump)
             {
                 yVel =-2*(p0-y)/(TimeToMaxH);
                 yVel += YAccel *(((float)System.nanoTime()- JumpStart)/1_000_000_000);
@@ -137,11 +138,11 @@ public class Player implements GameEntity {
             yVel = 0;
         }
     }
-    private void MoveLogic(boolean[] flag,float deltaTime)
+    private void MoveLogic(PlayerKeyListener key, float deltaTime)
     {
         int dir=0;
         int result = 0;
-        if(flag[1]&&!trigFlags.Hang) {
+        if(key.isRight()&&!trigFlags.Hang) {
             if (!trigFlags.wallRight)
                 result += 1;
             else {
@@ -149,7 +150,7 @@ public class Player implements GameEntity {
             }
             dir++;
         }
-        if(flag[3]&&!trigFlags.Hang) {
+        if(key.isLeft()&&!trigFlags.Hang) {
             if (!trigFlags.wallLeft)
                 result -= 1;
             else {
@@ -177,7 +178,7 @@ public class Player implements GameEntity {
         if(xVel >MaxXSpeed|| xVel <-MaxXSpeed)
             xVel = result *MaxXSpeed;
         //max speed variation
-        if(flag[4]) {//Slow down on shift
+        if(key.isShift()) {//Slow down on shift
             MaxXSpeed=100F;
         }else {
             MaxXSpeed=200F;
@@ -186,9 +187,9 @@ public class Player implements GameEntity {
         //XDccel=-MaxXSpeed/AccelTimeX;
         x += xVel *deltaTime;
     }
-    private void StartJump(boolean[] flag)
+    private void StartJump(PlayerKeyListener key)
     {
-        if (flag[0]) {
+        if (key.isZ()) {
             if(trigFlags.Relesed)
                 if(trigFlags.IsOnGround ||(float) (System.nanoTime() - coyotetimer) / 1_000_000_000<0.1F){
                     p0 = y;
@@ -198,7 +199,7 @@ public class Player implements GameEntity {
                     trigFlags.IsOnGround = false;
                     trigFlags.Climbing=false;
                     JumpStart = System.nanoTime();
-                    if(flag[2]&&trigFlags.Hang) {
+                    if(key.isDown()&&trigFlags.Hang) {
                         trigFlags.Hang=false;
                         yVel=0;
                     }
@@ -225,31 +226,31 @@ public class Player implements GameEntity {
             trigFlags.Hang=true;
         }
     }
-    private void trowRope(boolean[] flag)
+    private void trowRope(PlayerKeyListener key)
     {
-        if(flag[7]&& game.hud.Rope>0&&trigFlags.HasRope) {
-            if (!flag[2]) {
+        if(key.isD()&& game.hud.Rope>0&&trigFlags.HasRope) {
+            if (!key.isDown()) {
                 game.toolList.add(new Rope(getX(), getY(), game));
             } else
                 game.toolList.add(new Rope(getX(), getY(), game, true));
             game.hud.Rope--;
         }
-        trigFlags.HasRope=!flag[7];
+        trigFlags.HasRope=!key.isD();
     }
 
-    private void trowBomb(boolean[] flag)
+    private void trowBomb(PlayerKeyListener key)
     {
-        if(flag[8]&& game.hud.Bomb>0&&trigFlags.HasBomb) {
-            if(flag[5])
+        if(key.isC()&& game.hud.Bomb>0&&trigFlags.HasBomb) {
+            if(key.isUp())
                 game.toolList.add(new Bomb(getX()+8, getY(), xVel+direction*800, -abs(yVel)-(100 / 0.1F), game));
             else
-                if(flag[2])
+                if(key.isDown())
                     game.toolList.add(new Bomb(getX()+8, getY(), xVel, 0, game));
                 else
                     game.toolList.add(new Bomb(getX()+8, getY(), xVel+direction*900,-abs(yVel)-(40 / 0.1F) , game));
             game.hud.Bomb--;
         }
-        trigFlags.HasBomb=!flag[8];
+        trigFlags.HasBomb=!key.isC();
     }
 
     public void TakeDamage(int d)
