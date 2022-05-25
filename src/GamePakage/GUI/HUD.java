@@ -19,7 +19,7 @@ public class HUD {
     public void Draw(Graphics g){
         Font fnt;
         try {
-            fnt = Font.createFont(Font.TRUETYPE_FONT, new File("rsc/8-bit-hud.TTF")).deriveFont(10F);
+            fnt = Font.createFont(Font.TRUETYPE_FONT, new File("rsc/Fonts/8-bit-hud.TTF")).deriveFont(10F);
         } catch (IOException | FontFormatException e) {
             throw new RuntimeException(e);
         }

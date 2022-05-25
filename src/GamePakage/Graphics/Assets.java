@@ -1,7 +1,5 @@
 package GamePakage.Graphics;
 
-import sun.security.provider.ConfigFile;
-
 import java.awt.image.BufferedImage;
 /*! \class public class Assets
     \brief Clasa incarca fiecare element grafic necesar jocului.
@@ -61,13 +59,13 @@ public class Assets {
      */
     public static void Init() {
         /// Se creaza temporar un obiect SpriteSheet initializat prin intermediul clasei ImageLoader
-        SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/BGSprite.png"));
+        SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/Sprites/BGSprite.png"));
 
-        Title=ImageLoader.LoadImage("/TitleBG.png");
-        playerSprite=ImageLoader.LoadImage("/PlayerSprite.png");
-        toolsSprite =ImageLoader.LoadImage("/ToolsSprite.png");
-        explosionSprite =ImageLoader.LoadImage("/ExplosionSprite.png");
-        EnemySprite =ImageLoader.LoadImage("/EnemySprite.png");
+        Title=ImageLoader.LoadImage("/Sprites/sTitle_0.png");
+        playerSprite=ImageLoader.LoadImage("/Sprites/PlayerSprite.png");
+        toolsSprite =ImageLoader.LoadImage("/Sprites/ToolsSprite.png");
+        explosionSprite =ImageLoader.LoadImage("/Sprites/ExplosionSprite.png");
+        EnemySprite =ImageLoader.LoadImage("/Sprites/EnemySprite.png");
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
         Brick=toolsSprite.getSubimage(0,2*16,16,16);
         Brick2=toolsSprite.getSubimage(16,2*16,16,16);

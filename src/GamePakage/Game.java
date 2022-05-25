@@ -21,6 +21,7 @@ import java.util.ArrayList;
 public class Game extends JPanel implements Runnable {
     public ArrayList<GameEntity> entityList,toolList,removeList,addList;
     public ArrayList<Money> GoldList, GoldremoveList;
+    public Sound sound;
     public static final int MaxJumpHeight =16+5;//100
     public static final float TimeToMaxH = 0.2F,YAccel =MaxJumpHeight *2/(TimeToMaxH * TimeToMaxH), AccelTimeX=0.1F;
     public static float MaxXSpeed, XAccel=MaxXSpeed/AccelTimeX;
@@ -38,6 +39,7 @@ public class Game extends JPanel implements Runnable {
     public boolean menu=false, gameOver =false;
     private BufferedImage bimg;
     public SQLiteDB db=new SQLiteDB();
+    private Menu mainMenu;
     public int getWidth() {
         return width;
     }
@@ -50,7 +52,6 @@ public class Game extends JPanel implements Runnable {
     public int getWndHeight() {
         return wnd.getHeight();
     }
-
     public Game(String title){//, int width, int height) {
         //this.width=width;this.height=height;
         /// Obiectul GameWindow este creat insa fereastra nu este construita
@@ -59,7 +60,6 @@ public class Game extends JPanel implements Runnable {
         wnd = new GameWindow(title);//, width, height);
         /// Resetarea flagului runState ce indica starea firului de executie (started/stoped)
         runState = false;
-        //map=new Map(42,20);
         map=new Map(this);
     }
 
@@ -71,6 +71,7 @@ public class Game extends JPanel implements Runnable {
 
      */
     private void InitGame() {
+        sound=new Sound();
         wnd.BuildGameWindow();
         /// Se incarca toate elementele grafice (dale)
         Assets.Init();
@@ -85,8 +86,6 @@ public class Game extends JPanel implements Runnable {
         camY= player.getY()-height/2;
         keys=new PlayerKeyListener();
         wnd.GetCanvas().addKeyListener(keys);
-
-        //map.LoadTutorial();
         map.Level();
         player.setX(map.x);
         player.setY(map.y);
@@ -94,6 +93,7 @@ public class Game extends JPanel implements Runnable {
         offsetMaxY=map.height*16-height;
         offsetMinX=offsetMinY=0;
         db.Connect();
+        mainMenu=new Menu(keys,this);
         bimg=new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
     }
 
@@ -117,34 +117,24 @@ public class Game extends JPanel implements Runnable {
 
         /// Atat timp timp cat threadul este pornit Update() & Draw()
         while (runState) {
-            if(menu)
-            {
-                Menu();
-            }
-            if(gameOver)
-            {
-                GameOver();
-            }
+            if(menu) {Menu();}
+            if(gameOver) {GameOver();}
             /// Se obtine timpul curent
             timer.update();
             //curentTime = System.nanoTime();
             /// Daca diferenta de timp dintre curentTime si oldTime mai mare decat 16.6 ms
-            //if ((curentTime - oldTime) > timeFrame) {
-            //System.out.println(timer.getDeltaTime());
             if(timer.getDeltaTime()>timeFrame){
                 /// Actualizeaza pozitiile elementelor
                 Update();
                 /// Deseneaza elementele grafica in fereastra.
                 Draw();
                 timer.StartTimer();
-                //oldTime = curentTime;
             }
         }
     }
 
     private void Menu()
     {
-        GamePakage.GUI.Menu mainMenu=new Menu(keys,this);
         while(menu)
         {
             mainMenu.Update();

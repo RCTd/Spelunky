@@ -109,7 +109,7 @@ public class Map {
             game.GoldList.add(new Money(496, 32));
 
             game.entityList.add(new Bat(480, 176, game));
-            game.entityList.add(new Snake(320, 65, game));
+            game.entityList.add(new Snake(256, 60, game));
 
             game.entityList.add(new Sign(32, 64, game, "Keys to Move"));
             game.entityList.add(new Sign(80, 96, game, "Z to Jump"));

@@ -43,7 +43,7 @@ public class GameOver {
         g.setColor(Color.YELLOW);
         Font fnt;
         try {
-            fnt = Font.createFont(Font.TRUETYPE_FONT, new File("rsc/8-bit-hud.TTF")).deriveFont(20F);
+            fnt = Font.createFont(Font.TRUETYPE_FONT, new File("rsc/Fonts/8-bit-hud.TTF")).deriveFont(20F);
         } catch (IOException | FontFormatException e) {
             throw new RuntimeException(e);
         }

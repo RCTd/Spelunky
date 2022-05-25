@@ -213,7 +213,8 @@ public class Player implements GameEntity {
             x=(int)(x/16)*16;
         }
         if(oldState==9 && newState==8) {
-            x=direction>0?x+direction*16:x;
+            //x=direction>0?x+direction*16:x;
+            x=x+16;
             x=(int)(x/16)*16;
             y+=16;
             direction*=-1;
