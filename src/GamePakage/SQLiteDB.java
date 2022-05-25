@@ -9,6 +9,9 @@ public class SQLiteDB {
 
     public void UpdateScore(int score){
         try {
+            if(connection==null) {
+                throw new BaseExeption("Connection of DB is null");
+            }
             stmt = connection.createStatement();
 
             String sql = "INSERT INTO HighScore (Score) " +
@@ -24,6 +27,9 @@ public class SQLiteDB {
     public void UpdateSettings(boolean music)
     {
         try {
+            if(connection==null) {
+                throw new BaseExeption("Connection of DB is null");
+            }
             stmt = connection.createStatement();
             int i=music?1:0;
             String sql = "UPDATE Settings set Music = "+i+";";
@@ -40,6 +46,9 @@ public class SQLiteDB {
         boolean music=false;
         int i=0;
         try {
+            if(connection==null) {
+                throw new BaseExeption("Connection of DB is null");
+            }
             stmt = connection.createStatement();
             String sql = "SELECT Music FROM Settings;";
             ResultSet rs = stmt.executeQuery(sql);
@@ -58,6 +67,9 @@ public class SQLiteDB {
     public void Clear()
     {
         try {
+            if(connection==null) {
+                throw new BaseExeption("Connection of DB is null");
+            }
             stmt = connection.createStatement();
             String sql = "DELETE FROM HighScore ;";
             stmt.executeUpdate(sql);
@@ -71,6 +83,9 @@ public class SQLiteDB {
     public ArrayList<String> Show() {
         ArrayList<String> ScoreBord = new ArrayList<>();
         try {
+            if(connection==null) {
+                throw new BaseExeption("Connection of DB is null");
+            }
             stmt = connection.createStatement();
             String sql = "SELECT * FROM HighScore ORDER BY Score DESC";
             ResultSet rs = stmt.executeQuery(sql);
@@ -99,9 +114,14 @@ public class SQLiteDB {
     public void Close()
     {
         try {
+            if(connection==null) {
+                throw new BaseExeption("Connection of DB is null");
+            }
             connection.close();
         } catch (SQLException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
+        } catch (BaseExeption e) {
+            throw new RuntimeException(e);
         }
     }
 }
