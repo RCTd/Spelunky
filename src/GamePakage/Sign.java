@@ -35,7 +35,7 @@ public class Sign implements GameEntity {
         if(isActive){
             Font fnt;
             try {
-                fnt = Font.createFont(Font.TRUETYPE_FONT, new File("rsc/8-bit-hud.TTF")).deriveFont(5F);
+                fnt = Font.createFont(Font.TRUETYPE_FONT, new File("rsc/Fonts/8-bit-hud.TTF")).deriveFont(5F);
             } catch (IOException | FontFormatException e) {
                 throw new RuntimeException(e);
             }
